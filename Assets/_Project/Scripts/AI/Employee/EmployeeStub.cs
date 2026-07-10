@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Game.AI.Babooshka
+namespace Game.AI.Employee
 {
     public sealed class EmployeeStub : MonoBehaviour, IEmployee
     {
         [SerializeField] private float moveSpeed = 4f;
         [SerializeField] private Key makeNoiseKey = Key.Space;
-        [SerializeField] private HearingSensor[] hearingSensorsToNotify;
+        [SerializeField] private Babooshka.HearingSensor[] hearingSensorsToNotify;
 
         public Vector3 Position => transform.position;
         public bool IsAlive => true;
@@ -29,7 +29,7 @@ namespace Game.AI.Babooshka
 
             if (keyboard[makeNoiseKey].wasPressedThisFrame && hearingSensorsToNotify != null)
             {
-                foreach (HearingSensor sensor in hearingSensorsToNotify)
+                foreach (Babooshka.HearingSensor sensor in hearingSensorsToNotify)
                     sensor.NotifySound(transform.position);
             }
         }
