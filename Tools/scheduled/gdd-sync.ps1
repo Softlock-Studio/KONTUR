@@ -51,9 +51,27 @@ Get-Content (Join-Path $PSScriptRoot 'gdd-sync-prompt.md') -Raw |
 if ($LASTEXITCODE -ne 0) { Log "claude exited $LASTEXITCODE - see transcript"; exit 1 }
 
 $new = [int](git rev-list --count "origin/development..$branch")
-if ($new -gt 0) {
-    # Branch is rebuilt from development each run, so history rewrites are expected.
-    git push --force-with-lease -u origin $branch *>> $transcript
-    if ($LASTEXITCODE -ne 0) { Log 'push failed - sync commit remains local only'; exit 1 }
-    Log "sync commit pushed to origin/$branch - review and merge into development"
-} else { Log 'no drift - no commit' }
+if ($new -eq 0) { Log 'no drift - no commit'; exit 0 }
+
+# Land the sync commit on development. It sits directly on top of
+# origin/development, so this push is a fast-forward unless development moved
+# while the model ran - in that case rebase once and retry.
+git fetch origin --quiet
+git push origin "${branch}:development" *>> $transcript
+if ($LASTEXITCODE -ne 0) {
+    git fetch origin --quiet
+    git rebase origin/development *>> $transcript
+    if ($LASTEXITCODE -ne 0) {
+        git rebase --abort
+        git push --force-with-lease -u origin $branch *>> $transcript
+        Log "could not land on development (rebase conflict) - pushed to origin/$branch for manual merge"
+        exit 1
+    }
+    git push origin "${branch}:development" *>> $transcript
+    if ($LASTEXITCODE -ne 0) {
+        git push --force-with-lease -u origin $branch *>> $transcript
+        Log "development push rejected - pushed to origin/$branch for manual merge"
+        exit 1
+    }
+}
+Log 'sync commit landed on development and pushed'

@@ -20,7 +20,7 @@ Task:
    of evidence, then stop.
 5. If you updated files: commit them (all doc changes, one commit) with message
    `docs: sync GDD extracts <YYYY-MM-DD>` (get the date with Bash `date`).
-   Do not push — the wrapper script pushes the branch.
+   Do not push — the wrapper script lands your commit on development.
 
 Finish by printing a short summary: what drifted, which files you touched, and
 anything ambiguous or contradictory in the doc that a human should resolve —

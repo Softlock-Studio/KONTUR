@@ -6,7 +6,7 @@ Opt in by running `register-tasks.ps1` once (per-user, no admin). Prereqs:
 
 | Task | When | Model | What it does |
 |---|---|---|---|
-| KONTUR GDD Sync | daily 12:00 | claude-sonnet-4-6 | Downloads the designer's Google Doc, reconciles `Docs/agents/gdd/` extracts with it in a worktree (`../KONTUR-gdd-sync`, branch `chore/gdd-sync`, always reset to development + at most one fresh commit, force-with-lease pushed to origin). Merge the commit into `development` when you're happy with it. |
+| KONTUR GDD Sync | daily 12:00 | claude-sonnet-4-6 | Downloads the designer's Google Doc, reconciles `Docs/agents/gdd/` extracts with it in a worktree (`../KONTUR-gdd-sync`, branch `chore/gdd-sync`, always reset to development + at most one fresh commit). The commit is pushed straight onto `development` (fast-forward; rebases once if development moved mid-run). Only on conflict does it fall back to pushing `chore/gdd-sync` for manual merge. |
 | KONTUR Code Review | daily 01:00 + 12:00 | claude-opus-4-8 | Merges `origin/development` into branch `agent/code-review` (worktree `../KONTUR-review` — the branch is the "last reviewed" watermark, pushed to origin after each run), reviews the new range, files GitHub issues labeled `agent-review` (one per blocking finding + one suggestions digest). Failed runs roll the watermark back so nothing is skipped. |
 
 Operations:
