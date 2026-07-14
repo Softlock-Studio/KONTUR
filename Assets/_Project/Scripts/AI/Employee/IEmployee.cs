@@ -8,7 +8,7 @@ namespace Game.AI.Employee
         bool IsAlive { get; }
         string CurrentStateName { get; }
 
-        void AssignTask(IEmployeeTask task);
+        bool AssignTask(IEmployeeTask task);
         void Move(Vector3 point);
         void Stop();
         void ReturnToBase();

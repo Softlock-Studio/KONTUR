@@ -37,7 +37,7 @@ namespace Game.AI.Employee
             }
         }
 
-        public void AssignTask(IEmployeeTask task) { }
+        public bool AssignTask(IEmployeeTask task) => false;
         public void Move(Vector3 point) { }
         public void Stop() { }
         public void ReturnToBase() { }

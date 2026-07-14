@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using Game.House;
 
 namespace Game.AI.Employee
 {
@@ -8,7 +9,6 @@ namespace Game.AI.Employee
     {
         [SerializeField] private bool debugEnabled = false;
         [SerializeField] private Camera targetCamera;
-        [SerializeField] private MonoBehaviour employeeSource;
         [SerializeField] private LayerMask clickMask = ~0;
         [SerializeField] private float navMeshSampleRadius = 2f;
         [SerializeField] private float debugTaskDuration = 5f;
@@ -19,19 +19,17 @@ namespace Game.AI.Employee
         [SerializeField] private Key simulateSurviveKey = Key.F;
         [SerializeField] private Key simulateDeathKey = Key.G;
 
-        private IEmployee employee;
-
-        private bool IsActive => debugEnabled && employee != null;
+        private IEmployee selectedEmployee;
+        private string lastZoneMessage = string.Empty;
 
         private void Awake()
         {
-            employee = employeeSource as IEmployee;
             if (targetCamera == null) targetCamera = Camera.main;
         }
 
         private void Update()
         {
-            if (!IsActive) return;
+            if (!debugEnabled) return;
 
             HandleClick();
             HandleKeys();
@@ -43,46 +41,76 @@ namespace Game.AI.Employee
             if (mouse == null || targetCamera == null) return;
 
             bool assignTask = mouse.rightButton.wasPressedThisFrame;
-            bool move = mouse.leftButton.wasPressedThisFrame;
-            if (!assignTask && !move) return;
+            bool leftClick = mouse.leftButton.wasPressedThisFrame;
+            if (!assignTask && !leftClick) return;
 
             Ray ray = targetCamera.ScreenPointToRay(mouse.position.ReadValue());
             if (!Physics.Raycast(ray, out RaycastHit hit, 1000f, clickMask)) return;
+
+            if (leftClick)
+            {
+                IEmployee clickedEmployee = hit.collider.GetComponentInParent<IEmployee>();
+                if (clickedEmployee != null)
+                {
+                    selectedEmployee = clickedEmployee;
+                    lastZoneMessage = string.Empty;
+                    return;
+                }
+            }
+
+            if (selectedEmployee == null) return;
+
+            if (assignTask)
+            {
+                Zone zone = hit.collider.GetComponentInParent<Zone>();
+                if (zone != null)
+                {
+                    bool assigned = zone.TryAssign(selectedEmployee, debugTaskDuration, out string reason);
+                    lastZoneMessage = assigned ? $"Assigned to {zone.DisplayName}" : $"Assign failed: {reason}";
+                    return;
+                }
+            }
+
             if (!NavMesh.SamplePosition(hit.point, out NavMeshHit navHit, navMeshSampleRadius, NavMesh.AllAreas)) return;
 
-            if (assignTask) employee.AssignTask(new DebugEmployeeTask(navHit.position, debugTaskDuration));
-            else employee.Move(navHit.position);
+            if (assignTask) selectedEmployee.AssignTask(new DebugEmployeeTask(navHit.position, debugTaskDuration));
+            else selectedEmployee.Move(navHit.position);
         }
 
         private void HandleKeys()
         {
+            if (selectedEmployee == null) return;
+
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null) return;
 
-            if (keyboard[stopKey].wasPressedThisFrame) employee.Stop();
-            if (keyboard[returnToBaseKey].wasPressedThisFrame) employee.ReturnToBase();
-            if (keyboard[simulateSurviveKey].wasPressedThisFrame) employee.ApplyAttackOutcome(survived: true);
-            if (keyboard[simulateDeathKey].wasPressedThisFrame) employee.ApplyAttackOutcome(survived: false);
+            if (keyboard[stopKey].wasPressedThisFrame) selectedEmployee.Stop();
+            if (keyboard[returnToBaseKey].wasPressedThisFrame) selectedEmployee.ReturnToBase();
+            if (keyboard[simulateSurviveKey].wasPressedThisFrame) selectedEmployee.ApplyAttackOutcome(survived: true);
+            if (keyboard[simulateDeathKey].wasPressedThisFrame) selectedEmployee.ApplyAttackOutcome(survived: false);
         }
 
         private void OnGUI()
         {
             if (!debugEnabled) return;
 
-            if (employee == null)
+            if (selectedEmployee == null)
             {
-                GUI.Label(new Rect(10, 10, 400, 20), "EmployeeDebugController: no IEmployee assigned");
+                GUI.Label(new Rect(10, 10, 400, 20), "No employee selected — left-click one to select");
                 return;
             }
 
-            GUI.Label(new Rect(10, 10, 400, 20), $"State: {employee.CurrentStateName}   Alive: {employee.IsAlive}");
-            GUI.Label(new Rect(10, 30, 500, 20), "LMB: Move   RMB: Assign debug task   X/B/F/G: Stop / Return / Survive / Die");
+            Component selectedComponent = selectedEmployee as Component;
+            string label = selectedComponent != null ? selectedComponent.name : "employee";
+            GUI.Label(new Rect(10, 10, 400, 20), $"Selected: {label}   State: {selectedEmployee.CurrentStateName}   Alive: {selectedEmployee.IsAlive}");
+            GUI.Label(new Rect(10, 30, 500, 20), "LMB: select/move RMB: assign debug task/room X/B/F/G: Stop/Return/Survive/Die");
+            if (!string.IsNullOrEmpty(lastZoneMessage)) GUI.Label(new Rect(10, 105, 500, 20), lastZoneMessage);
 
-            GUI.enabled = employee.IsAlive;
-            if (GUI.Button(new Rect(10, 55, 90, 25), "Stop")) employee.Stop();
-            if (GUI.Button(new Rect(105, 55, 120, 25), "Return to base")) employee.ReturnToBase();
-            if (GUI.Button(new Rect(230, 55, 140, 25), "Simulate survive")) employee.ApplyAttackOutcome(survived: true);
-            if (GUI.Button(new Rect(375, 55, 120, 25), "Simulate death")) employee.ApplyAttackOutcome(survived: false);
+            GUI.enabled = selectedEmployee.IsAlive;
+            if (GUI.Button(new Rect(10, 55, 90, 25), "Stop")) selectedEmployee.Stop();
+            if (GUI.Button(new Rect(105, 55, 120, 25), "Return to base")) selectedEmployee.ReturnToBase();
+            if (GUI.Button(new Rect(230, 55, 140, 25), "Simulate survive")) selectedEmployee.ApplyAttackOutcome(survived: true);
+            if (GUI.Button(new Rect(375, 55, 120, 25), "Simulate death")) selectedEmployee.ApplyAttackOutcome(survived: false);
             GUI.enabled = true;
         }
     }

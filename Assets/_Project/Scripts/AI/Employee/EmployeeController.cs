@@ -84,14 +84,15 @@ namespace Game.AI.Employee
             blackboard.PendingTask = null;
         }
 
-        public void AssignTask(IEmployeeTask task)
+        public bool AssignTask(IEmployeeTask task)
         {
-            if (!CanAcceptCommand || task == null) return;
+            if (!CanAcceptCommand || task == null) return false;
 
             CancelCurrentTask();
             blackboard.PendingTask = task;
             blackboard.Destination = task.TargetPosition;
             fsm.RequestStateChange("MovingTo", forceInstantly: true);
+            return true;
         }
 
         public void Move(Vector3 point)
@@ -133,6 +134,7 @@ namespace Game.AI.Employee
                 return;
             }
 
+            CancelCurrentTask();
             blackboard.FleeRequested = true;
         }
 
