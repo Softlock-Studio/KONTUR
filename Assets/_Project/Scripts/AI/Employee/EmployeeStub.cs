@@ -10,10 +10,13 @@ namespace Game.AI.Employee
         [SerializeField] private Babooshka.HearingSensor[] hearingSensorsToNotify;
 
         public Vector3 Position => transform.position;
-        public bool IsAlive => true;
+        public bool IsAlive { get; private set; } = true;
+        public string CurrentStateName => "ManualControl";
 
         private void Update()
         {
+            if (!IsAlive) return;
+
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null) return;
 
@@ -32,6 +35,16 @@ namespace Game.AI.Employee
                 foreach (Babooshka.HearingSensor sensor in hearingSensorsToNotify)
                     sensor.NotifySound(transform.position);
             }
+        }
+
+        public void AssignTask(IEmployeeTask task) { }
+        public void Move(Vector3 point) { }
+        public void Stop() { }
+        public void ReturnToBase() { }
+
+        public void ApplyAttackOutcome(bool survived)
+        {
+            if (!survived) IsAlive = false;
         }
     }
 }

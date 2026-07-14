@@ -6,5 +6,13 @@ namespace Game.AI.Employee
     {
         Vector3 Position { get; }
         bool IsAlive { get; }
+        string CurrentStateName { get; }
+
+        void AssignTask(IEmployeeTask task);
+        void Move(Vector3 point);
+        void Stop();
+        void ReturnToBase();
+
+        void ApplyAttackOutcome(bool survived);
     }
 }

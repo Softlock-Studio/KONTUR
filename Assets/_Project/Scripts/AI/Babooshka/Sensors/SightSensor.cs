@@ -27,6 +27,7 @@ namespace Game.AI.Babooshka
             {
                 Employee.IEmployee employee = hit.GetComponentInParent<Employee.IEmployee>();
                 if (employee == null || !employee.IsAlive) continue;
+                if (employee == blackboard.SparedTarget && Time.time < blackboard.SparedUntilTime) continue;
 
                 Vector3 toTarget = employee.Position - origin.position;
                 float sqrDistance = toTarget.sqrMagnitude;
@@ -54,7 +55,7 @@ namespace Game.AI.Babooshka
 
         private void OnDrawGizmos()
         {
-            if (config == null) return;
+            if (config == null || !config.EnableDebugVisuals) return;
 
             Transform origin = eye != null ? eye : transform;
             bool seesTarget = blackboard != null && blackboard.Target != null;

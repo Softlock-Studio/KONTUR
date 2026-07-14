@@ -24,7 +24,7 @@ namespace Game.AI.Babooshka
 
         private void OnDrawGizmos()
         {
-            if (config == null) return;
+            if (config == null || !config.EnableDebugVisuals) return;
 
             Gizmos.color = new Color(0.2f, 0.6f, 1f, 0.5f);
             Gizmos.DrawWireSphere(transform.position, config.HearingRadius);

@@ -64,7 +64,12 @@ namespace Game.AI.Babooshka
 
             fsm.AddTransition("Fight", "Patrol", t => fightState.IsResolved);
 
-            fsm.StateChanged += state => Debug.Log($"[{name}] FSM: {state.name}", this);
+#if UNITY_EDITOR
+            fsm.StateChanged += state =>
+            {
+                if (config.EnableDebugVisuals) Debug.Log($"[{name}] FSM: {state.name}", this);
+            };
+#endif
 
             fsm.Init();
         }
@@ -78,7 +83,7 @@ namespace Game.AI.Babooshka
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (fsm == null) return;
+            if (fsm == null || config == null || !config.EnableDebugVisuals) return;
             Handles.Label(transform.position + Vector3.up * 2.2f, CurrentStateName);
         }
 #endif

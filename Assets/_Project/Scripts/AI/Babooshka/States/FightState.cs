@@ -35,8 +35,18 @@ namespace Game.AI.Babooshka
             float deathChance = config.ResolveDeathChance(infection);
             bool employeeDies = UnityEngine.Random.value < deathChance;
 
-            // TODO: use death roll on employee when it'll be made
-            Debug.Log($"[Babooshka] Fight resolved: infection={infection:F2}, deathChance={deathChance:F2}, employeeDies={employeeDies}");
+            if (!employeeDies && blackboard.Target != null)
+            {
+                blackboard.SparedTarget = blackboard.Target;
+                blackboard.SparedUntilTime = Time.time + config.PostFightMercyDuration;
+            }
+
+            blackboard.Target?.ApplyAttackOutcome(!employeeDies);
+
+#if UNITY_EDITOR
+            if (config.EnableDebugVisuals)
+                Debug.Log($"[Babooshka] Fight resolved: infection={infection:F2}, deathChance={deathChance:F2}, employeeDies={employeeDies}");
+#endif
         }
 
         public override void OnLogic()
