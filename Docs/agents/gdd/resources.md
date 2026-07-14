@@ -1,0 +1,10 @@
+# Resources
+
+Resources do not spawn randomly (tentative).
+
+| Resource | Rarity | Effect / Use |
+| -------- | ------ | ------------ |
+| **Vinegar** | Cheap, common | Zone treatment; acidifies concrete pores, slows infection |
+| **Iodine-resorcinol-A** | Rare | Strong, long-lasting treatment effect; additionally repels grandmother (smell aversion) |
+| **Lightbulbs** | Consumable | Used in "change lightbulb" task; reduces darkness-driven infection growth in room |
+| **Generator fuel** | Shared pool | Powers ACS / cameras / lighting and full house scan; generator shuts off at 0 |
