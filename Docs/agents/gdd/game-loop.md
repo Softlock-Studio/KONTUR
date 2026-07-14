@@ -18,4 +18,5 @@ end within the acceptable infection corridor.
 ## Night end phase
 1. Receive results.
 2. Receive resources.
-3. Begin next night.
+3. **Between-levels screen** — displays a text note / shift report; player presses Continue to launch the next night.
+4. Begin next night.

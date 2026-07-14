@@ -7,7 +7,7 @@ Infected elderly woman, experiment participant — **primary current threat**.
 - At certain moments of the night moves **toward employees** with intent.
 - Kills employee on encounter.
 - Behavior is rule-predictable at the macro level but creates tactical uncertainty.
-- Kill probability: derived from **overall house infection level** (exact % — TBD).
+- As house infection level rises, her **behavior**, **speed**, and **kill probability** all change (exact values — TBD).
 
 ## Diegetic behavior rules (from the 1998 experiment, see [lore-protocols.md](lore-protocols.md))
 These are pharmacologically / biologically grounded — not arbitrary rituals.
@@ -26,4 +26,4 @@ These are pharmacologically / biologically grounded — not arbitrary rituals.
 ## Notes
 - Arbitrary "ritual" rules (e.g., "whisper into closet") are explicitly excluded —
   only pharmacological/biological constraints apply.
-- Her aggression probability scales with house infection level.
+- Behavior, speed, and aggression probability all scale with house infection level.

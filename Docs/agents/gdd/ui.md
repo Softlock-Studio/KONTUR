@@ -6,3 +6,4 @@ Main interface elements:
   - Context menu for assigning tasks to employees.
 - **Employee list** — roster panel.
 - **Infection level indicator** — current house infection display.
+- **Warehouse / storage panel** — displays current resource counts (lightbulbs, vinegar, etc.).

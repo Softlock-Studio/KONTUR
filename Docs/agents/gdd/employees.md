@@ -18,3 +18,9 @@
 | Change lightbulb | Adds lighting; better camera view; slows infection growth | TBD |
 | Repair camera | Activates a broken camera | TBD |
 | Actions with grandmother | Summon, leave food | TBD |
+
+## Extra UI panel actions
+These are always-available controls regardless of assigned task:
+- **Stop** — halt the employee in place.
+- **Move** — manual movement command.
+- **Return to base** — send employee back to base.

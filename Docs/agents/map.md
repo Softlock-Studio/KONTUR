@@ -16,5 +16,5 @@
 | Night timer (~7 real min per night) | Planned | [nights.md](gdd/nights.md) |
 | Night cycle (multi-night infection corridor [floor; ceiling]) | Planned | [game-loop.md](gdd/game-loop.md) |
 | Resident events (random events, help requests, emergencies) | Planned | [residents.md](gdd/residents.md) |
-| Defeat conditions (full team death; critical infection) | Planned | [defeat.md](gdd/defeat.md) |
+| Defeat conditions (full team death; critical infection; infection below floor ×2) | Planned | [defeat.md](gdd/defeat.md) |
 | Object stabilization (camera-as-stabilizer rule) | Planned | [lore-stabilization.md](gdd/lore-stabilization.md) |
