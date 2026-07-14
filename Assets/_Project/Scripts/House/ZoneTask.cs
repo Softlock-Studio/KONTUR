@@ -6,21 +6,21 @@ namespace Game.House
     public sealed class ZoneTask : IEmployeeTask
     {
         private readonly Zone zone;
-        private readonly IEmployee employee;
 
         public Vector3 TargetPosition { get; }
         public float Duration { get; }
 
-        public ZoneTask(Zone zone, IEmployee employee, Vector3 slotPosition, float duration)
+        public ZoneTask(Zone zone, Vector3 slotPosition, float duration)
         {
             this.zone = zone;
-            this.employee = employee;
             TargetPosition = slotPosition;
             Duration = duration;
         }
 
         public void OnStarted() { }
-        public void OnCompleted() => zone.ReleaseSlot(employee);
-        public void OnCancelled() => zone.ReleaseSlot(employee);
+
+        public void OnCompleted() { }
+
+        public void OnCancelled() => zone.ReleaseSlot(this);
     }
 }

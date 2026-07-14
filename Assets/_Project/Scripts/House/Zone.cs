@@ -14,6 +14,7 @@ namespace Game.House
         [SerializeField] private Transform[] standingPoints;
 
         private IEmployee[] occupants;
+        private ZoneTask[] reservingTask;
 
         public RoomType RoomType => roomType;
         public string DisplayName => displayName;
@@ -33,7 +34,9 @@ namespace Game.House
 
         private void Awake()
         {
-            occupants = new IEmployee[standingPoints?.Length ?? 0];
+            int count = standingPoints?.Length ?? 0;
+            occupants = new IEmployee[count];
+            reservingTask = new ZoneTask[count];
         }
 
         private void Update()
@@ -52,50 +55,53 @@ namespace Game.House
             HasLight = !HasLight;
         }
 
-        public bool TryReserveSlot(IEmployee employee, out Transform slot)
-        {
-            for (int i = 0; i < occupants.Length; i++)
-            {
-                if (occupants[i] != null) continue;
-
-                occupants[i] = employee;
-                slot = standingPoints[i];
-                return true;
-            }
-
-            slot = null;
-            return false;
-        }
-
-        public void ReleaseSlot(IEmployee employee)
-        {
-            for (int i = 0; i < occupants.Length; i++)
-            {
-                if (occupants[i] != employee) continue;
-                occupants[i] = null;
-                return;
-            }
-        }
-
         public bool TryAssign(IEmployee employee, float taskDuration, out string failureReason)
         {
             failureReason = null;
 
-            if (!TryReserveSlot(employee, out Transform slot))
+            int slotIndex = FindClaimableSlot(employee);
+            if (slotIndex < 0)
             {
                 failureReason = "No free standing point";
                 return false;
             }
 
-            var task = new ZoneTask(this, employee, slot.position, taskDuration);
+            var task = new ZoneTask(this, standingPoints[slotIndex].position, taskDuration);
+            occupants[slotIndex] = employee;
+            reservingTask[slotIndex] = task;
+
             if (!employee.AssignTask(task))
             {
-                ReleaseSlot(employee);
+                // Only undo if nothing newer has already replaced this reservation.
+                if (reservingTask[slotIndex] == task)
+                {
+                    occupants[slotIndex] = null;
+                    reservingTask[slotIndex] = null;
+                }
+
                 failureReason = "Employee can't accept a command right now";
                 return false;
             }
 
             return true;
+        }
+
+        private int FindClaimableSlot(IEmployee employee)
+        {
+            for (int i = 0; i < occupants.Length; i++)
+                if (occupants[i] == null || occupants[i] == employee) return i;
+            return -1;
+        }
+
+        internal void ReleaseSlot(ZoneTask task)
+        {
+            for (int i = 0; i < reservingTask.Length; i++)
+            {
+                if (reservingTask[i] != task) continue;
+                occupants[i] = null;
+                reservingTask[i] = null;
+                return;
+            }
         }
 
 #if UNITY_EDITOR

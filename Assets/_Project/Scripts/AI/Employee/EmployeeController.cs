@@ -74,7 +74,6 @@ namespace Game.AI.Employee
         private void CompleteCurrentTask()
         {
             blackboard.PendingTask?.OnCompleted();
-            blackboard.PendingTask = null;
         }
 
         private void CancelCurrentTask()
