@@ -13,6 +13,7 @@ namespace Game.AI.Employee
         [SerializeField] private float navMeshSampleRadius = 2f;
         [SerializeField] private float debugTaskDuration = 5f;
         [SerializeField] private ActivityType debugActivityType = ActivityType.Treatment;
+        [SerializeField] private ZoneEventType debugTargetEventType;
 
         [Header("Keys")]
         [SerializeField] private Key stopKey = Key.X;
@@ -66,7 +67,10 @@ namespace Game.AI.Employee
                 Zone zone = hit.collider.GetComponentInParent<Zone>();
                 if (zone != null)
                 {
-                    bool assigned = zone.TryAssign(selectedEmployee, debugActivityType, out string reason);
+                    ZoneEventType? targetEvent = debugActivityType == ActivityType.ResidentEvent
+                        ? debugTargetEventType
+                        : null;
+                    bool assigned = zone.TryAssign(selectedEmployee, debugActivityType, targetEvent, out string reason);
                     lastZoneMessage = assigned ? $"Assigned to {zone.DisplayName}" : $"Assign failed: {reason}";
                     return;
                 }

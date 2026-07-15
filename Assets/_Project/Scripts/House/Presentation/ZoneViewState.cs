@@ -14,10 +14,11 @@ namespace Game.House.Presentation
         public int SlotCount { get; }
         public bool IsSelected { get; }
         public IReadOnlyList<ActivityType> ActiveActivities { get; }
+        public IReadOnlyList<ZoneEventType> ActiveEvents { get; }
 
         public ZoneViewState(ZoneId id, string displayName, RoomType roomType, float infectionPercent,
             bool hasLight, int freeSlotCount, int slotCount, bool isSelected,
-            IReadOnlyList<ActivityType> activeActivities)
+            IReadOnlyList<ActivityType> activeActivities, IReadOnlyList<ZoneEventType> activeEvents)
         {
             Id = id;
             DisplayName = displayName;
@@ -28,6 +29,7 @@ namespace Game.House.Presentation
             SlotCount = slotCount;
             IsSelected = isSelected;
             ActiveActivities = activeActivities;
+            ActiveEvents = activeEvents;
         }
     }
 }

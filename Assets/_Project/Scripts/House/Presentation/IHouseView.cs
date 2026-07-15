@@ -10,5 +10,6 @@ namespace Game.House.Presentation
         void SetHouseInfection(float infectionPercent01);
         void SetSelectedZone(ZoneId? selectedZoneId);
         void ShowAssignmentResult(ZoneId zoneId, bool success, string failureReason);
+        void ShowTaskFailed(ZoneId zoneId, ZoneEventType eventType, int totalFailedCount);
     }
 }

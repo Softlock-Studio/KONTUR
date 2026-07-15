@@ -865,7 +865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomType: 1
   displayName: Left corridor floor 1
-  config: {fileID: 11400000, guid: c5bb47fedc9b1b04bbb079c21299eefe, type: 2}
+  config: {fileID: 11400000, guid: 564d4e3bb69546648adbfa52a63d78bd, type: 2}
   standingPoints:
   - {fileID: 1547972765}
   - {fileID: 675729348}
@@ -1267,7 +1267,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomType: 2
   displayName: Stairs floor 1-2
-  config: {fileID: 11400000, guid: c5bb47fedc9b1b04bbb079c21299eefe, type: 2}
+  config: {fileID: 11400000, guid: 0c7401a6cd7757f40a878a0546bf8e8a, type: 2}
   standingPoints:
   - {fileID: 460249277}
 --- !u!65 &1266589535
@@ -1395,7 +1395,8 @@ MonoBehaviour:
     m_Bits: 4294967295
   navMeshSampleRadius: 2
   debugTaskDuration: 5
-  debugActivityType: 0
+  debugActivityType: 2
+  debugTargetEventType: 0
   stopKey: 38
   returnToBaseKey: 16
   simulateSurviveKey: 20

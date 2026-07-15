@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.House
@@ -15,5 +16,11 @@ namespace Game.House
 
         [Header("Lightbulb change activity (TBD placeholder values, not GDD-sourced)")]
         public float LightbulbChangeDurationSeconds = 5f;
+
+        [Header("Resident event activity (TBD placeholder values, not GDD-sourced)")]
+        public float ResidentEventDurationSeconds = 5f;
+
+        [Header("Events (TBD placeholder values, not GDD-sourced)")]
+        public List<ZoneEventDefinition> Events = new();
     }
 }
