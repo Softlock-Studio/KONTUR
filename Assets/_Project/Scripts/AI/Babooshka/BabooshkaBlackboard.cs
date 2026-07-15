@@ -12,5 +12,8 @@ namespace Game.AI.Babooshka
 
         public Vector3 LastHeardSound;
         public float LastHeardTime = float.NegativeInfinity;
+
+        public Employee.IEmployee SparedTarget;
+        public float SparedUntilTime = float.NegativeInfinity;
     }
 }

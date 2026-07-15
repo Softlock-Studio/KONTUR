@@ -1,43 +1,20 @@
-# Codebase map
+# Planned Systems
 
-Read this instead of exploring the tree. **Update this file whenever you add, move,
-or remove a system** — one line per entry, keep it scannable.
-
-```
-Assets/_Project/
-  Scripts/
-    AI/
-      Babooshka/        the anomalous entity. UnityHFSM FSM: Patrol/Chase/Search/Fight
-        Interfaces/     IBabooshka (Position, CurrentStateName)
-        Sensors/        SightSensor, HearingSensor -> write into BabooshkaBlackboard
-        States/         one class per FSM state
-        BabooshkaController.cs   MonoBehaviour owner: builds FSM, ticks sensors
-        BabooshkaBlackboard.cs   shared mutable state (Target, last seen/heard)
-        BabooshkaConfig.cs       ScriptableObject tuning
-        IInfectionDirector.cs    infection level source (StubInfectionDirector for now)
-      Employee/         worker side, stubs only: IEmployee (Position, IsAlive), EmployeeStub
-  Art/                  Models (+ TEMP_Materials), Sprites
-  Configs/              SO instances, e.g. AI/BabooshkaConfig.asset
-  Scenes/               MainMenu.unity, MainScene.unity, TestScenes/TestAI/
-  Settings/             URP renderer + quality assets
-Assets/Plugins/         TextMesh Pro only — never add code here
-Docs/agents/            this map, system briefs, GDD extracts, templates
-Tools/                  check-metas.ps1 (pre-commit .meta sanity check)
-```
-
-Planned systems (per GDD, not yet created): `Core/` (night loop, timer,
-VContainer scopes), `Infection/` (zone model, spread, treatments),
-`Tasks/` (assignment, task execution), `UI/` (map screen, employee list,
-context menus, indicators), `Cameras/` (feed switching, fog of war),
-`Resources/` (warehouse, generator fuel), `Residents/` (random events).
-
-## Cross-system contracts
-| Interface | Path | Consumers |
-|---|---|---|
-| `IEmployee` | Scripts/AI/Employee/IEmployee.cs | Babooshka sensors/blackboard |
-| `IInfectionDirector` | Scripts/AI/Babooshka/IInfectionDirector.cs | FightState |
-| `IBabooshka` | Scripts/AI/Babooshka/Interfaces/IBabooshka.cs | (future UI/monitor feed) |
-
-No asmdefs yet — everything compiles into Assembly-CSharp. No VContainer
-LifetimeScope exists yet; first system to need a service should create
-`Scripts/Core/` and flag it in the PR.
+| System | Status | GDD Extract |
+| ------ | ------ | ----------- |
+| Infection zones (0-100% per zone, house average) | Planned | [infection.md](gdd/infection.md) |
+| Infection spread (darkness / observation / treatment modifiers) | Planned | [infection.md](gdd/infection.md) |
+| Full house scan (button, generator cost, staleness) | Planned | [infection.md](gdd/infection.md) |
+| Fog of war (per-zone staleness timer) | Planned | [floor-map.md](gdd/floor-map.md) |
+| Generator (shared fuel pool; powers ACS/cameras/lighting/scan) | Planned | [resources.md](gdd/resources.md) |
+| Resources (vinegar, iodine-resorcinol-A, lightbulbs, fuel) | Planned | [resources.md](gdd/resources.md) |
+| Employee management (click-to-assign; one at a time) | Planned | [employees.md](gdd/employees.md) |
+| Task queue (zone treatment, lightbulb, camera repair, grandmother) | Planned | [employees.md](gdd/employees.md) |
+| Camera system (switch, visual tracking, ACS stabilization) | Planned | [cameras.md](gdd/cameras.md) |
+| Floor map / mini-map (GPS employees; fog-of-war overlay) | Planned | [floor-map.md](gdd/floor-map.md) |
+| Grandmother AI (roam + targeted chase; feed schedule; chains) | Planned | [grandmother.md](gdd/grandmother.md) |
+| Night timer (~7 real min per night) | Planned | [nights.md](gdd/nights.md) |
+| Night cycle (multi-night infection corridor [floor; ceiling]) | Planned | [game-loop.md](gdd/game-loop.md) |
+| Resident events (random events, help requests, emergencies) | Planned | [residents.md](gdd/residents.md) |
+| Defeat conditions (full team death; critical infection; infection below floor ×2) | Planned | [defeat.md](gdd/defeat.md) |
+| Object stabilization (camera-as-stabilizer rule) | Planned | [lore-stabilization.md](gdd/lore-stabilization.md) |

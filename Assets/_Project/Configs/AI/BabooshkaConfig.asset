@@ -27,6 +27,7 @@ MonoBehaviour:
   AttackRange: 1.5
   FightResolutionDuration: 1.5
   InvestigateTimeout: 6
+  PostFightMercyDuration: 3
   DeathChanceCurve:
     serializedVersion: 2
     m_Curve:
@@ -51,3 +52,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  EnableDebugVisuals: 0

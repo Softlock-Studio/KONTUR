@@ -21,9 +21,15 @@ namespace Game.AI.Babooshka
         public float AttackRange = 1.5f;
         public float FightResolutionDuration = 1.5f;
         public float InvestigateTimeout = 6f;
+        [Tooltip("How long a survivor is invisible to SightSensor right after a fight, so they get a chance to flee instead of being instantly re-engaged.")]
+        public float PostFightMercyDuration = 3f;
 
         [Header("Death chance")]
         public AnimationCurve DeathChanceCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+
+        [Header("Debug")]
+        [Tooltip("Gizmos (sight cone, hearing radius, state label) and console logs for this Babooshka.")]
+        public bool EnableDebugVisuals = false;
 
         public float ResolveDeathChance(float infection)
         {
