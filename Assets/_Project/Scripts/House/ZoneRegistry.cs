@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Game.AI.Babooshka;
@@ -9,6 +10,8 @@ namespace Game.House
         [SerializeField] private bool debugEnabled = false;
 
         private Zone[] zones;
+
+        public IReadOnlyList<Zone> Zones => zones;
 
         private void Awake()
         {
