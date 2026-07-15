@@ -13,7 +13,9 @@
 
 ## Spread
 - Infection spreads gradually through the building during the night.
-- **Spreads faster in darkness.**
+- **Spreads faster in darkness.** Darkness can be created by the "lightbulb outage"
+  random event (see [residents.md](residents.md)).
+- **In light, spread is very slow** (qualitative design intent; exact rate TBD).
 - After each night, overall infection level rises.
 
 ## Growth factors
