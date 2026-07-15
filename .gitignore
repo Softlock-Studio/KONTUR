@@ -34,6 +34,9 @@
 # Jetbrains Rider personal-layer settings
 *.DotSettings.user
 
+# Claude Code per-machine settings (Unity path etc.) — shared config stays tracked
+.claude/settings.local.json
+
 # Visual Studio cache directory
 .vs/
 .vscode
