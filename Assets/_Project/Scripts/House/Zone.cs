@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Game.AI.Employee;
 #if UNITY_EDITOR
@@ -15,11 +17,18 @@ namespace Game.House
 
         private IEmployee[] occupants;
         private ZoneTask[] reservingTask;
+        private bool[] activityFinished;
 
         public RoomType RoomType => roomType;
         public string DisplayName => displayName;
         public float Infection { get; private set; }
         public bool HasLight { get; private set; } = true;
+
+        public event Action LightChanged;
+        public event Action OccupancyChanged;
+        public event Action ActivitiesChanged;
+
+        public int SlotCount => occupants?.Length ?? 0;
 
         public int FreeSlotCount
         {
@@ -37,6 +46,7 @@ namespace Game.House
             int count = standingPoints?.Length ?? 0;
             occupants = new IEmployee[count];
             reservingTask = new ZoneTask[count];
+            activityFinished = new bool[count];
         }
 
         private void Update()
@@ -50,14 +60,36 @@ namespace Game.House
         }
 
         [ContextMenu("Toggle Light")]
-        public void ToggleLight()
+        public void ToggleLight() => SetLight(!HasLight);
+
+        public void SetLight(bool value)
         {
-            HasLight = !HasLight;
+            if (value == HasLight) return;
+
+            HasLight = value;
+            LightChanged?.Invoke();
         }
 
-        public bool TryAssign(IEmployee employee, float taskDuration, out string failureReason)
+        public void ReduceInfection(float amount)
         {
-            failureReason = null;
+            Infection = Mathf.Clamp(Infection - amount, 0f, 100f);
+        }
+
+        public IReadOnlyList<ActivityType> ActiveActivities
+        {
+            get
+            {
+                var active = new List<ActivityType>();
+                for (int i = 0; i < reservingTask.Length; i++)
+                    if (reservingTask[i] != null && !activityFinished[i]) active.Add(reservingTask[i].ActivityType);
+                return active;
+            }
+        }
+
+        public bool TryAssign(IEmployee employee, ActivityType activityType, out string failureReason)
+        {
+            if (!TryBuildActivity(activityType, out ActivityDefinition activity, out failureReason))
+                return false;
 
             int slotIndex = FindClaimableSlot(employee);
             if (slotIndex < 0)
@@ -66,13 +98,13 @@ namespace Game.House
                 return false;
             }
 
-            var task = new ZoneTask(this, standingPoints[slotIndex].position, taskDuration);
+            var task = new ZoneTask(this, standingPoints[slotIndex].position, activity);
             occupants[slotIndex] = employee;
             reservingTask[slotIndex] = task;
+            activityFinished[slotIndex] = false;
 
             if (!employee.AssignTask(task))
             {
-                // Only undo if nothing newer has already replaced this reservation.
                 if (reservingTask[slotIndex] == task)
                 {
                     occupants[slotIndex] = null;
@@ -83,7 +115,32 @@ namespace Game.House
                 return false;
             }
 
+            OccupancyChanged?.Invoke();
+            ActivitiesChanged?.Invoke();
             return true;
+        }
+
+        private bool TryBuildActivity(ActivityType type, out ActivityDefinition activity, out string failureReason)
+        {
+            failureReason = null;
+
+            switch (type)
+            {
+                case ActivityType.Treatment:
+                    activity = new ActivityDefinition(type, config.TreatmentDurationSeconds,
+                        new ReduceInfectionEffect(config.TreatmentInfectionReduction));
+                    return true;
+
+                case ActivityType.LightbulbChange:
+                    activity = new ActivityDefinition(type, config.LightbulbChangeDurationSeconds,
+                        new RestoreLightEffect());
+                    return true;
+
+                default:
+                    activity = default;
+                    failureReason = "Unknown activity type";
+                    return false;
+            }
         }
 
         private int FindClaimableSlot(IEmployee employee)
@@ -93,6 +150,19 @@ namespace Game.House
             return -1;
         }
 
+        // Marks the activity itself as done, independent of the slot reservation: the employee
+        // keeps standing there, but it must stop showing as "active".
+        internal void MarkActivityFinished(ZoneTask task)
+        {
+            for (int i = 0; i < reservingTask.Length; i++)
+            {
+                if (reservingTask[i] != task) continue;
+                activityFinished[i] = true;
+                ActivitiesChanged?.Invoke();
+                return;
+            }
+        }
+
         internal void ReleaseSlot(ZoneTask task)
         {
             for (int i = 0; i < reservingTask.Length; i++)
@@ -100,6 +170,9 @@ namespace Game.House
                 if (reservingTask[i] != task) continue;
                 occupants[i] = null;
                 reservingTask[i] = null;
+                activityFinished[i] = false;
+                OccupancyChanged?.Invoke();
+                ActivitiesChanged?.Invoke();
                 return;
             }
         }
