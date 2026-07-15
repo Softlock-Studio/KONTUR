@@ -26,8 +26,8 @@ Design source of truth: `Docs/agents/gdd/` (extracts) → full GDD linked in its
    before committing, run `pwsh Tools/check-metas.ps1`; if metas are missing, say so
    in the handoff instead of faking them.
 2. **Never hand-edit `.unity` / `.prefab` / `.asset` YAML.** For scene, prefab, or
-   asset-instance changes, write an editor script a human runs in Unity
-   (see skill `scene-edit`) or list manual steps in the handoff.
+   asset-instance changes, write an editor script a human runs in Unity or list
+   manual steps in the handoff.
 3. **Renaming a `[SerializeField]` field breaks scene wiring.** Add
    `[FormerlySerializedAs("oldName")]` and keep it until the rename has shipped.
 4. Don't touch `ProjectSettings/` or `Packages/manifest.json` unless the task
@@ -47,9 +47,11 @@ Design source of truth: `Docs/agents/gdd/` (extracts) → full GDD linked in its
 - Logging: `Debug.Log($"[{name}] ...", this)` in MonoBehaviours.
 
 ## Verify before you claim done
-1. Fast, after every change: build the generated csproj — see skill `compile-check`.
-2. Full, before PR or for new files/runtime behavior: batch-mode tests — see skill
-   `unity-tests`.
+1. Fast, after every change: build the generated csproj:
+   `dotnet build Assembly-CSharp.csproj --nologo -v q`
+   (or the relevant generated asmdef/editor csproj if that is what you changed).
+2. Full, before PR or for new files/runtime behavior: batch-mode Unity tests via
+   `UNITY_EDITOR_PATH` — see `Docs/agents/setup.md` for the command lines.
 3. `pwsh Tools/check-metas.ps1` if you added/moved/deleted files under `Assets/`.
 Report honestly which checks you ran and their results.
 

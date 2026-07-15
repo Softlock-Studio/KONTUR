@@ -2,7 +2,8 @@
 
 How to hand a task to an agent (or a teammate). The point: a <100k-context model
 should never have to explore the repo to figure out what you meant. Scope the input;
-don't rely on the model to scope itself. The `scout` subagent can draft one of these.
+don't rely on the model to scope itself. If useful, ask for a read-only scoping pass
+first and have the agent draft one of these before implementation.
 
 ```markdown
 ## Goal
@@ -24,8 +25,8 @@ Anything not listed: read if needed, don't modify.
 Explicitly: what NOT to do (e.g. "no scene changes", "don't implement saving").
 
 ## Definition of done
-- [ ] compile-check passes
-- [ ] unity-tests pass (if runtime behavior changed / files added)
+- [ ] `dotnet build Assembly-CSharp.csproj --nologo -v q` passes
+- [ ] Unity batch-mode tests pass (if runtime behavior changed / files added)
 - [ ] check-metas.ps1 clean or metas flagged in handoff
 - [ ] map.md / system brief updated (if structure changed)
 - [ ] Handoff block written (Unity-side steps for a human)
@@ -53,7 +54,7 @@ Employees emit a noise event when they run, so Babooshka's HearingSensor can rea
 No FSM/state changes, no config changes, no scenes.
 
 ## Definition of done
-- [ ] compile-check passes
+- [ ] `dotnet build Assembly-CSharp.csproj --nologo -v q` passes
 - [ ] EditMode test: noise event updates blackboard
 - [ ] Handoff: none expected (code only)
 ```
