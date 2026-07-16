@@ -14,14 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseGrowthPerSecond: 0.05
   DarknessGrowthPerSecond: 0.1
-  TreatmentDurationSeconds: 5
+  TreatmentDurationSeconds: 20
   TreatmentInfectionReduction: 20
+  TreatmentIodineCost: 1
   LightbulbChangeDurationSeconds: 5
+  LightbulbChangeCost: 1
   ResidentEventDurationSeconds: 5
   Events:
   - Type: 2
     Kind: 1
-    CheckIntervalSeconds: 1000
+    CheckIntervalSeconds: 5
     SpawnChance: 1
     MaxConcurrent: 0
     ExpirySeconds: 0
@@ -33,7 +35,31 @@ MonoBehaviour:
     ExpirySeconds: 0
   - Type: 0
     Kind: 0
-    CheckIntervalSeconds: 5
+    CheckIntervalSeconds: 1000
     SpawnChance: 1
     MaxConcurrent: 1
     ExpirySeconds: 10
+  WorkerCountSpeedMultiplier:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 4
+      value: 4
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
