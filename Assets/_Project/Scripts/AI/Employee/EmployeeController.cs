@@ -48,11 +48,9 @@ namespace Game.AI.Employee
             fsm.AddTransition("ReturningToBase", "Idle", t => HasArrived());
             fsm.AddTransition("Fleeing", "Idle", t => HasArrived());
 
-            fsm.AddTransition(new TransitionAfterDynamic(
-                "PerformingTask", "Idle",
-                delay: t => blackboard.PendingTask?.Duration ?? 0f,
-                onlyEvaluateDelayOnEnter: true,
-                afterTransition: t => CompleteCurrentTask()));
+            fsm.AddTransition("PerformingTask", "Idle",
+                t => blackboard.PendingTask != null && blackboard.PendingTask.IsComplete,
+                afterTransition: t => CompleteCurrentTask());
 
             fsm.AddTransitionFromAny("Fleeing", t => blackboard.FleeRequested, forceInstantly: true);
 

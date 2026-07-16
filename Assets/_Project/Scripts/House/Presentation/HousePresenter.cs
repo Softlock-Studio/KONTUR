@@ -28,7 +28,10 @@ namespace Game.House.Presentation
             model.Initialize();
             model.ZoneChanged += OnZoneChanged;
             model.TaskFailed += OnTaskFailed;
+            model.ResourceChanged += OnResourceChanged;
+            model.ActivityAborted += OnActivityAborted;
             PushFullRender();
+            view.RenderResources(model.GetAllResourceCounts());
         }
 
         public void Tick()
@@ -91,6 +94,16 @@ namespace Game.House.Presentation
             view.ShowTaskFailed(zoneId, eventType, model.FailedTaskCount);
         }
 
+        private void OnResourceChanged(ResourceType type)
+        {
+            view.UpdateResource(type, model.GetResourceCount(type));
+        }
+
+        private void OnActivityAborted(ZoneId zoneId, ActivityType activityType, ResourceType resourceType)
+        {
+            view.ShowActivityAborted(zoneId, activityType, resourceType);
+        }
+
         public void RequestStopEmployee(IEmployee employee) => employee?.Stop();
 
         public void RequestMoveEmployee(IEmployee employee, Vector3 destination) => employee?.Move(destination);
@@ -110,6 +123,8 @@ namespace Game.House.Presentation
         {
             model.ZoneChanged -= OnZoneChanged;
             model.TaskFailed -= OnTaskFailed;
+            model.ResourceChanged -= OnResourceChanged;
+            model.ActivityAborted -= OnActivityAborted;
         }
     }
 }

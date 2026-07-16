@@ -30,6 +30,11 @@ namespace Game.House
         private readonly Dictionary<ZoneEventType, List<float>> expiryTimers = new();
 
         private bool infectionOutbreakActive;
+        private IResourceProvider resourceProvider;
+
+        // Keyed by (activity type, target event) so e.g. Treatment and a specific resident event
+        // each get their own shared progress pool within the same zone.
+        private readonly Dictionary<(ActivityType, ZoneEventType?), ZoneActivitySession> activeSessions = new();
 
         public RoomType RoomType => roomType;
         public string DisplayName => displayName;
@@ -41,6 +46,7 @@ namespace Game.House
         public event Action ActivitiesChanged;
         public event Action EventsChanged;
         public event Action<ZoneEventType> EventExpired;
+        public event Action<ActivityType, ResourceType> ActivityAborted;
 
         public int SlotCount => occupants?.Length ?? 0;
 
@@ -70,6 +76,38 @@ namespace Game.House
 
             TickEvents(Time.deltaTime);
             TickExpiry(Time.deltaTime);
+            TickActivitySessions(Time.deltaTime);
+        }
+
+        // Advances every ongoing shared activity by (multiplier(current active headcount) * dt).
+        // Headcount can change mid-activity as employees arrive or leave — the multiplier is
+        // re-evaluated every tick, not fixed when the activity started.
+        private void TickActivitySessions(float deltaTime)
+        {
+            if (activeSessions.Count == 0) return;
+
+            List<(ActivityType, ZoneEventType?)> finished = null;
+
+            foreach (var pair in activeSessions)
+            {
+                ZoneActivitySession session = pair.Value;
+
+                if (!session.EffectApplied && session.ActiveParticipantCount > 0)
+                {
+                    float multiplier = config.EvaluateSpeedMultiplier(session.ActiveParticipantCount);
+                    if (session.Advance(multiplier * deltaTime))
+                        session.Activity.Effect?.Apply(this);
+                }
+
+                // Done, or nobody is assigned to it anymore (walking or working) — either way the
+                // next TryAssign for this key should start a fresh session, not resume this one.
+                if (session.EffectApplied || session.ReferenceCount <= 0)
+                    (finished ??= new List<(ActivityType, ZoneEventType?)>()).Add(pair.Key);
+            }
+
+            if (finished == null) return;
+            foreach (var key in finished)
+                activeSessions.Remove(key);
         }
 
         private void TickEvents(float deltaTime)
@@ -202,6 +240,19 @@ namespace Game.House
             return true;
         }
 
+        internal void SetResourceProvider(IResourceProvider provider) => resourceProvider = provider;
+
+        // Fails open (returns true) if no provider is wired — keeps the standalone debug path
+        // (EmployeeDebugController, which never goes through HouseModel) working without DI.
+        internal bool TrySpendResource(ActivityType activityType, ResourceType type, int cost)
+        {
+            if (resourceProvider == null || resourceProvider.TrySpend(type, cost))
+                return true;
+
+            ActivityAborted?.Invoke(activityType, type);
+            return false;
+        }
+
         private float GetGrowthRate()
         {
             return config.BaseGrowthPerSecond + (HasLight ? 0f : config.DarknessGrowthPerSecond);
@@ -290,13 +341,18 @@ namespace Game.House
                 return false;
             }
 
-            var task = new ZoneTask(this, standingPoints[slotIndex].position, activity);
+            ZoneActivitySession session = GetOrCreateSession(activityType, targetEvent, activity);
+            session.AddReference();
+
+            var task = new ZoneTask(this, standingPoints[slotIndex].position, session);
             occupants[slotIndex] = employee;
             reservingTask[slotIndex] = task;
             activityFinished[slotIndex] = false;
 
             if (!employee.AssignTask(task))
             {
+                session.RemoveReference();
+
                 if (reservingTask[slotIndex] == task)
                 {
                     occupants[slotIndex] = null;
@@ -312,6 +368,20 @@ namespace Game.House
             return true;
         }
 
+        // Joins the existing in-progress session for this (activity, target event) pair if one
+        // exists, so a second employee assigned mid-way speeds up the same shared progress instead
+        // of starting an unsynced parallel one. A finished session is never resumed.
+        private ZoneActivitySession GetOrCreateSession(ActivityType type, ZoneEventType? targetEvent, ActivityDefinition activity)
+        {
+            var key = (type, targetEvent);
+            if (activeSessions.TryGetValue(key, out ZoneActivitySession existing) && !existing.EffectApplied)
+                return existing;
+
+            var session = new ZoneActivitySession(activity);
+            activeSessions[key] = session;
+            return session;
+        }
+
         private bool TryBuildActivity(ActivityType type, ZoneEventType? targetEvent,
             out ActivityDefinition activity, out string failureReason)
         {
@@ -321,12 +391,14 @@ namespace Game.House
             {
                 case ActivityType.Treatment:
                     activity = new ActivityDefinition(type, config.TreatmentDurationSeconds,
-                        new ReduceInfectionEffect(config.TreatmentInfectionReduction));
+                        new ReduceInfectionEffect(config.TreatmentInfectionReduction),
+                        ResourceType.Iodine, config.TreatmentIodineCost);
                     return true;
 
                 case ActivityType.LightbulbChange:
                     activity = new ActivityDefinition(type, config.LightbulbChangeDurationSeconds,
-                        new RestoreLightEffect());
+                        new RestoreLightEffect(),
+                        ResourceType.Lightbulb, config.LightbulbChangeCost);
                     return true;
 
                 case ActivityType.ResidentEvent:

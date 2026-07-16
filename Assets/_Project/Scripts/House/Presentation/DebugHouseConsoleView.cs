@@ -36,6 +36,22 @@ namespace Game.House.Presentation
             Debug.Log($"[HouseView] TASK FAILED in zone {zoneId}: {eventType} (total failed: {totalFailedCount})");
         }
 
+        public void RenderResources(IReadOnlyDictionary<ResourceType, int> counts)
+        {
+            foreach (var pair in counts)
+                Debug.Log($"[HouseView] RenderResources: {pair.Key} = {pair.Value}");
+        }
+
+        public void UpdateResource(ResourceType type, int count)
+        {
+            Debug.Log($"[HouseView] Resource {type} = {count}");
+        }
+
+        public void ShowActivityAborted(ZoneId zoneId, ActivityType activityType, ResourceType resourceType)
+        {
+            Debug.Log($"[HouseView] Activity {activityType} aborted in zone {zoneId}: not enough {resourceType}");
+        }
+
         private static void LogZone(string source, ZoneViewState zone)
         {
             string activities = string.Join(", ", zone.ActiveActivities);

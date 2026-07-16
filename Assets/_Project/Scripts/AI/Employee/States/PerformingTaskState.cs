@@ -18,7 +18,13 @@ namespace Game.AI.Employee
         public override void OnEnter()
         {
             agent.isStopped = true;
-            blackboard.PendingTask?.OnStarted();
+
+            IEmployeeTask task = blackboard.PendingTask;
+            if (task != null && !task.OnStarted())
+            {
+                task.OnCancelled();
+                blackboard.PendingTask = null;
+            }
         }
     }
 }

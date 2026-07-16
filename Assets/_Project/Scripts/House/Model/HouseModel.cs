@@ -7,20 +7,28 @@ namespace Game.House.Model
     public sealed class HouseModel : IDisposable
     {
         private readonly ZoneRegistry zoneRegistry;
+        private readonly ResourceInventory resources;
+        private readonly Action<ResourceType> resourceChangedHandler;
         private readonly Dictionary<ZoneId, Zone> zonesById = new Dictionary<ZoneId, Zone>();
         private readonly Dictionary<Zone, Action> changeHandlers = new Dictionary<Zone, Action>();
         private readonly Dictionary<Zone, Action<ZoneEventType>> expiredHandlers = new Dictionary<Zone, Action<ZoneEventType>>();
+        private readonly Dictionary<Zone, Action<ActivityType, ResourceType>> abortedHandlers = new Dictionary<Zone, Action<ActivityType, ResourceType>>();
 
         private bool initialized;
 
         public event Action<ZoneId> ZoneChanged;
         public event Action<ZoneId, ZoneEventType> TaskFailed;
+        public event Action<ResourceType> ResourceChanged;
+        public event Action<ZoneId, ActivityType, ResourceType> ActivityAborted;
 
         public int FailedTaskCount { get; private set; }
 
-        public HouseModel(ZoneRegistry zoneRegistry)
+        public HouseModel(ZoneRegistry zoneRegistry, ResourceInventory resources)
         {
             this.zoneRegistry = zoneRegistry;
+            this.resources = resources;
+            resourceChangedHandler = type => ResourceChanged?.Invoke(type);
+            resources.ResourceChanged += resourceChangedHandler;
         }
 
         public void Initialize()
@@ -44,6 +52,13 @@ namespace Game.House.Model
                 Action<ZoneEventType> expiredHandler = type => OnZoneEventExpired(id, type);
                 expiredHandlers[zone] = expiredHandler;
                 zone.EventExpired += expiredHandler;
+
+                Action<ActivityType, ResourceType> abortedHandler =
+                    (activityType, resourceType) => ActivityAborted?.Invoke(id, activityType, resourceType);
+                abortedHandlers[zone] = abortedHandler;
+                zone.ActivityAborted += abortedHandler;
+
+                zone.SetResourceProvider(resources);
             }
         }
 
@@ -68,6 +83,12 @@ namespace Game.House.Model
         }
 
         public float GetHouseInfectionLevel01() => zoneRegistry.GetInfectionLevel();
+
+        public int GetResourceCount(ResourceType type) => resources.GetCount(type);
+
+        public IReadOnlyDictionary<ResourceType, int> GetAllResourceCounts() => resources.GetAllCounts();
+
+        public void GrantResource(ResourceType type, int amount) => resources.Add(type, amount);
 
         public bool TryAssignTask(ZoneId zoneId, IEmployee employee, ActivityType activityType,
             ZoneEventType? targetEvent, out string failureReason)
@@ -95,6 +116,8 @@ namespace Game.House.Model
 
         public void Dispose()
         {
+            resources.ResourceChanged -= resourceChangedHandler;
+
             if (!initialized) return;
 
             foreach (var pair in changeHandlers)
@@ -117,6 +140,15 @@ namespace Game.House.Model
             }
 
             expiredHandlers.Clear();
+
+            foreach (var pair in abortedHandlers)
+            {
+                Zone zone = pair.Key;
+                if (zone == null) continue;
+                zone.ActivityAborted -= pair.Value;
+            }
+
+            abortedHandlers.Clear();
         }
     }
 }

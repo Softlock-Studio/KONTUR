@@ -6,27 +6,39 @@ namespace Game.House
     public sealed class ZoneTask : IEmployeeTask
     {
         private readonly Zone zone;
-        private readonly ActivityDefinition activity;
+        private readonly ZoneActivitySession session;
+        private bool joined;
 
         public Vector3 TargetPosition { get; }
-        public float Duration => activity.Duration;
-        public ActivityType ActivityType => activity.Type;
+        public ActivityType ActivityType => session.Activity.Type;
+        public bool IsComplete => session.EffectApplied;
 
-        public ZoneTask(Zone zone, Vector3 slotPosition, ActivityDefinition activity)
+        internal ZoneTask(Zone zone, Vector3 slotPosition, ZoneActivitySession session)
         {
             this.zone = zone;
-            this.activity = activity;
+            this.session = session;
             TargetPosition = slotPosition;
         }
 
-        public void OnStarted() { }
-
-        public void OnCompleted()
+        public bool OnStarted()
         {
-            activity.Effect?.Apply(zone);
-            zone.MarkActivityFinished(this);
+            ActivityDefinition activity = session.Activity;
+            if (activity.ResourceType.HasValue
+                && !zone.TrySpendResource(activity.Type, activity.ResourceType.Value, activity.ResourceCost))
+                return false;
+
+            joined = true;
+            session.Join();
+            return true;
         }
 
-        public void OnCancelled() => zone.ReleaseSlot(this);
+        public void OnCompleted() => zone.MarkActivityFinished(this);
+
+        public void OnCancelled()
+        {
+            if (joined) session.Leave();
+            session.RemoveReference();
+            zone.ReleaseSlot(this);
+        }
     }
 }
