@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PatrolSpeed: 1.5
   ChaseSpeed: 3
+  WanderStandStillMinSeconds: 1.5
+  WanderStandStillMaxSeconds: 5
+  ApartmentVisitChance: 0.3
+  WallLickChance: 0.35
   SightRadius: 10
   SightAngle: 110
   HearingRadius: 15

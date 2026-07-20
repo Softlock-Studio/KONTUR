@@ -287,7 +287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &219253750
 Transform:
   m_ObjectHideFlags: 0
@@ -595,7 +595,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 1455154586}
   - {fileID: 1467257506}
-  infectionDirectorSource: {fileID: 1237371397}
+  infectionDirectorSource: {fileID: 1237371399}
 --- !u!195 &405525370
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1420,7 +1420,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1237371398}
-  - component: {fileID: 1237371397}
   - component: {fileID: 1237371399}
   m_Layer: 0
   m_Name: ZoneRegistry
@@ -1429,19 +1428,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1237371397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1237371395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f63f165055e8375499c25667b3356583, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  infectionLevel: 0.505
 --- !u!4 &1237371398
 Transform:
   m_ObjectHideFlags: 0

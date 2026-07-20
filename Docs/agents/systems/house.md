@@ -8,11 +8,16 @@ Test scene: `Assets/_Project/Scenes/TestScenes/TestHouse.unity`.
   (0-100, clamped), light on/off, occupant slots (`standingPoints`), active
   activities, active events. Tuned per-zone via a shared `ZoneConfig` asset
   (infection growth rates, activity durations/effects, `Events` list) — config
-  values are placeholders, not GDD-sourced yet.
+  values are placeholders, not GDD-sourced yet. Also implements `IWanderZone`
+  (`IsApartment`, `GetWanderPoint()`, `TriggerInfectionOutbreak()` — the last one
+  already existed for the events system, `IWanderZone` just exposes it to Babooshka).
 - **`ZoneRegistry`** (`MonoBehaviour`) — finds all `Zone`s in the scene via
   `FindObjectsByType` in `Awake`, exposes them as `IReadOnlyList<Zone>`, and
-  implements `IInfectionDirector` (house-average infection, consumed by Babooshka —
-  see `Docs/agents/systems/ai.md`). Also has an `OnGUI` debug readout.
+  implements two House-owned contracts consumed by Babooshka (see
+  `Docs/agents/systems/ai.md`): `IInfectionDirector` (house-average infection) and
+  `IZoneDirectory` (`GetZones()`, used by `WanderState` to pick apartments to visit).
+  Both interfaces live in `Game.House`, not in the AI code that consumes them — House
+  is the source of truth for zones/infection. Also has an `OnGUI` debug readout.
 - **`HouseModel`** (plain `IDisposable`, registered `Lifetime.Scoped` in
   `MissionScope`) — wraps `ZoneRegistry` behind immutable `ZoneSnapshot`s keyed by
   `ZoneId`, re-fires `ZoneChanged`/`TaskFailed` events by subscribing to each
@@ -47,8 +52,9 @@ Test scene: `Assets/_Project/Scenes/TestScenes/TestHouse.unity`.
     activity before the timer runs out, it counts as a **failed task**
     (`HouseModel.FailedTaskCount`, surfaced via `TaskFailed`/`view.ShowTaskFailed`).
   - `Zone.TriggerInfectionOutbreak()` is public and ungated by `config.Events` on
-    purpose — it's the hook for a future grandmother behavior to force an outbreak
-    in a chosen zone, independent of that zone's own ambient roster.
+    purpose — it's the hook `Game.AI.Babooshka.WanderState` uses (via `IWanderZone`)
+    to force an outbreak in a zone Babooshka is currently wandering through
+    ("wall-licking"), independent of that zone's own ambient roster.
 
 ## Rules of thumb
 - Don't add new mutation paths that bypass `HousePresenter` — UI and debug tools

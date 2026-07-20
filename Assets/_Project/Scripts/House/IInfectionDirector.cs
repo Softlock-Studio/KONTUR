@@ -1,4 +1,4 @@
-namespace Game.AI.Babooshka
+namespace Game.House
 {
     public interface IInfectionDirector
     {

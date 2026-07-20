@@ -21,19 +21,19 @@ MonoBehaviour:
   Events:
   - Type: 2
     Kind: 1
-    CheckIntervalSeconds: 1000
+    CheckIntervalSeconds: 100000
     SpawnChance: 1
     MaxConcurrent: 0
     ExpirySeconds: 0
   - Type: 3
     Kind: 1
-    CheckIntervalSeconds: 1000
+    CheckIntervalSeconds: 10000
     SpawnChance: 1
     MaxConcurrent: 0
     ExpirySeconds: 0
   - Type: 0
     Kind: 0
-    CheckIntervalSeconds: 5
+    CheckIntervalSeconds: 10000
     SpawnChance: 1
     MaxConcurrent: 1
     ExpirySeconds: 10
