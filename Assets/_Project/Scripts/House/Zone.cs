@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace Game.House
 {
-    public sealed class Zone : MonoBehaviour
+    public sealed class Zone : MonoBehaviour, IWanderZone
     {
         [SerializeField] private RoomType roomType;
         [SerializeField] private string displayName;
@@ -40,6 +40,7 @@ namespace Game.House
         public string DisplayName => displayName;
         public float Infection { get; private set; }
         public bool HasLight { get; private set; } = true;
+        public bool IsApartment => roomType == RoomType.Apartment;
 
         public event Action LightChanged;
         public event Action OccupancyChanged;
@@ -251,6 +252,13 @@ namespace Game.House
 
             ActivityAborted?.Invoke(activityType, type);
             return false;
+        }
+
+        // Where Babooshka's WanderState should stand when she decides to visit this zone.
+        public Vector3 GetWanderPoint()
+        {
+            if (standingPoints == null || standingPoints.Length == 0) return transform.position;
+            return standingPoints[UnityEngine.Random.Range(0, standingPoints.Length)].position;
         }
 
         private float GetGrowthRate()

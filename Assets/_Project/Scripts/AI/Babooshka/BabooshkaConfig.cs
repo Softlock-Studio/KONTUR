@@ -9,6 +9,13 @@ namespace Game.AI.Babooshka
         public float PatrolSpeed = 1.5f;
         public float ChaseSpeed = 3f;
 
+        [Header("Wander")]
+        public float WanderStandStillMinSeconds = 1.5f;
+        public float WanderStandStillMaxSeconds = 5f;
+        [Range(0f, 1f)] public float ApartmentVisitChance = 0.3f;
+        [Tooltip("Rolled once per stand-still while inside an apartment zone.")]
+        [Range(0f, 1f)] public float WallLickChance = 0.35f;
+
         [Header("Senses")]
         public float SightRadius = 10f;
         [Range(0f, 360f)] public float SightAngle = 110f;

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.House;
 
 namespace Game.AI.Babooshka
 {

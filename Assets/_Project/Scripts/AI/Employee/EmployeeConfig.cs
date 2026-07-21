@@ -10,5 +10,19 @@ namespace Game.AI.Employee
         public float ReturnSpeed = 3.5f;
         public float FleeSpeed = 5f;
         public float ArrivalThreshold = 0.15f;
+
+        [Header("Locomotion Animation")]
+        [Tooltip("Seconds of continuous movement needed to accelerate from a walk to a full run.")]
+        public float AccelerationTime = 3f;
+        [Tooltip("Remaining path distance below which the employee decelerates back to a walk before arriving.")]
+        public float BrakingDistance = 4f;
+
+        [Header("Death")]
+        public bool CorpseDespawnEnabled = false;
+        public float CorpseDespawnDelaySeconds = 20f;
+
+        [Tooltip("Freezes the ragdoll in place and stops it colliding with anything, while staying visible.")]
+        public bool CorpseCollisionDisableEnabled = false;
+        public float CorpseCollisionDisableDelaySeconds = 5f;
     }
 }
