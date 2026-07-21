@@ -12,6 +12,7 @@ namespace Game.AI.Employee
     {
         [SerializeField] private EmployeeConfig config;
         [SerializeField] private Transform basePoint;
+        [SerializeField] private EmployeeRagdoll ragdoll;
 
         private NavMeshAgent agent;
         private StateMachine fsm;
@@ -27,6 +28,7 @@ namespace Game.AI.Employee
         {
             agent = GetComponent<NavMeshAgent>();
             blackboard = new EmployeeBlackboard { BasePoint = basePoint };
+            ragdoll?.Bind(config);
 
             BuildStateMachine();
         }
@@ -130,6 +132,7 @@ namespace Game.AI.Employee
                 CancelCurrentTask();
                 agent.isStopped = true;
                 enabled = false;
+                ragdoll?.TriggerDeath();
                 return;
             }
 
