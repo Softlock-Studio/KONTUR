@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5765825641660936974}
   - component: {fileID: 945743633000243584}
   - component: {fileID: 8469650923887167486}
+  - component: {fileID: 7969873128829567332}
   m_Layer: 7
   m_Name: Employee
   m_TagString: Untagged
@@ -72,6 +73,7 @@ MonoBehaviour:
   config: {fileID: 11400000, guid: bc87f7ad51b7ef94bac05fe6b5672798, type: 2}
   basePoint: {fileID: 0}
   ragdoll: {fileID: 8469650923887167486}
+  animatorDriver: {fileID: 7969873128829567332}
 --- !u!114 &8469650923887167486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,6 +87,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCollider: {fileID: 2869901218200039195}
+--- !u!114 &7969873128829567332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269938018681049810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b32b98361d47c5e409a3aff05902d7c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationSmoothTime: 0.2
 --- !u!1001 &4152520398620429601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -407,6 +422,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: ccd6c684af22357418455a989c6ce7a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: ccd6c684af22357418455a989c6ce7a7, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: cbd1db45c75e5b948a5befe9ecb80421, type: 2}
+    - target: {fileID: 9500000, guid: ccd6c684af22357418455a989c6ce7a7, type: 3}
+      propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
