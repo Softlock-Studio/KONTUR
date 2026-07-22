@@ -20,6 +20,8 @@ namespace Game.House
             _ => null,
         };
 
+        public Zone SoundZone => zone;
+
         internal ZoneTask(Zone zone, Vector3 slotPosition, ZoneActivitySession session)
         {
             this.zone = zone;

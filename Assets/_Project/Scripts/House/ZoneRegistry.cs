@@ -25,6 +25,16 @@ namespace Game.House
 
         public IReadOnlyList<IWanderZone> GetZones() => (IReadOnlyList<IWanderZone>)zones ?? System.Array.Empty<IWanderZone>();
 
+        public Zone FindZoneAt(Vector3 position)
+        {
+            if (zones == null) return null;
+
+            foreach (Zone zone in zones)
+                if (zone != null && zone.Contains(position)) return zone;
+
+            return null;
+        }
+
         private void OnGUI()
         {
             if (!debugEnabled || zones == null) return;

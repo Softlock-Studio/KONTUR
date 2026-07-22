@@ -1,3 +1,4 @@
+using Game.House;
 using UnityEngine;
 using VContainer;
 
@@ -9,12 +10,17 @@ namespace Game.Audio
     public sealed class AudioEmitter : MonoBehaviour
     {
         private IAudioService audioService;
+        private ICameraObservationService cameraObservation;
         private AudioSource source;
 
+        // cameraObservation is optional (default null) so scenes without the camera system
+        // (e.g. standalone AI test scenes with no MissionScope) don't fail this whole injection
+        // and lose audioService along with it — see IsAudible for the matching fail-open rule.
         [Inject]
-        public void Construct(IAudioService audioService)
+        public void Construct(IAudioService audioService, ICameraObservationService cameraObservation = null)
         {
             this.audioService = audioService;
+            this.cameraObservation = cameraObservation;
         }
 
         // Deferred to Start: [Inject] runs during the owning LifetimeScope's build, which isn't
@@ -31,18 +37,18 @@ namespace Game.Audio
             source = audioService.CreateAttachedSource(transform);
         }
 
-        public void Play(SfxCue cue)
+        public void Play(SfxCue cue, Zone zone = null)
         {
-            if (cue == null || source == null) return;
+            if (cue == null || source == null || !IsAudible(zone)) return;
 
             ApplyCue(cue);
             source.loop = false;
             source.Play();
         }
 
-        public void PlayLoop(SfxCue cue)
+        public void PlayLoop(SfxCue cue, Zone zone = null)
         {
-            if (cue == null || source == null) return;
+            if (cue == null || source == null || !IsAudible(zone)) return;
 
             ApplyCue(cue);
             source.loop = true;
@@ -50,6 +56,15 @@ namespace Game.Audio
         }
 
         public void Stop() => source?.Stop();
+
+        // The player never hears this "in the room" — only through whichever camera is currently
+        // selected. Falls open (audible) if the camera system isn't wired up in this scene, same
+        // rationale as Zone.TrySpendResource's standalone-debug-path fallback.
+        private bool IsAudible(Zone zone)
+        {
+            if (cameraObservation == null) return true;
+            return zone != null ? cameraObservation.IsObserving(zone) : cameraObservation.IsObserving(transform.position);
+        }
 
         private void ApplyCue(SfxCue cue)
         {

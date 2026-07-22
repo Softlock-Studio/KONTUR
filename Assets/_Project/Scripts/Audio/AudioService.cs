@@ -173,7 +173,11 @@ namespace Game.Audio
 
         // Entities are always heard through the currently selected security camera, never
         // "in the room" — so attached emitters (footsteps, growls, ...) route through
-        // WorldSfxGroup, same as PlaySfxAtPoint, for the shared TV/speaker coloring filter.
+        // WorldSfxGroup (for the shared TV/speaker coloring filter) and stay fully 2D: the player
+        // isn't physically anywhere in the house for a 3D position to make sense against. Whether
+        // it's audible AT ALL (i.e. whether the currently selected camera is even watching the
+        // room the sound came from) is decided by the caller via AudioEmitter/ICameraObservationService,
+        // not here.
         public AudioSource CreateAttachedSource(Transform parent)
         {
             var go = new GameObject("AudioEmitterSource");
@@ -182,7 +186,7 @@ namespace Game.Audio
 
             var source = go.AddComponent<AudioSource>();
             source.playOnAwake = false;
-            source.spatialBlend = 1f;
+            source.spatialBlend = 0f;
             source.outputAudioMixerGroup = config.WorldSfxGroup;
             return source;
         }

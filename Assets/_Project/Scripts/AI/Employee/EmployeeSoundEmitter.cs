@@ -1,5 +1,6 @@
 using UnityEngine;
 using Game.AI.Babooshka;
+using Game.House;
 
 namespace Game.AI.Employee
 {
@@ -28,20 +29,22 @@ namespace Game.AI.Employee
 
         public void ResetTimer() => timer = 0f;
 
-        public void Tick(EmployeeSoundType type, float deltaTime)
+        public void Tick(EmployeeSoundType type, float deltaTime, Zone zone = null)
         {
             timer -= deltaTime;
             if (timer > 0f) return;
 
             timer = config.SoundEmitIntervalSeconds;
-            Emit(type);
+            Emit(type, zone);
         }
 
-        private void Emit(EmployeeSoundType type)
+        private void Emit(EmployeeSoundType type, Zone zone)
         {
             if (!config.TryGetSound(type, out EmployeeSoundDefinition sound)) return;
 
-            audioEmitter?.Play(sound.Cue);
+            // zone is the sound's known room (e.g. a ZoneTask); null lets AudioEmitter fall back
+            // to resolving it from this emitter's own position (e.g. walking through a corridor).
+            audioEmitter?.Play(sound.Cue, zone);
 
             if (hearingSensorsToNotify == null) return;
             foreach (HearingSensor sensor in hearingSensorsToNotify)

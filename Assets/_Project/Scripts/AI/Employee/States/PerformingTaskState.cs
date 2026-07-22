@@ -33,8 +33,9 @@ namespace Game.AI.Employee
 
         public override void OnLogic()
         {
-            EmployeeSoundType? soundType = blackboard.PendingTask?.AmbientSoundType;
-            if (soundType.HasValue) soundEmitter?.Tick(soundType.Value, Time.deltaTime);
+            IEmployeeTask task = blackboard.PendingTask;
+            EmployeeSoundType? soundType = task?.AmbientSoundType;
+            if (soundType.HasValue) soundEmitter?.Tick(soundType.Value, Time.deltaTime, task.SoundZone);
         }
     }
 }
