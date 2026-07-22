@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
@@ -14,10 +15,13 @@ namespace Game.AI.Employee
         [SerializeField] private Transform basePoint;
         [SerializeField] private EmployeeRagdoll ragdoll;
         [SerializeField] private EmployeeAnimatorDriver animatorDriver;
+        [SerializeField] private AudioEmitter audioEmitter;
+        [SerializeField] private Babooshka.HearingSensor[] hearingSensorsToNotify;
 
         private NavMeshAgent agent;
         private StateMachine fsm;
         private EmployeeBlackboard blackboard;
+        private EmployeeSoundEmitter soundEmitter;
 
         public Vector3 Position => transform.position;
         public bool IsAlive { get; private set; } = true;
@@ -31,6 +35,7 @@ namespace Game.AI.Employee
             blackboard = new EmployeeBlackboard { BasePoint = basePoint };
             ragdoll?.Bind(config);
             if (animatorDriver != null) animatorDriver.Bind(config, blackboard);
+            soundEmitter = new EmployeeSoundEmitter(transform, config, audioEmitter, hearingSensorsToNotify);
 
             BuildStateMachine();
         }
@@ -40,10 +45,10 @@ namespace Game.AI.Employee
             fsm = new StateMachine();
 
             fsm.AddState("Idle", new IdleState(agent));
-            fsm.AddState("MovingTo", new MovingToState(agent, config, blackboard));
-            fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard));
-            fsm.AddState("ReturningToBase", new ReturningToBaseState(agent, config, blackboard));
-            fsm.AddState("Fleeing", new FleeingState(agent, config, blackboard));
+            fsm.AddState("MovingTo", new MovingToState(agent, config, blackboard, soundEmitter));
+            fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter));
+            fsm.AddState("ReturningToBase", new ReturningToBaseState(agent, config, blackboard, soundEmitter));
+            fsm.AddState("Fleeing", new FleeingState(agent, config, blackboard, soundEmitter));
 
             fsm.SetStartState("Idle");
 
@@ -133,11 +138,13 @@ namespace Game.AI.Employee
                 agent.isStopped = true;
                 enabled = false;
                 ragdoll?.TriggerDeath();
+                audioEmitter?.Play(config.DeathCue);
                 return;
             }
 
             CancelCurrentTask();
             blackboard.FleeRequested = true;
+            audioEmitter?.Play(config.FleeCue);
         }
 
 #if UNITY_EDITOR

@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
 
@@ -7,17 +8,20 @@ namespace Game.AI.Employee
     {
         private readonly NavMeshAgent agent;
         private readonly EmployeeBlackboard blackboard;
+        private readonly EmployeeSoundEmitter soundEmitter;
 
-        public PerformingTaskState(NavMeshAgent agent, EmployeeBlackboard blackboard)
+        public PerformingTaskState(NavMeshAgent agent, EmployeeBlackboard blackboard, EmployeeSoundEmitter soundEmitter)
             : base(needsExitTime: false)
         {
             this.agent = agent;
             this.blackboard = blackboard;
+            this.soundEmitter = soundEmitter;
         }
 
         public override void OnEnter()
         {
             agent.isStopped = true;
+            soundEmitter?.ResetTimer();
 
             IEmployeeTask task = blackboard.PendingTask;
             if (task != null && !task.OnStarted())
@@ -25,6 +29,12 @@ namespace Game.AI.Employee
                 task.OnCancelled();
                 blackboard.PendingTask = null;
             }
+        }
+
+        public override void OnLogic()
+        {
+            EmployeeSoundType? soundType = blackboard.PendingTask?.AmbientSoundType;
+            if (soundType.HasValue) soundEmitter?.Tick(soundType.Value, Time.deltaTime);
         }
     }
 }

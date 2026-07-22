@@ -1,3 +1,4 @@
+using Game.Audio;
 using Game.House;
 using Game.House.Model;
 using Game.Localization;
@@ -10,6 +11,7 @@ namespace Game.Bootstrap
     public sealed class GameLifetimeScope : LifetimeScope
     {
         [SerializeField] private ResourceConfig resourceConfig;
+        [SerializeField] private AudioConfig audioConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -20,6 +22,9 @@ namespace Game.Bootstrap
             // Persists across missions, unlike everything registered in MissionScope.
             builder.RegisterInstance(resourceConfig);
             builder.Register<ResourceInventory>(Lifetime.Singleton);
+
+            builder.RegisterInstance(audioConfig);
+            builder.RegisterEntryPoint<AudioService>(Lifetime.Singleton).As<IAudioService>();
         }
     }
 }

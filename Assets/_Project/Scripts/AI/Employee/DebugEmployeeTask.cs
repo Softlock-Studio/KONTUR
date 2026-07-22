@@ -9,6 +9,7 @@ namespace Game.AI.Employee
 
         public Vector3 TargetPosition { get; }
         public bool IsComplete => Time.time - startTime >= duration;
+        public EmployeeSoundType? AmbientSoundType => null;
 
         public DebugEmployeeTask(Vector3 targetPosition, float duration)
         {

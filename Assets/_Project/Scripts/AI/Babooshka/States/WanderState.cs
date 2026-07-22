@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
+using Game.Audio;
 using Game.House;
 
 namespace Game.AI.Babooshka
@@ -15,19 +16,21 @@ namespace Game.AI.Babooshka
         private readonly BabooshkaConfig config;
         private readonly Transform[] corridorPoints;
         private readonly IZoneDirectory zoneDirectory;
+        private readonly AudioEmitter audioEmitter;
 
         private Phase phase;
         private float standStillTimer;
         private float standStillDuration;
         private IWanderZone currentZone;
 
-        public WanderState(NavMeshAgent agent, BabooshkaConfig config, Transform[] corridorPoints, IZoneDirectory zoneDirectory)
+        public WanderState(NavMeshAgent agent, BabooshkaConfig config, Transform[] corridorPoints, IZoneDirectory zoneDirectory, AudioEmitter audioEmitter = null)
             : base(needsExitTime: false)
         {
             this.agent = agent;
             this.config = config;
             this.corridorPoints = corridorPoints;
             this.zoneDirectory = zoneDirectory;
+            this.audioEmitter = audioEmitter;
         }
 
         public override void OnEnter()
@@ -51,7 +54,10 @@ namespace Game.AI.Babooshka
                     if (standStillTimer < standStillDuration) return;
 
                     if (currentZone != null && Random.value < config.WallLickChance)
+                    {
                         currentZone.TriggerInfectionOutbreak();
+                        audioEmitter?.Play(config.WallLickCue);
+                    }
 
                     agent.isStopped = false;
                     PickNextDestination();
