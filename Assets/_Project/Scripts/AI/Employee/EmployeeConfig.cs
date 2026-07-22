@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Game.Audio;
 using UnityEngine;
 
 namespace Game.AI.Employee
@@ -24,5 +26,27 @@ namespace Game.AI.Employee
         [Tooltip("Freezes the ragdoll in place and stops it colliding with anything, while staying visible.")]
         public bool CorpseCollisionDisableEnabled = false;
         public float CorpseCollisionDisableDelaySeconds = 5f;
+
+        [Header("Audio")]
+        public SfxCue DeathCue;
+        public SfxCue FleeCue;
+
+        [Header("Sounds (TBD placeholder values, not GDD-sourced)")]
+        [Tooltip("How often (seconds) a continuous action (walking, cleaning, ...) re-triggers its configured sound while active.")]
+        public float SoundEmitIntervalSeconds = 1f;
+        public List<EmployeeSoundDefinition> Sounds = new();
+
+        public bool TryGetSound(EmployeeSoundType type, out EmployeeSoundDefinition sound)
+        {
+            foreach (EmployeeSoundDefinition candidate in Sounds)
+            {
+                if (candidate.Type != type) continue;
+                sound = candidate;
+                return true;
+            }
+
+            sound = null;
+            return false;
+        }
     }
 }

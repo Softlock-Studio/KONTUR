@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 
 namespace Game.AI.Babooshka
@@ -13,10 +14,13 @@ namespace Game.AI.Babooshka
             config = cfg;
         }
 
-        public void NotifySound(Vector3 worldPosition)
+        public void NotifySound(Vector3 worldPosition, SoundLoudness loudness)
         {
+            bool sameFloor = Mathf.Abs(transform.position.y - worldPosition.y) <= config.SameFloorHeightTolerance;
+            float radius = config.GetHearingRadius(loudness, sameFloor);
+
             float distance = Vector3.Distance(transform.position, worldPosition);
-            if (distance > config.HearingRadius) return;
+            if (distance > radius) return;
 
             blackboard.LastHeardSound = worldPosition;
             blackboard.LastHeardTime = Time.time;

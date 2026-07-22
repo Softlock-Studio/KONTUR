@@ -16,3 +16,11 @@ MonoBehaviour:
   ReturnSpeed: 3.5
   FleeSpeed: 5
   ArrivalThreshold: 0.15
+  AccelerationTime: 3
+  BrakingDistance: 4
+  CorpseDespawnEnabled: 0
+  CorpseDespawnDelaySeconds: 20
+  CorpseCollisionDisableEnabled: 0
+  CorpseCollisionDisableDelaySeconds: 5
+  DeathCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+  FleeCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}

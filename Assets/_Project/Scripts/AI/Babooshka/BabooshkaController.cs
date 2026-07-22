@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
+using Game.Audio;
 using Game.House;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,6 +16,7 @@ namespace Game.AI.Babooshka
         [SerializeField] private SightSensor sightSensor;
         [SerializeField] private HearingSensor hearingSensor;
         [SerializeField] private Transform[] patrolPoints;
+        [SerializeField] private AudioEmitter audioEmitter;
         [SerializeField, Tooltip("Must implement IInfectionDirector; optionally IZoneDirectory too (e.g. ZoneRegistry) for apartment wandering.")]
         private MonoBehaviour infectionDirectorSource;
 
@@ -53,7 +55,7 @@ namespace Game.AI.Babooshka
 
             var fightState = new FightState(agent, config, blackboard, () => infectionDirector?.GetInfectionLevel() ?? 0f);
 
-            fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory));
+            fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory, audioEmitter));
             fsm.AddState("Chase", new ChaseState(agent, config, blackboard));
             fsm.AddState("Search", new SearchState(agent, config, blackboard));
             fsm.AddState("Fight", fightState);

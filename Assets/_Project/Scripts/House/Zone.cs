@@ -18,6 +18,7 @@ namespace Game.House
         private IEmployee[] occupants;
         private ZoneTask[] reservingTask;
         private bool[] activityFinished;
+        private Collider zoneCollider;
 
         // Runtime-only; must not live on ZoneEventDefinition/ZoneConfig, since multiple Zone
         // instances commonly share the same ZoneConfig asset.
@@ -68,6 +69,15 @@ namespace Game.House
             occupants = new IEmployee[count];
             reservingTask = new ZoneTask[count];
             activityFinished = new bool[count];
+            zoneCollider = GetComponent<Collider>();
+        }
+
+        // Convex-collider-only trick: Collider.ClosestPoint returns the same point back when it's
+        // already inside the collider. Used to resolve "which room is this sound in" for the
+        // camera-observation audio gate — not for the click-raycast path (that already has the hit).
+        public bool Contains(Vector3 worldPosition)
+        {
+            return zoneCollider != null && zoneCollider.ClosestPoint(worldPosition) == worldPosition;
         }
 
         private void Update()

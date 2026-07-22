@@ -14,6 +14,7 @@ means design-only, nothing under `Scripts/` yet.
 | Zone event system (LightOff/InfectionOutbreak/Emergency; instant vs condition, expiry → failed task) | Built | `Scripts/House/ZoneEventDefinition.cs`, `ZoneEventKind.cs`, `ZoneEventType.cs`, `Zone.cs` | [residents.md](gdd/residents.md) |
 | House presenter / view boundary (Presenter+`IHouseView`, debug console view) | Built (Canvas view not implemented — `DebugHouseConsoleView` is the only `IHouseView`) | `Scripts/House/Presentation/` | [ui.md](gdd/ui.md) |
 | DI wiring (VContainer game + mission scopes) | Built | `Scripts/Bootstrap/GameLifetimeScope.cs`, `Scripts/Mission/MissionScope.cs` | — |
+| Audio (music/SFX/master volume, mixer-driven, `AudioEmitter` hooks on Employee/Babooshka) | Built (no clip/mixer assets authored yet — framework only) | `Scripts/Audio/` | — |
 | UI layout (Canvas scene) | Scene only, no C# yet | `Assets/_Project/Scenes/TestScenes/TestUI.unity` | [ui.md](gdd/ui.md) |
 | Full house scan (button, generator cost, staleness) | Planned | — | [infection.md](gdd/infection.md) |
 | Fog of war (per-zone staleness timer) | Planned | — | [floor-map.md](gdd/floor-map.md) |
@@ -35,4 +36,5 @@ means design-only, nothing under `Scripts/` yet.
 
 ## Per-system briefs
 `Docs/agents/systems/ai.md` (Babooshka + Employee), `Docs/agents/systems/house.md`
-(Zone/HouseModel/events). Read the relevant one before editing that system.
+(Zone/HouseModel/events), `Docs/agents/systems/audio.md` (music/SFX/volume). Read the
+relevant one before editing that system.

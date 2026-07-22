@@ -1,3 +1,4 @@
+using Game.Audio;
 using Game.House;
 using Game.House.Model;
 using Game.Localization;
@@ -17,11 +18,13 @@ namespace Game.Bootstrap
         [Space]
         [Header("Other System")]
         [SerializeField] private ResourceConfig resourceConfig;
+        [SerializeField] private AudioConfig audioConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(_levelLoaderConfig);
             builder.RegisterInstance(resourceConfig);
+			builder.RegisterInstance(audioConfig);
 
             // Game-wide bindings go here. Mission-specific systems (e.g. House) are
             // registered in MissionScope, not here.
@@ -31,6 +34,8 @@ namespace Game.Bootstrap
             builder.Register<ResourceInventory>(Lifetime.Singleton);
 
             builder.Register<SceneController>(Lifetime.Singleton).AsSelf().WithParameter("isDebug", _isDebug);
+
+            builder.RegisterEntryPoint<AudioService>(Lifetime.Singleton).As<IAudioService>();
         }
     }
 }

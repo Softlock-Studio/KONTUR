@@ -1,3 +1,4 @@
+using Game.House;
 using UnityEngine;
 
 namespace Game.AI.Employee
@@ -9,6 +10,8 @@ namespace Game.AI.Employee
 
         public Vector3 TargetPosition { get; }
         public bool IsComplete => Time.time - startTime >= duration;
+        public EmployeeSoundType? AmbientSoundType => null;
+        public Zone SoundZone => null;
 
         public DebugEmployeeTask(Vector3 targetPosition, float duration)
         {
