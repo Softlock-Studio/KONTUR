@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,7 @@ namespace Game.AI.Employee
     {
         [SerializeField] private float moveSpeed = 4f;
         [SerializeField] private Key makeNoiseKey = Key.Space;
+        [SerializeField] private SoundLoudness noiseLoudness = SoundLoudness.Medium;
         [SerializeField] private Babooshka.HearingSensor[] hearingSensorsToNotify;
 
         public Vector3 Position => transform.position;
@@ -33,7 +35,7 @@ namespace Game.AI.Employee
             if (keyboard[makeNoiseKey].wasPressedThisFrame && hearingSensorsToNotify != null)
             {
                 foreach (Babooshka.HearingSensor sensor in hearingSensorsToNotify)
-                    sensor.NotifySound(transform.position);
+                    sensor.NotifySound(transform.position, noiseLoudness);
             }
         }
 

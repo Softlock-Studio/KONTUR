@@ -3805,6 +3805,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5972082567565723130}
+  - component: {fileID: 5642793457609511794}
   m_Layer: 5
   m_Name: Camera Group
   m_TagString: Untagged
@@ -3833,6 +3834,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5642793457609511794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8113137889440506501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8fde71349b41b04bb345498eb062a36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraLabel: {fileID: 157896899890062317}
+  _camerasList: []
+  _renderTexture: {fileID: 8400000, guid: 69814e360773940449ae688aa8c5ca03, type: 2}
 --- !u!1 &8274219755822735970
 GameObject:
   m_ObjectHideFlags: 0

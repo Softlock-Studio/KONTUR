@@ -13,6 +13,15 @@ namespace Game.House
         public ActivityType ActivityType => session.Activity.Type;
         public bool IsComplete => session.EffectApplied;
 
+        public EmployeeSoundType? AmbientSoundType => ActivityType switch
+        {
+            ActivityType.Treatment => EmployeeSoundType.CleaningRoom,
+            ActivityType.LightbulbChange => EmployeeSoundType.LightbulbChange,
+            _ => null,
+        };
+
+        public Zone SoundZone => zone;
+
         internal ZoneTask(Zone zone, Vector3 slotPosition, ZoneActivitySession session)
         {
             this.zone = zone;
