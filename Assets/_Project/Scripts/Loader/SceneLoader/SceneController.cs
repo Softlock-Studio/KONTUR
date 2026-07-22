@@ -1,19 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace Loader.SceneController
 {
-    public class SceneController : MonoBehaviour
+    public class SceneController
     {
-        [SerializeField] private bool _isDebug = false;
+        private bool _isDebug;
 
         private SceneLoader _sceneLoader;
         private Dictionary<LevelType, string> _sceneDictionary = new();
 
         private string _currentLevelScene = "";
 
-        public void Initialize(LevelLoaderConfig config)
+        public SceneController(LevelLoaderConfig config, bool isDebug = false)
         {
+            _isDebug = isDebug;
+
             foreach (SceneLoadContainer container in config.Levels)
                 _sceneDictionary[container.LevelType] = container.NameLevel;
 
