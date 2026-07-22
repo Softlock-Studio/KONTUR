@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
-using VContainer.Unity;
 
 namespace Loader.SceneController
 {
@@ -11,7 +11,7 @@ namespace Loader.SceneController
         private SceneLoader _sceneLoader;
         private Dictionary<LevelType, string> _sceneDictionary = new();
 
-        private string _currentLevelScene = "";
+        private string _currentLevelScene = "MainMenu";
 
         public SceneController(LevelLoaderConfig config, bool isDebug = false)
         {
@@ -23,35 +23,36 @@ namespace Loader.SceneController
             _sceneLoader = new SceneLoader();
         }
 
-        public void LevelLoad(LevelType sceneType)
+        public async void LevelLoad(LevelType sceneType)
         {
-            if (_currentLevelScene != "")
-            {
-                if (_isDebug)
-                    Debug.Log("Start Unload " + _currentLevelScene);
-
-                _sceneLoader.Unload(_currentLevelScene);
-            }
-
             if (IsValid(sceneType))
             {
-                SceneLoad(sceneType);
+                await SceneLoad(sceneType);
+
+                if (_currentLevelScene != "")
+                {
+                    if (_isDebug)
+                        Debug.Log("Start Unload " + _currentLevelScene);
+
+                    await _sceneLoader.Unload(_currentLevelScene);
+                }
+
                 _currentLevelScene = _sceneDictionary[sceneType];
             }
         }
 
-        public void SceneLoad(string sceneName)
+        public async Task SceneLoad(string sceneName)
         {
             if (_isDebug)
                 Debug.Log("Start load " + sceneName);
 
-            _sceneLoader.Load(sceneName);
+            await _sceneLoader.Load(sceneName);
         }
 
-        public void SceneLoad(LevelType sceneType)
+        public async Task SceneLoad(LevelType sceneType)
         {
             if (IsValid(sceneType))
-                SceneLoad(_sceneDictionary[sceneType]);
+                await SceneLoad(_sceneDictionary[sceneType]);
         }
 
         private bool IsValid(LevelType sceneType)

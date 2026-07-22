@@ -17,6 +17,7 @@ namespace Game.Mission
             builder.Register<HouseModel>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<HousePresenter>(Lifetime.Scoped);
+            builder.RegisterEntryPoint<MissionManager>(Lifetime.Scoped).As<ITickable>().AsSelf();
 
             // TEMPORARY swap for the real Canvas view once available.
             builder.RegisterComponentInHierarchy<DebugHouseConsoleView>().As<IHouseView>();

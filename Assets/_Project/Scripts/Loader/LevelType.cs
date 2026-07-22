@@ -1,5 +1,8 @@
+using System;
+
 namespace Loader.SceneController
 {
+    [Serializable]
     public enum LevelType
     {
         MainMenu,
