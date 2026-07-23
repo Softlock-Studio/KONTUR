@@ -1,5 +1,5 @@
 ---
-last-synced: 2026-07-14
+last-synced: 2026-07-15
 ---
 
 # GDD Extracts — House Rules

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Game.AI.Babooshka;
 
 namespace Game.House
 {
-    public sealed class ZoneRegistry : MonoBehaviour, IInfectionDirector
+    public sealed class ZoneRegistry : MonoBehaviour, IInfectionDirector, IZoneDirectory
     {
         [SerializeField] private bool debugEnabled = false;
 
@@ -22,6 +21,18 @@ namespace Game.House
         {
             if (zones == null || zones.Length == 0) return 0f;
             return zones.Average(z => z.Infection) / 100f;
+        }
+
+        public IReadOnlyList<IWanderZone> GetZones() => (IReadOnlyList<IWanderZone>)zones ?? System.Array.Empty<IWanderZone>();
+
+        public Zone FindZoneAt(Vector3 position)
+        {
+            if (zones == null) return null;
+
+            foreach (Zone zone in zones)
+                if (zone != null && zone.Contains(position)) return zone;
+
+            return null;
         }
 
         private void OnGUI()

@@ -12,9 +12,11 @@ namespace Game.House.Model
         public int FreeSlotCount { get; }
         public int SlotCount { get; }
         public IReadOnlyList<ActivityType> ActiveActivities { get; }
+        public IReadOnlyList<ZoneEventType> ActiveEvents { get; }
 
         internal ZoneSnapshot(ZoneId id, string displayName, RoomType roomType, float infectionPercent,
-            bool hasLight, int freeSlotCount, int slotCount, IReadOnlyList<ActivityType> activeActivities)
+            bool hasLight, int freeSlotCount, int slotCount, IReadOnlyList<ActivityType> activeActivities,
+            IReadOnlyList<ZoneEventType> activeEvents)
         {
             Id = id;
             DisplayName = displayName;
@@ -24,6 +26,7 @@ namespace Game.House.Model
             FreeSlotCount = freeSlotCount;
             SlotCount = slotCount;
             ActiveActivities = activeActivities;
+            ActiveEvents = activeEvents;
         }
     }
 }

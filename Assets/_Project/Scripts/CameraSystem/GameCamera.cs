@@ -1,3 +1,4 @@
+using Game.House;
 using UnityEngine;
 
 namespace CameraSystem
@@ -7,6 +8,7 @@ namespace CameraSystem
     {
         [SerializeField] private Camera _correspondingCamera;
         [SerializeField] private string _localisationKey;
+        [SerializeField] private Zone _observedZone;
         private int _cameraID;
 
         private void Awake()
@@ -15,6 +17,7 @@ namespace CameraSystem
         }
         public int GetCameraID() => _cameraID;
         public string GetLocalisationKey() => _localisationKey;
+        public Zone GetObservedZone() => _observedZone;
         public void TurnOffCamera()
         {
             _correspondingCamera.targetTexture = null;

@@ -27,7 +27,11 @@ namespace Game.House.Presentation
         {
             model.Initialize();
             model.ZoneChanged += OnZoneChanged;
+            model.TaskFailed += OnTaskFailed;
+            model.ResourceChanged += OnResourceChanged;
+            model.ActivityAborted += OnActivityAborted;
             PushFullRender();
+            view.RenderResources(model.GetAllResourceCounts());
         }
 
         public void Tick()
@@ -76,12 +80,28 @@ namespace Game.House.Presentation
             view.SetSelectedZone(null);
         }
 
-        public void RequestAssignTask(ZoneId zoneId, IEmployee employee, ActivityType activityType)
+        public void RequestAssignTask(ZoneId zoneId, IEmployee employee, ActivityType activityType,
+            ZoneEventType? targetEvent)
         {
             if (employee == null) return;
 
-            bool success = model.TryAssignTask(zoneId, employee, activityType, out string failureReason);
+            bool success = model.TryAssignTask(zoneId, employee, activityType, targetEvent, out string failureReason);
             view.ShowAssignmentResult(zoneId, success, failureReason);
+        }
+
+        private void OnTaskFailed(ZoneId zoneId, ZoneEventType eventType)
+        {
+            view.ShowTaskFailed(zoneId, eventType, model.FailedTaskCount);
+        }
+
+        private void OnResourceChanged(ResourceType type)
+        {
+            view.UpdateResource(type, model.GetResourceCount(type));
+        }
+
+        private void OnActivityAborted(ZoneId zoneId, ActivityType activityType, ResourceType resourceType)
+        {
+            view.ShowActivityAborted(zoneId, activityType, resourceType);
         }
 
         public void RequestStopEmployee(IEmployee employee) => employee?.Stop();
@@ -95,12 +115,16 @@ namespace Game.House.Presentation
             return new ZoneViewState(snapshot.Id, snapshot.DisplayName, snapshot.RoomType,
                 snapshot.InfectionPercent, snapshot.HasLight, snapshot.FreeSlotCount, snapshot.SlotCount,
                 isSelected: selectedZoneId.HasValue && selectedZoneId.Value == snapshot.Id,
-                activeActivities: snapshot.ActiveActivities);
+                activeActivities: snapshot.ActiveActivities,
+                activeEvents: snapshot.ActiveEvents);
         }
 
         public void Dispose()
         {
             model.ZoneChanged -= OnZoneChanged;
+            model.TaskFailed -= OnTaskFailed;
+            model.ResourceChanged -= OnResourceChanged;
+            model.ActivityAborted -= OnActivityAborted;
         }
     }
 }

@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PatrolSpeed: 1.5
   ChaseSpeed: 3
+  WanderStandStillMinSeconds: 1.5
+  WanderStandStillMaxSeconds: 5
+  ApartmentVisitChance: 0.3
+  WallLickChance: 0.35
   SightRadius: 10
   SightAngle: 110
   HearingRadius: 15
@@ -34,9 +38,9 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
+      inSlope: 1
       outSlope: 1
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -44,12 +48,13 @@ MonoBehaviour:
       time: 1
       value: 1
       inSlope: 1
-      outSlope: 0
-      tangentMode: 0
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  WallLickCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
   EnableDebugVisuals: 0

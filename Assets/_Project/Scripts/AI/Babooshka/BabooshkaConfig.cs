@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 
 namespace Game.AI.Babooshka
@@ -9,6 +10,13 @@ namespace Game.AI.Babooshka
         public float PatrolSpeed = 1.5f;
         public float ChaseSpeed = 3f;
 
+        [Header("Wander")]
+        public float WanderStandStillMinSeconds = 1.5f;
+        public float WanderStandStillMaxSeconds = 5f;
+        [Range(0f, 1f)] public float ApartmentVisitChance = 0.3f;
+        [Tooltip("Rolled once per stand-still while inside an apartment zone.")]
+        [Range(0f, 1f)] public float WallLickChance = 0.35f;
+
         [Header("Senses")]
         public float SightRadius = 10f;
         [Range(0f, 360f)] public float SightAngle = 110f;
@@ -16,6 +24,32 @@ namespace Game.AI.Babooshka
         public float HearingReactionWindow = 0.3f;
         public LayerMask EmployeeLayer;
         public LayerMask ObstacleMask;
+
+        [Header("Hearing — loudness scaling (TBD placeholder values, not GDD-sourced)")]
+        [Tooltip("Multiplies HearingRadius depending on how loud the sound was.")]
+        public float LowLoudnessRadiusMultiplier = 0.5f;
+        public float MediumLoudnessRadiusMultiplier = 1f;
+        public float HighLoudnessRadiusMultiplier = 1.75f;
+
+        [Header("Hearing — cross-floor (TBD placeholder values, not GDD-sourced)")]
+        [Tooltip("Vertical (Y) distance within which a sound counts as coming from the same floor as this sensor. No separate floor/level tracking exists yet, so this is the stand-in for \"same floor\".")]
+        public float SameFloorHeightTolerance = 2.5f;
+        [Tooltip("Multiplies the effective hearing radius for sounds coming from a different floor — keep below 1 to make them harder to notice than same-floor sounds.")]
+        [Range(0f, 1f)] public float DifferentFloorRadiusMultiplier = 0.35f;
+
+        public float GetHearingRadius(SoundLoudness loudness, bool sameFloor)
+        {
+            float multiplier = loudness switch
+            {
+                SoundLoudness.Low => LowLoudnessRadiusMultiplier,
+                SoundLoudness.High => HighLoudnessRadiusMultiplier,
+                _ => MediumLoudnessRadiusMultiplier,
+            };
+
+            float radius = HearingRadius * multiplier;
+            if (!sameFloor) radius *= DifferentFloorRadiusMultiplier;
+            return radius;
+        }
 
         [Header("Fight")]
         public float AttackRange = 1.5f;
@@ -26,6 +60,9 @@ namespace Game.AI.Babooshka
 
         [Header("Death chance")]
         public AnimationCurve DeathChanceCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+
+        [Header("Audio")]
+        public SfxCue WallLickCue;
 
         [Header("Debug")]
         [Tooltip("Gizmos (sight cone, hearing radius, state label) and console logs for this Babooshka.")]

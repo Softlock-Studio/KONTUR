@@ -8,7 +8,7 @@ namespace Game.House.Presentation
     {
         void SelectZone(ZoneId zoneId);
         void ClearSelection();
-        void RequestAssignTask(ZoneId zoneId, IEmployee employee, ActivityType activityType);
+        void RequestAssignTask(ZoneId zoneId, IEmployee employee, ActivityType activityType, ZoneEventType? targetEvent);
         void RequestStopEmployee(IEmployee employee);
         void RequestMoveEmployee(IEmployee employee, Vector3 destination);
         void RequestReturnToBaseEmployee(IEmployee employee);
