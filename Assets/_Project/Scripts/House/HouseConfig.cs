@@ -3,10 +3,9 @@ using UnityEngine;
 namespace Game.House
 {
     [CreateAssetMenu(menuName = "House/House Config", fileName = "HouseConfig")]
-    public class HouseConfig
+    public class HouseConfig : ScriptableObject
     {
-        [Header("Day/Night Cycle")]
+        [Header("Mission Timer")]
         public double DayDurationInSecond;
-        public double NightDurationInSecond;
     }
 }

@@ -6,6 +6,6 @@ namespace Loader.SceneController
     public class SceneLoadContainer
     {
         public LevelType LevelType;
-        public String NameLevel;
+        [SceneDropdown] public string NameLevel;
     }
 }

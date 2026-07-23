@@ -5,13 +5,18 @@ using Game.House.Model;
 using Game.House.Presentation;
 using VContainer;
 using VContainer.Unity;
+using UnityEngine;
 
 namespace Game.Mission
 {
     public sealed class MissionScope : LifetimeScope
     {
+        [SerializeField] private HouseConfig houseConfig;
+
         protected override void Configure(IContainerBuilder builder)
         {
+            builder.RegisterInstance(houseConfig);
+
             builder.RegisterComponentInHierarchy<ZoneRegistry>();
 
             builder.Register<HouseModel>(Lifetime.Scoped);
