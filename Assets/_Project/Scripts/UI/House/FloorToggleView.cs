@@ -14,10 +14,15 @@ namespace Game.UI.House
         [SerializeField] private Button floor1Button;
         [SerializeField] private Button floor2Button;
 
+        public static float CurrentMapCameraY { get; private set; }
+        public static bool HasActiveFloor { get; private set; }
+
         private void Awake()
         {
             if (floor1Button != null) floor1Button.onClick.AddListener(ShowFloor1);
             if (floor2Button != null) floor2Button.onClick.AddListener(ShowFloor2);
+
+            if (mapCamera != null) SetCameraY(mapCamera.transform.position.y);
         }
 
         public void ShowFloor1() => SetCameraY(config.Floor1ViewY);
@@ -31,6 +36,9 @@ namespace Game.UI.House
             Vector3 position = mapCamera.transform.position;
             position.y = y;
             mapCamera.transform.position = position;
+
+            CurrentMapCameraY = y;
+            HasActiveFloor = true;
         }
     }
 }
