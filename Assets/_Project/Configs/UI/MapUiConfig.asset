@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6194b26fcf6d99498191c1ecdb69851, type: 3}
+  m_Name: MapUiConfig
+  m_EditorClassIdentifier: 
+  Floor1ViewY: -4.1
+  Floor2ViewY: 180
+  RaycastMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  MaxRayDistance: 1000
