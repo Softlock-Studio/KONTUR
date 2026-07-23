@@ -13,6 +13,13 @@ namespace CameraSystem
 
         public event Action<int> OnHandleClick;
 
+        // Auto-populated so every GameCamera in the scene is found, instead of relying on a
+        // manually-maintained (and easy to leave incomplete) serialized list.
+        private void Awake()
+        {
+            _camerasList = new List<GameCamera>(FindObjectsByType<GameCamera>(FindObjectsSortMode.None));
+        }
+
         public List<GameCamera> GetCameraList() => _camerasList;
 
         public void HandleClick(int cameraID)

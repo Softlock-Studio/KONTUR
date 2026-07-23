@@ -1,4 +1,5 @@
 using CameraSystem;
+using Game.AI.Employee;
 using Game.Audio;
 using Game.House;
 using Game.House.Model;
@@ -18,14 +19,17 @@ namespace Game.Mission
             builder.RegisterInstance(houseConfig);
 
             builder.RegisterComponentInHierarchy<ZoneRegistry>();
+            builder.RegisterComponentInHierarchy<EmployeeRegistry>();
 
             builder.Register<HouseModel>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<HousePresenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<MissionManager>(Lifetime.Scoped).As<ITickable>().AsSelf();
 
-            // TEMPORARY swap for the real Canvas view once available.
-            builder.RegisterComponentInHierarchy<DebugHouseConsoleView>().As<IHouseView>();
+            // Requires a HouseCanvasView somewhere in the scene (added via the AgentTools scene-edit
+            // menu item, or manually) — RegisterComponentInHierarchy throws at container-build if
+            // none exists, same class of bug as the BackgroundMusicTrigger incident earlier.
+            builder.RegisterComponentInHierarchy<HouseCanvasView>().As<IHouseView>();
 
             // Also exposed as ICameraObservationService — AudioEmitter (scene-level, injected via
             // this same scope) uses it to decide whether a world sound is currently audible to the

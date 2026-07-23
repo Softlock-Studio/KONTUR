@@ -37,7 +37,7 @@ namespace Game.Mission
             if (!IsEndDay)
             {
                 _missionTimer.Update(Time.deltaTime);
-                Debug.Log("Time left: " + GetTimer + " Status system: " + _isWorking);
+                // Debug.Log("Time left: " + GetTimer + " Status system: " + _isWorking);
             }
         }
 
