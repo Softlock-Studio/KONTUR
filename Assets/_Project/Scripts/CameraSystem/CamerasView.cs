@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Game.Bootstrap;
+using Game.Localization;
 using TMPro;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace CameraSystem
 {
@@ -11,7 +15,14 @@ namespace CameraSystem
         [SerializeField] private List<GameCamera> _camerasList;
         [SerializeField] private RenderTexture _renderTexture;
 
+        private ILocalizationService localization;
+
         public event Action<int> OnHandleClick;
+
+        // ILocalizationService is game-wide (GameLifetimeScope), not mission-scoped — same
+        // resolve pattern as SettingsPanelView/EmployeeSlotView.
+        private ILocalizationService Localization =>
+            localization ??= LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
 
         // Auto-populated so every GameCamera in the scene is found, instead of relying on a
         // manually-maintained (and easy to leave incomplete) serialized list.
@@ -34,10 +45,13 @@ namespace CameraSystem
                 if (cam.GetCameraID() == cameraID)
                 {
                     cam.TurnOnCamera(_renderTexture);
-                    _cameraLabel.text = cam.GetLocalisationKey();
+                    // GetLocalisationKey() is a lookup key, not display text — it was being shown
+                    // verbatim (never routed through ILocalizationService), so switching language
+                    // never affected this label.
+                    _cameraLabel.text = Localization.Localize(cam.GetLocalisationKey());
                 }
                 else
-                { 
+                {
                     cam.TurnOffCamera();
                 }
             }

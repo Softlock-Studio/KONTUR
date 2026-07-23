@@ -1,4 +1,6 @@
+using System;
 using Game.Audio;
+using Game.House;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
@@ -27,6 +29,21 @@ namespace Game.AI.Employee
         public bool IsAlive { get; private set; } = true;
         public string CurrentStateName => fsm?.GetActiveHierarchyPath() ?? string.Empty;
 
+        // States are flat (no sub-state-machines), so the hierarchy path is just "/<StateName>" —
+        // trimming the slash lines up exactly with the names used in BuildStateMachine.
+        public EmployeeStateId StateId =>
+            Enum.TryParse(CurrentStateName.TrimStart('/'), out EmployeeStateId id) ? id : EmployeeStateId.Idle;
+
+        public string DestinationName
+        {
+            get
+            {
+                Zone zone = blackboard?.TargetZone;
+                if (zone == null) return string.Empty;
+                return string.IsNullOrEmpty(zone.DisplayName) ? zone.name : zone.DisplayName;
+            }
+        }
+
         private bool CanAcceptCommand => IsAlive && !blackboard.IsFleeing;
 
         private void Awake()
@@ -53,7 +70,8 @@ namespace Game.AI.Employee
             fsm.SetStartState("Idle");
 
             fsm.AddTransition("MovingTo", "PerformingTask", t => HasArrived() && blackboard.PendingTask != null);
-            fsm.AddTransition("MovingTo", "Idle", t => HasArrived() && blackboard.PendingTask == null);
+            fsm.AddTransition("MovingTo", "Idle", t => HasArrived() && blackboard.PendingTask == null,
+                afterTransition: t => blackboard.TargetZone = null);
             fsm.AddTransition("ReturningToBase", "Idle", t => HasArrived());
             fsm.AddTransition("Fleeing", "Idle", t => HasArrived());
 
@@ -81,10 +99,13 @@ namespace Game.AI.Employee
         private void CompleteCurrentTask()
         {
             blackboard.PendingTask?.OnCompleted();
+            blackboard.TargetZone = null;
         }
 
         private void CancelCurrentTask()
         {
+            blackboard.TargetZone = null;
+
             if (blackboard.PendingTask == null) return;
             blackboard.PendingTask.OnCancelled();
             blackboard.PendingTask = null;
@@ -97,16 +118,18 @@ namespace Game.AI.Employee
             CancelCurrentTask();
             blackboard.PendingTask = task;
             blackboard.Destination = task.TargetPosition;
+            blackboard.TargetZone = task.SoundZone;
             fsm.RequestStateChange("MovingTo", forceInstantly: true);
             return true;
         }
 
-        public void Move(Vector3 point)
+        public void Move(Vector3 point, Zone targetZone = null)
         {
             if (!CanAcceptCommand) return;
 
             CancelCurrentTask();
             blackboard.Destination = point;
+            blackboard.TargetZone = targetZone;
             fsm.RequestStateChange("MovingTo", forceInstantly: true);
         }
 

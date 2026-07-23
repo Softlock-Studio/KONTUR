@@ -106,7 +106,11 @@ namespace Game.House.Presentation
 
         public void RequestStopEmployee(IEmployee employee) => employee?.Stop();
 
-        public void RequestMoveEmployee(IEmployee employee, Vector3 destination) => employee?.Move(destination);
+        public void RequestMoveEmployee(IEmployee employee, Zone zone)
+        {
+            if (employee == null || zone == null) return;
+            employee.Move(zone.GetWanderPoint(), zone);
+        }
 
         public void RequestReturnToBaseEmployee(IEmployee employee) => employee?.ReturnToBase();
 

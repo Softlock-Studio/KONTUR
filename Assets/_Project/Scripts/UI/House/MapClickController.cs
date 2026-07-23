@@ -1,3 +1,4 @@
+using System;
 using CameraSystem;
 using Game.AI.Employee;
 using Game.House;
@@ -23,8 +24,37 @@ namespace Game.UI.House
 
         public void ArmPlainMove(IEmployee employee) => armedMoveEmployee = employee;
 
+        private void Start()
+        {
+            employeeList.SelectionChanged += OnSelectionChanged;
+        }
+
+        private void OnDestroy()
+        {
+            if (employeeList != null) employeeList.SelectionChanged -= OnSelectionChanged;
+        }
+
+        // Fires on any selection change — a fresh selection, a toggle-off in the Employee List, or
+        // ClearSelection() below. Either way the previously-open action menu (built for whichever
+        // employee was selected before) is stale and any armed "Move" is meaningless without a
+        // selected employee.
+        private void OnSelectionChanged(IEmployee employee)
+        {
+            armedMoveEmployee = null;
+            actionMenu.Close();
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
+            // Right-click anywhere on the map is a plain "cancel/deselect" — it never opens the
+            // zone menu or moves anyone. Without this, a right-click near a zone would open the
+            // menu right where you're about to click next (e.g. a camera icon), blocking it.
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                employeeList.ClearSelection();
+                return;
+            }
+
             if (!RawImageWorldRay.TryGetWorldRay(mapRect, mapCamera, eventData.position, eventData.pressEventCamera, out Ray ray))
                 return;
 
@@ -33,6 +63,14 @@ namespace Game.UI.House
             // a single Raycast() would silently swallow the click on whatever's closest instead
             // of ever reaching the GameCamera. Look through every hit instead.
             RaycastHit[] hits = Physics.RaycastAll(ray, config.MaxRayDistance, config.RaycastMask);
+
+            // RaycastAll does not guarantee hit order. Both floors' Zone colliders sit in the same
+            // XZ footprint and stay active regardless of FloorToggleView's camera-height hack (see
+            // its comment — disabling the other floor would freeze its Zone.Update() simulation),
+            // so an unsorted scan can land on the hidden floor's room instead of the one currently
+            // shown. Sort by distance so "first match" means "nearest to the current camera", i.e.
+            // the floor actually being viewed.
+            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
             GameCamera camera = null;
             Zone zone = null;
@@ -55,12 +93,12 @@ namespace Game.UI.House
 
             if (armedMoveEmployee != null)
             {
-                employeeList.HousePresenter.RequestMoveEmployee(armedMoveEmployee, zone.GetWanderPoint());
+                employeeList.HousePresenter.RequestMoveEmployee(armedMoveEmployee, zone);
                 armedMoveEmployee = null;
                 return;
             }
 
-            actionMenu.Open(zone, employee, employeeList.HousePresenter);
+            actionMenu.Open(zone, employee, employeeList.HousePresenter, eventData.position);
         }
     }
 }

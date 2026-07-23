@@ -16,19 +16,16 @@ namespace Game.House.Presentation
         [SerializeField] private TMP_Text infectionPercentLabel;
         [SerializeField] private ResourceGridPresenter resourceGrid;
         [SerializeField] private OrdersToastView ordersToast;
+        [SerializeField] private ZoneMapLabelsPresenter zoneMapLabels;
 
         // "Infection Label" (the mission's target infection corridor, e.g. floor/ceiling range)
         // is intentionally NOT wired here — the corridor system itself isn't built yet (see
         // Docs/agents/gdd/game-loop.md / map.md "Night cycle" row, still Planned), so there is no
         // live value to feed it. Leave its text authored by hand until that system exists.
 
-        public void RenderZones(IReadOnlyList<ZoneViewState> zones)
-        {
-        }
+        public void RenderZones(IReadOnlyList<ZoneViewState> zones) => zoneMapLabels?.Render(zones);
 
-        public void UpdateZone(ZoneViewState zone)
-        {
-        }
+        public void UpdateZone(ZoneViewState zone) => zoneMapLabels?.UpdateItem(zone);
 
         public void SetSelectedZone(ZoneId? selectedZoneId)
         {
