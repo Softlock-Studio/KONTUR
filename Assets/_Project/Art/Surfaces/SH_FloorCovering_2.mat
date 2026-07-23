@@ -20,7 +20,7 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _DirtIntensity
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -47,14 +47,16 @@ Material:
     m_Ints: []
     m_Floats:
     - _Blend: 4
-    - _DirtIntensity: 0
-    - _DirtTiling: 1
+    - _DirtIntensity: 0.64
+    - _DirtTiling: 0.15
     - _DirtVariation: 0.1
+    - _NoiseScale: 1
+    - _NoiseStrength: 0.14
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Tiling: 1
+    - _Tiling: 0.62
     m_Colors:
-    - _DirtColor: {r: 0, g: 0, b: 0, a: 0}
+    - _DirtColor: {r: 0.02641511, g: 0.02641511, b: 0.02641511, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6856320154141561544

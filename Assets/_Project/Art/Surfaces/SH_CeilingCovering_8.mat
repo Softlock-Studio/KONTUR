@@ -9,11 +9,11 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: SH_CeilingCovering_8
   m_Shader: {fileID: -6465566751694194690, guid: 44ed0c04e58e8f34dbdc21b59a0c198f, type: 3}
-  m_Parent: {fileID: 0}
+  m_Parent: {fileID: 2100000, guid: 162a12abeb424a04b81e87f49976c48e, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 2
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -28,33 +28,9 @@ Material:
         m_Texture: {fileID: 2800000, guid: 061135ea94341ff45b9ed084d9270997, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _DirtTex:
-        m_Texture: {fileID: 2800000, guid: e12badc9702730a4aa5a34476f2c62d2, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats:
-    - _Blend: 4
-    - _DirtIntensity: 0
-    - _DirtTiling: 1
-    - _DirtVariation: 0.1
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    - _Tiling: 1
-    m_Colors:
-    - _DirtColor: {r: 0, g: 0, b: 0, a: 0}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6236736533936783848
