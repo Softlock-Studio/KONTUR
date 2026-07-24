@@ -8,20 +8,20 @@ means design-only, nothing under `Scripts/` yet.
 | ------ | ------ | ---- | ----------- |
 | Babooshka AI (Patrol/Chase/Search/Fight FSM, sight+hearing sensors) | Built | `Scripts/AI/Babooshka/` | [babooshka.md](gdd/babooshka.md) |
 | Employee AI (Idle/MovingTo/PerformingTask/ReturningToBase/Fleeing FSM) | Built | `Scripts/AI/Employee/` | [employees.md](gdd/employees.md) |
-| Employee task queue / room assignment | Built (debug-driven click UI, no HUD) | `Scripts/AI/Employee/EmployeeDebugController.cs`, `Scripts/House/ZoneTask.cs` | [employees.md](gdd/employees.md) |
+| Employee task queue / room assignment | Built — debug click UI (`EmployeeDebugController`) still exists alongside real Canvas UI (select from Employee List, click a zone on the minimap → context menu of valid actions); auto-scheduling across zones is not built | `Scripts/AI/Employee/EmployeeDebugController.cs`, `Scripts/AI/Employee/EmployeeRegistry.cs`, `Scripts/UI/House/`, `Scripts/House/ZoneTask.cs` | [employees.md](gdd/employees.md) |
 | House model + zone infection/light (0-100% per zone, house average) | Built | `Scripts/House/` (`HouseModel`, `Zone`, `ZoneRegistry`) | [infection.md](gdd/infection.md) |
 | Infection spread (darkness modifier; treatment activity) | Built (placeholder tuning, not GDD-sourced) | `Scripts/House/Zone.cs`, `ZoneConfig.cs`, `ReduceInfectionEffect.cs` | [infection.md](gdd/infection.md) |
 | Zone event system (LightOff/InfectionOutbreak/Emergency; instant vs condition, expiry → failed task) | Built | `Scripts/House/ZoneEventDefinition.cs`, `ZoneEventKind.cs`, `ZoneEventType.cs`, `Zone.cs` | [residents.md](gdd/residents.md) |
-| House presenter / view boundary (Presenter+`IHouseView`, debug console view) | Built (Canvas view not implemented — `DebugHouseConsoleView` is the only `IHouseView`) | `Scripts/House/Presentation/` | [ui.md](gdd/ui.md) |
+| House presenter / view boundary (Presenter+`IHouseView`, real Canvas view) | Built — `HouseCanvasView` is the registered `IHouseView` (`DebugHouseConsoleView` still exists, unregistered); per-zone display (room list) still has no UI, only house-aggregate infection | `Scripts/House/Presentation/` | [ui.md](gdd/ui.md) |
 | DI wiring (VContainer game + mission scopes) | Built | `Scripts/Bootstrap/GameLifetimeScope.cs`, `Scripts/Mission/MissionScope.cs` | — |
 | Audio (music/SFX/master volume, mixer-driven, `AudioEmitter` hooks on Employee/Babooshka) | Built (no clip/mixer assets authored yet — framework only) | `Scripts/Audio/` | — |
-| UI layout (Canvas scene) | Scene only, no C# yet | `Assets/_Project/Scenes/TestScenes/TestUI.unity` | [ui.md](gdd/ui.md) |
+| UI layout (Display Canvas: employee list, camera feed, infection, inventory, orders, timer, settings) | Built — wired to House/Mission/Audio/Camera backends; several new UI subtrees (Settings Panel sliders, Floor toggle buttons, Zone action menu, camera Map Icon, Resource Item) still need to be added in-editor, see `Docs/agents/systems/ui.md` | `Scripts/UI/House/`, `Scripts/UI/Settings/` | [ui.md](gdd/ui.md) |
 | Full house scan (button, generator cost, staleness) | Planned | — | [infection.md](gdd/infection.md) |
 | Fog of war (per-zone staleness timer) | Planned | — | [floor-map.md](gdd/floor-map.md) |
 | Generator (shared fuel pool; powers ACS/cameras/lighting/scan) | Planned | — | [resources.md](gdd/resources.md) |
 | Resources (vinegar, iodine-resorcinol-A, lightbulbs, fuel) | Planned | — | [resources.md](gdd/resources.md) |
-| Camera system (switch, visual tracking, ACS stabilization) | Planned | — | [cameras.md](gdd/cameras.md) |
-| Floor map / mini-map (GPS employees; fog-of-war overlay) | Planned | — | [floor-map.md](gdd/floor-map.md) |
+| Camera system (switch by clicking a camera's Map Icon; `CamerasModel`/`CamerasPresenter`/`ICamerasView`; ACS/visual tracking not built) | Built (partial) | `Scripts/CameraSystem/` | [cameras.md](gdd/cameras.md) |
+| Floor map / mini-map (top-down `Map Camera` feed, click-to-select-camera, click-a-zone-for-task-context-menu; GPS/fog-of-war overlay, floor system) | Built (partial) — temporary floor "system" just repositions the Map Camera between two Y presets, no real multi-floor support | `Scripts/UI/House/MapClickController.cs`, `FloorToggleView.cs`, `ZoneActionMenuView.cs` | [floor-map.md](gdd/floor-map.md) |
 | Grandmother feed schedule / chains | Planned (roam+chase FSM exists, see Babooshka AI above) | — | [grandmother.md](gdd/grandmother.md) |
 | Night timer (~7 real min per night) | Planned | — | [nights.md](gdd/nights.md) |
 | Night cycle (multi-night infection corridor [floor; ceiling]) | Planned | — | [game-loop.md](gdd/game-loop.md) |
@@ -31,10 +31,14 @@ means design-only, nothing under `Scripts/` yet.
 
 ## Test scenes
 - `Assets/_Project/Scenes/TestScenes/TestAI/` — Babooshka + Employee FSMs.
-- `Assets/_Project/Scenes/TestScenes/TestHouse.unity` — House model/zones/events, DI scopes, debug console + OnGUI views.
-- `Assets/_Project/Scenes/TestScenes/TestUI.unity` — Canvas layout only, not wired to any system yet.
+- `Assets/_Project/Scenes/TestScenes/TestHouse.unity` — House model/zones/events, DI scopes,
+  `Display Canvas` UI (real `IHouseView`, camera/employee/timer/settings UI), debug console +
+  OnGUI views still present alongside it.
+- `Assets/_Project/Scenes/TestScenes/TestUI.unity` — earlier Canvas layout scratch scene, largely
+  superseded by `Display Canvas` in `TestHouse.unity`.
 
 ## Per-system briefs
 `Docs/agents/systems/ai.md` (Babooshka + Employee), `Docs/agents/systems/house.md`
-(Zone/HouseModel/events), `Docs/agents/systems/audio.md` (music/SFX/volume). Read the
-relevant one before editing that system.
+(Zone/HouseModel/events), `Docs/agents/systems/audio.md` (music/SFX/volume),
+`Docs/agents/systems/ui.md` (Display Canvas wiring: employee list, map/camera clicks, zone
+action menu, timer, settings). Read the relevant one before editing that system.
