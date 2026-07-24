@@ -16,12 +16,14 @@ namespace Game.Mission
         public float GetTimer => (float)_missionTimer.TimeRemaining;
         public bool IsEndDay => _missionTimer.IsEndOfDay;
         public bool GetResultMission => _isWin;
+        public int CurrentNight { get; }
 
         public MissionManager(HouseConfig houseConfig, HouseModel houseModel)
         {
             _houseModel = houseModel;
 
             _missionTimer = new MissionTimer(houseConfig.DayDurationInSecond);
+            CurrentNight = houseConfig.NightNumber;
 
             _isWorking = true;
         }

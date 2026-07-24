@@ -9,8 +9,10 @@ namespace Game.UI.House
 {
     // On the Map RawImage. One raycast per click, sourced from that scene's top-down Map Camera:
     // a GameCamera hit switches the selected security camera feed; a Zone hit (with an employee
-    // selected in the Employee List) either performs an armed plain move or opens the zone action
-    // menu — see the plan for why this isn't a raw "move to any point" raycast.
+    // selected in the Employee List) opens the zone action menu — the GDD-specified "click
+    // employee, click zone -> context menu" flow. There is no "click map to move" path any more;
+    // "Move" (EmployeeActionButtonsView) resumes whatever was last given via the context menu
+    // instead (see EmployeeController.Stop/Continue).
     public sealed class MapClickController : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private MapUiConfig config;
@@ -19,10 +21,6 @@ namespace Game.UI.House
         [SerializeField] private CamerasView camerasView;
         [SerializeField] private EmployeeListPresenter employeeList;
         [SerializeField] private ZoneActionMenuView actionMenu;
-
-        private IEmployee armedMoveEmployee;
-
-        public void ArmPlainMove(IEmployee employee) => armedMoveEmployee = employee;
 
         private void Start()
         {
@@ -36,11 +34,9 @@ namespace Game.UI.House
 
         // Fires on any selection change — a fresh selection, a toggle-off in the Employee List, or
         // ClearSelection() below. Either way the previously-open action menu (built for whichever
-        // employee was selected before) is stale and any armed "Move" is meaningless without a
-        // selected employee.
+        // employee was selected before) is stale.
         private void OnSelectionChanged(IEmployee employee)
         {
-            armedMoveEmployee = null;
             actionMenu.Close();
         }
 
@@ -90,13 +86,6 @@ namespace Game.UI.House
 
             IEmployee employee = employeeList.SelectedEmployee;
             if (employee == null) return;
-
-            if (armedMoveEmployee != null)
-            {
-                employeeList.HousePresenter.RequestMoveEmployee(armedMoveEmployee, zone);
-                armedMoveEmployee = null;
-                return;
-            }
 
             actionMenu.Open(zone, employee, employeeList.HousePresenter, eventData.position);
         }

@@ -112,6 +112,8 @@ namespace Game.House.Presentation
             employee.Move(zone.GetWanderPoint(), zone);
         }
 
+        public void RequestContinueEmployee(IEmployee employee) => employee?.Continue();
+
         public void RequestReturnToBaseEmployee(IEmployee employee) => employee?.ReturnToBase();
 
         private ZoneViewState Map(ZoneSnapshot snapshot)

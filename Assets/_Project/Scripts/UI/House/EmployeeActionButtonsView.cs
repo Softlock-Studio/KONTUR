@@ -4,13 +4,14 @@ using UnityEngine.UI;
 
 namespace Game.UI.House
 {
-    // Move/Stop/Return buttons in Button Group. Move doesn't take a destination itself — it arms
-    // MapClickController for one plain move on the next map click; Stop/Return act immediately.
-    // All three are disabled while no employee is selected.
+    // Move/Stop/Return buttons in Button Group. "Move" is really Continue/Resume: Stop halts the
+    // employee in place without abandoning whatever Move/AssignTask was in flight (see
+    // EmployeeController.Stop), and this button resumes exactly that — it does not pick a new
+    // destination (that's the zone context menu's job, see ZoneActionMenuView). All three are
+    // disabled while no employee is selected.
     public sealed class EmployeeActionButtonsView : MonoBehaviour
     {
         [SerializeField] private EmployeeListPresenter employeeList;
-        [SerializeField] private MapClickController mapClickController;
         [SerializeField] private Button moveButton;
         [SerializeField] private Button stopButton;
         [SerializeField] private Button returnButton;
@@ -41,7 +42,7 @@ namespace Game.UI.House
             if (returnButton != null) returnButton.interactable = hasSelection;
         }
 
-        private void OnMoveClicked() => mapClickController.ArmPlainMove(employeeList.SelectedEmployee);
+        private void OnMoveClicked() => employeeList.HousePresenter.RequestContinueEmployee(employeeList.SelectedEmployee);
 
         private void OnStopClicked() => employeeList.HousePresenter.RequestStopEmployee(employeeList.SelectedEmployee);
 
