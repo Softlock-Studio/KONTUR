@@ -8,6 +8,8 @@ namespace Game.Localization
     public sealed class LocalizationService : ILocalizationService, IStartable, IDisposable
     {
         private const string LanguagePrefKey = "Localization.Language";
+        private const string English = "English";
+        private const string Russian = "Russian";
 
         public event Action LanguageChanged;
 
@@ -32,6 +34,8 @@ namespace Game.Localization
             PlayerPrefs.Save();
         }
 
+        public void ToggleLanguage() => SetLanguage(CurrentLanguage == Russian ? English : Russian);
+
         public void Dispose()
         {
             LocalizationManager.OnLocalizationChanged -= HandleLocalizationChanged;
@@ -43,8 +47,8 @@ namespace Game.Localization
         {
             return Application.systemLanguage switch
             {
-                SystemLanguage.Russian => "Russian",
-                _ => "English",
+                SystemLanguage.Russian => Russian,
+                _ => English,
             };
         }
     }

@@ -53,7 +53,10 @@ namespace Game.UI.House
 
             goalRefreshTimer = 0f;
             foreach (EmployeeSlotView slot in slots)
+            {
                 slot.RefreshGoal();
+                slot.RefreshDestination();
+            }
         }
 
         private void BindSlots(IReadOnlyList<IEmployee> employees)
@@ -65,8 +68,26 @@ namespace Game.UI.House
             }
         }
 
+        // Right-click-on-map also routes here (via MapClickController) so there's one place that
+        // knows how to clear a selection.
+        public void ClearSelection()
+        {
+            if (selectedSlot == null) return;
+
+            selectedSlot = null;
+            SelectionChanged?.Invoke(null);
+        }
+
         private void OnSlotClicked(EmployeeSlotView slot)
         {
+            // Second left-click on the already-selected slot toggles selection off instead of
+            // re-selecting the same employee.
+            if (selectedSlot == slot)
+            {
+                ClearSelection();
+                return;
+            }
+
             selectedSlot = slot;
             SelectionChanged?.Invoke(slot.BoundEmployee);
         }
