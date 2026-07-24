@@ -9,6 +9,7 @@ public class TVLightEffect : MonoBehaviour
     public float baseIntensity = 30f;
     public float flickerSpeed = 3f;
     public float flickerAmount = 0.2f;
+    public float timeNextFlicker = 0.7f;
 
     [Header("Color Settings")]
     public float colorChangeInterval = 3f; // Интервал смены цвета
@@ -162,6 +163,8 @@ public class TVLightEffect : MonoBehaviour
                 tvLight.intensity = baseIntensity * (1f + Mathf.Sin(Time.time * flickerSpeed) * flickerAmount);
                 yield return new WaitForSeconds(0.1f);
             }
+
+            yield return new WaitForSeconds(timeNextFlicker);
         }
     }
 
