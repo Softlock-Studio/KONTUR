@@ -54,7 +54,7 @@ namespace Game.UI.House
                 employeeList.ClearSelection();
                 return;
             }
-
+            Debug.Log(eventData.position);
             if (!RawImageWorldRay.TryGetWorldRay(mapRect, mapCamera, eventData.position, eventData.pressEventCamera, out Ray ray))
                 return;
 
