@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.House.Model;
 using Game.UI.House;
+using Infection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,8 +13,7 @@ namespace Game.House.Presentation
     // SetSelectedZone stay no-ops until that UI exists; see Docs/agents/systems/house.md.
     public sealed class HouseCanvasView : MonoBehaviour, IHouseView
     {
-        [SerializeField] private Slider infectionSlider;
-        [SerializeField] private TMP_Text infectionPercentLabel;
+        [SerializeField] private InfectionGroup infectionGroup;
         [SerializeField] private ResourceGridPresenter resourceGrid;
         [SerializeField] private OrdersToastView ordersToast;
         [SerializeField] private ZoneMapLabelsPresenter zoneMapLabels;
@@ -33,8 +33,18 @@ namespace Game.House.Presentation
 
         public void SetHouseInfection(float infectionPercent01)
         {
-            if (infectionSlider != null) infectionSlider.value = infectionPercent01;
-            if (infectionPercentLabel != null) infectionPercentLabel.text = $"{infectionPercent01 * 100f:F0}%";
+            if (infectionGroup != null)
+            {
+                infectionGroup.SetInfectionPercent(infectionPercent01);
+            } 
+        }
+
+        public void SetHouseInfectionRange(float min, float max)
+        {
+            if (infectionGroup != null)
+            {
+                infectionGroup.SetInfectionRangeValues(min, max);
+            }
         }
 
         public void ShowAssignmentResult(ZoneId zoneId, bool success, string failureReason)

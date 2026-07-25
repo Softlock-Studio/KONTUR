@@ -8,6 +8,7 @@ namespace Game.House.Presentation
         void RenderZones(IReadOnlyList<ZoneViewState> zones);
         void UpdateZone(ZoneViewState zone);
         void SetHouseInfection(float infectionPercent01);
+        void SetHouseInfectionRange(float min, float max);
         void SetSelectedZone(ZoneId? selectedZoneId);
         void ShowAssignmentResult(ZoneId zoneId, bool success, string failureReason);
         void ShowTaskFailed(ZoneId zoneId, ZoneEventType eventType, int totalFailedCount);

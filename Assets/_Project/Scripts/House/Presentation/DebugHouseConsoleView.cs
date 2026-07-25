@@ -61,5 +61,10 @@ namespace Game.House.Presentation
                       $"slots={zone.FreeSlotCount}/{zone.SlotCount} selected={zone.IsSelected} " +
                       $"activities=[{activities}] events=[{events}]");
         }
+
+        public void SetHouseInfectionRange(float min, float max)
+        {
+            //
+        }
     }
 }
