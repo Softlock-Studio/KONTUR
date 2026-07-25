@@ -51,14 +51,25 @@ namespace Game.UI.House
                 return;
             }
 
-            if (!RawImageWorldRay.TryGetWorldRay(mapRect, mapCamera, eventData.position, eventData.pressEventCamera, out Ray ray))
-                return;
+            Vector2 localClick;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(mapRect, eventData.position, eventData.enterEventCamera, out localClick);
+            //localClick.y = (textureRectTransform.rect.yMin * -1) - (localClick.y * -1);
+            Debug.Log(localClick);
+            Vector2 viewportClick = new Vector2(localClick.x / mapRect.rect.xMax, localClick.y / (mapRect.rect.yMin * -1));
+            Debug.Log(viewportClick);
+            viewportClick += new Vector2(1, 1);
+            viewportClick /= 2;
+
+            Vector3 worldClick = mapCamera.ViewportToWorldPoint(viewportClick);
+
+            //if (!RawImageWorldRay.TryGetWorldRay(textureRectTransform, mapCamera, eventData.position, eventData.pressEventCamera, out Ray ray))
+            //    return;
 
             // RaycastAll, not Raycast: the closest hit along this ray is often unrelated geometry
             // (floor, wall, another icon) sitting in front of the small camera-icon collider —
             // a single Raycast() would silently swallow the click on whatever's closest instead
             // of ever reaching the GameCamera. Look through every hit instead.
-            RaycastHit[] hits = Physics.RaycastAll(ray, config.MaxRayDistance, config.RaycastMask);
+            RaycastHit[] hits = Physics.RaycastAll(worldClick, Vector3.down, config.MaxRayDistance, config.RaycastMask);
 
             // RaycastAll does not guarantee hit order. Both floors' Zone colliders sit in the same
             // XZ footprint and stay active regardless of FloorToggleView's camera-height hack (see
@@ -89,5 +100,6 @@ namespace Game.UI.House
 
             actionMenu.Open(zone, employee, employeeList.HousePresenter, eventData.position);
         }
+            
     }
 }
