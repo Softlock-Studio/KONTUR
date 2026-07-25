@@ -19,9 +19,16 @@ namespace Game.AI.Employee
         Zone SoundZone { get; }
 
         // Return false to abort right here (e.g. a resource ran out between assignment and
-        // arrival) — the caller treats this exactly like an external cancellation.
+        // arrival) — the caller treats this exactly like an external cancellation. Safe to call
+        // again after OnPaused() — implementations must not re-charge whatever OnStarted charges
+        // the first time (resource cost, etc.), only re-join any live participation bookkeeping.
         bool OnStarted();
         void OnCompleted();
         void OnCancelled();
+
+        // Stop(): the employee halts in place but keeps this task assigned (unlike OnCancelled,
+        // which abandons it) — Continue() resumes via OnStarted() again. Implementations should
+        // drop only "currently active" bookkeeping here, not release reservations/slots.
+        void OnPaused();
     }
 }

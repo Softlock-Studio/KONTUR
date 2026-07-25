@@ -40,5 +40,15 @@ namespace Game.Localization
         {
             label.text = localization.Localize(localizationKey);
         }
+
+        // For dynamically-bound instances (e.g. one per ResourceType, spawned at runtime) where
+        // the key isn't known until bind time. Safe to call right after
+        // IObjectResolver.Instantiate — Awake/[Inject] run synchronously as part of instantiation,
+        // only Start (which subscribes to LanguageChanged) is deferred.
+        public void SetKey(string key)
+        {
+            localizationKey = key;
+            if (label != null && localization != null) Localize();
+        }
     }
 }
