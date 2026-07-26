@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using Game.Bootstrap;
 using Game.House;
+using Game.Input;
+using VContainer;
+using VContainer.Unity;
 
 namespace Game.AI.Employee
 {
@@ -21,12 +25,18 @@ namespace Game.AI.Employee
         [SerializeField] private Key simulateSurviveKey = Key.F;
         [SerializeField] private Key simulateDeathKey = Key.G;
 
+        private IInputService input;
         private IEmployee selectedEmployee;
         private string lastZoneMessage = string.Empty;
 
         private void Awake()
         {
             if (targetCamera == null) targetCamera = Camera.main;
+        }
+
+        private void Start()
+        {
+            input = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IInputService>();
         }
 
         private void Update()
@@ -39,14 +49,13 @@ namespace Game.AI.Employee
 
         private void HandleClick()
         {
-            Mouse mouse = Mouse.current;
-            if (mouse == null || targetCamera == null) return;
+            if (input == null || targetCamera == null) return;
 
-            bool assignTask = mouse.rightButton.wasPressedThisFrame;
-            bool leftClick = mouse.leftButton.wasPressedThisFrame;
+            bool assignTask = input.WasRightMouseButtonPressedThisFrame;
+            bool leftClick = input.WasLeftMouseButtonPressedThisFrame;
             if (!assignTask && !leftClick) return;
 
-            Ray ray = targetCamera.ScreenPointToRay(mouse.position.ReadValue());
+            Ray ray = targetCamera.ScreenPointToRay(input.MousePosition);
             if (!Physics.Raycast(ray, out RaycastHit hit, 1000f, clickMask)) return;
 
             if (leftClick)
@@ -84,15 +93,12 @@ namespace Game.AI.Employee
 
         private void HandleKeys()
         {
-            if (selectedEmployee == null) return;
+            if (selectedEmployee == null || input == null) return;
 
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard == null) return;
-
-            if (keyboard[stopKey].wasPressedThisFrame) selectedEmployee.Stop();
-            if (keyboard[returnToBaseKey].wasPressedThisFrame) selectedEmployee.ReturnToBase();
-            if (keyboard[simulateSurviveKey].wasPressedThisFrame) selectedEmployee.ApplyAttackOutcome(survived: true);
-            if (keyboard[simulateDeathKey].wasPressedThisFrame) selectedEmployee.ApplyAttackOutcome(survived: false);
+            if (input.WasKeyPressedThisFrame(stopKey)) selectedEmployee.Stop();
+            if (input.WasKeyPressedThisFrame(returnToBaseKey)) selectedEmployee.ReturnToBase();
+            if (input.WasKeyPressedThisFrame(simulateSurviveKey)) selectedEmployee.ApplyAttackOutcome(survived: true);
+            if (input.WasKeyPressedThisFrame(simulateDeathKey)) selectedEmployee.ApplyAttackOutcome(survived: false);
         }
 
         private void OnGUI()

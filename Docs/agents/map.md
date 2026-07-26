@@ -14,6 +14,7 @@ means design-only, nothing under `Scripts/` yet.
 | Zone event system (LightOff/InfectionOutbreak/Emergency; instant vs condition, expiry → failed task) | Built | `Scripts/House/ZoneEventDefinition.cs`, `ZoneEventKind.cs`, `ZoneEventType.cs`, `Zone.cs` | [residents.md](gdd/residents.md) |
 | House presenter / view boundary (Presenter+`IHouseView`, real Canvas view) | Built — `HouseCanvasView` is the registered `IHouseView` (`DebugHouseConsoleView` still exists, unregistered); per-zone display (room list) still has no UI, only house-aggregate infection | `Scripts/House/Presentation/` | [ui.md](gdd/ui.md) |
 | DI wiring (VContainer game + mission scopes) | Built | `Scripts/Bootstrap/GameLifetimeScope.cs`, `Scripts/Mission/MissionScope.cs` | — |
+| Input (centralized mouse/keyboard polling via new Input System — LMB/RMB/Esc + generic key queries) | Built | `Scripts/Input/` | — |
 | Audio (music/SFX/master volume, mixer-driven, `AudioEmitter` hooks on Employee/Babooshka) | Built (no clip/mixer assets authored yet — framework only) | `Scripts/Audio/` | — |
 | UI layout (Display Canvas: employee list, camera feed, infection, inventory, orders, timer, settings) | Built — wired to House/Mission/Audio/Camera backends; several new UI subtrees (Settings Panel sliders, Floor toggle buttons, Zone action menu, camera Map Icon, Resource Item) still need to be added in-editor, see `Docs/agents/systems/ui.md` | `Scripts/UI/House/`, `Scripts/UI/Settings/` | [ui.md](gdd/ui.md) |
 | Full house scan (button, generator cost, staleness) | Planned | — | [infection.md](gdd/infection.md) |
@@ -40,5 +41,6 @@ means design-only, nothing under `Scripts/` yet.
 ## Per-system briefs
 `Docs/agents/systems/ai.md` (Babooshka + Employee), `Docs/agents/systems/house.md`
 (Zone/HouseModel/events), `Docs/agents/systems/audio.md` (music/SFX/volume),
-`Docs/agents/systems/ui.md` (Display Canvas wiring: employee list, map/camera clicks, zone
-action menu, timer, settings). Read the relevant one before editing that system.
+`Docs/agents/systems/input.md` (mouse/keyboard polling), `Docs/agents/systems/ui.md` (Display
+Canvas wiring: employee list, map/camera clicks, zone action menu, timer, settings). Read the
+relevant one before editing that system.

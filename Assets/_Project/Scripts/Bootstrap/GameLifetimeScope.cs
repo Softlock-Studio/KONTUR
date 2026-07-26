@@ -1,6 +1,7 @@
 using Game.Audio;
 using Game.House;
 using Game.House.Model;
+using Game.Input;
 using Game.Localization;
 using Loader.SceneController;
 using UnityEngine;
@@ -36,6 +37,8 @@ namespace Game.Bootstrap
             builder.Register<SceneController>(Lifetime.Singleton).AsSelf().WithParameter("isDebug", _isDebug);
 
             builder.RegisterEntryPoint<AudioService>(Lifetime.Singleton).As<IAudioService>();
+
+            builder.RegisterEntryPoint<InputService>(Lifetime.Singleton).As<IInputService>();
         }
     }
 }
