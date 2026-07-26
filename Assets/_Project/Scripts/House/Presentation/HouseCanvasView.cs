@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Game.House.Model;
 using Game.UI.House;
+using Game.UI.Settings;
 using Infection;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +17,9 @@ namespace Game.House.Presentation
         [SerializeField] private ResourceGridPresenter resourceGrid;
         [SerializeField] private OrdersToastView ordersToast;
         [SerializeField] private ZoneMapLabelsPresenter zoneMapLabels;
+        [Header("Pause")]
+        [SerializeField] private Button openPauseMenuButton;
+        [SerializeField] private PauseMenuView pauseMenuView;
 
         // "Infection Label" (the mission's target infection corridor, e.g. floor/ceiling range)
         // is intentionally NOT wired here — the corridor system itself isn't built yet (see
@@ -64,6 +67,16 @@ namespace Game.House.Presentation
         public void ShowActivityAborted(ZoneId zoneId, ActivityType activityType, ResourceType resourceType)
         {
             ordersToast?.Show($"{activityType} aborted in {zoneId}: not enough {resourceType}");
+        }
+
+        private void OnEnable()
+        {
+            openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);
+        }
+
+        private void OnDisable()
+        {
+            openPauseMenuButton.onClick.RemoveListener(pauseMenuView.ShowPauseMenu);
         }
     }
 }
