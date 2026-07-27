@@ -15,7 +15,7 @@ namespace Game.UI.House
     // employee, click zone -> context menu" flow. There is no "click map to move" path any more;
     // "Move" (EmployeeActionButtonsView) resumes whatever was last given via the context menu
     // instead (see EmployeeController.Stop/Continue).
-    public sealed class MapClickController : MonoBehaviour, IPointerClickHandler
+    public sealed class MapClickController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private MapUiConfig config;
         [SerializeField] private RectTransform mapRect;
@@ -96,6 +96,16 @@ namespace Game.UI.House
             {
                 actionMenu.HandleClick(zone, eventData.position);
             }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            CursorManager.Instance.ChangeCursor(CursorState.Hover);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            CursorManager.Instance.ChangeCursor(CursorState.Default);
         }
     }
 }
