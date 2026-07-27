@@ -1,36 +1,29 @@
+using Game.AI.Employee;
+using Game.Mission;
 using System;
 using System.Collections.Generic;
-using Game.AI.Employee;
-using Game.House.Presentation;
-using Game.Mission;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Game.UI.House
+namespace Game.UI.Employees
 {
     // Binds the fixed 5-slot Employee Card pool to whatever EmployeeRegistry finds in the scene,
     // and tracks which slot (if any) is currently selected for EmployeeActionButtonsView.
-    public sealed class EmployeeListPresenter : MonoBehaviour
+    public sealed class EmployeeListView : MonoBehaviour, IEmployeeListView
     {
         private const float GoalRefreshIntervalSeconds = 0.5f;
 
         [SerializeField] private EmployeeSlotView[] slots;
 
-        private IHousePresenter housePresenter;
         private EmployeeSlotView selectedSlot;
         private float goalRefreshTimer;
 
-        public IEmployee SelectedEmployee => selectedSlot != null ? selectedSlot.BoundEmployee : null;
-        public IHousePresenter HousePresenter => housePresenter;
-
         public event Action<IEmployee> SelectionChanged;
-
         private void Start()
         {
             var scope = LifetimeScope.Find<MissionScope>();
             EmployeeRegistry registry = scope.Container.Resolve<EmployeeRegistry>();
-            housePresenter = scope.Container.Resolve<IHousePresenter>();
 
             BindSlots(registry.Employees);
 

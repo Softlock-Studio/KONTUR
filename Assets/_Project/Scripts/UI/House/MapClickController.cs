@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CameraSystem;
 using Game.AI.Employee;
 using Game.House;
+using Game.UI.Employees;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -20,7 +21,7 @@ namespace Game.UI.House
         [SerializeField] private RectTransform mapRect;
         [SerializeField] private Camera mapCamera;
         [SerializeField] private CamerasView camerasView;
-        [SerializeField] private EmployeeListPresenter employeeList;
+        [SerializeField] private EmployeeListView employeeList;
         [SerializeField] private ZoneActionMenuView actionMenu;
 
         private void Start()
@@ -93,11 +94,7 @@ namespace Game.UI.House
 
             if (zone != null)
             {
-                IEmployee employee = employeeList.SelectedEmployee;
-                if (employee == null) return;
-                
-
-                actionMenu.Open(zone, employee, employeeList.HousePresenter, eventData.position);
+                actionMenu.HandleClick(zone, eventData.position);
             }
         }
     }

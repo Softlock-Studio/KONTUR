@@ -1,4 +1,4 @@
-using Game.UI.House;
+using Game.UI.Employees;
 using TMPro;
 using UnityEditor;
 using UnityEngine;

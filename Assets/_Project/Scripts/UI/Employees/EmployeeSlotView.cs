@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using VContainer;
 using VContainer.Unity;
 
-namespace Game.UI.House
+namespace Game.UI.Employees
 {
     // One "Employee Slot" prefab instance in the fixed 5-slot pool under Employee Group. Toggles
     // between the "Unavailable" placeholder and the nested Employee Card depending on whether a

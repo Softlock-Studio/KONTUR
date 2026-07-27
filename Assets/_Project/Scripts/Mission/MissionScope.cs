@@ -7,6 +7,8 @@ using Game.House.Presentation;
 using VContainer;
 using VContainer.Unity;
 using UnityEngine;
+using Game.UI.House;
+using Game.UI.Employees;
 
 namespace Game.Mission
 {
@@ -38,6 +40,17 @@ namespace Game.Mission
             builder.RegisterComponentInHierarchy<CamerasView>().As<ICamerasView>();
             builder.Register<CamerasModel>(Lifetime.Scoped).AsSelf().As<ICameraObservationService>();
             builder.RegisterEntryPoint<CamerasPresenter>(Lifetime.Scoped);
+
+            builder.RegisterEntryPoint<ZoneActionMenuPresenter>(Lifetime.Scoped);
+            builder.RegisterComponentInHierarchy<ZoneActionMenuView>().As<IZoneActionMenuView>();
+            
+            builder.RegisterEntryPoint<EmployeeActionButtonsPresenter>(Lifetime.Scoped);
+            builder.RegisterComponentInHierarchy<EmployeeActionButtonsView>().As<IEmployeeActionButtonsView>();
+            
+            builder.RegisterEntryPoint<EmployeeListPresenter>(Lifetime.Scoped);
+            builder.RegisterComponentInHierarchy<EmployeeListView>().As<IEmployeeListView>();
+
+            builder.RegisterEntryPoint<DisplayCanvasSubscriptionManager>(Lifetime.Scoped);
         }
     }
 }
