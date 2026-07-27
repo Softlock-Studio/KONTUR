@@ -20,6 +20,9 @@ namespace Game.AI.Employee
         [SerializeField] private AudioEmitter audioEmitter;
         [SerializeField] private Babooshka.HearingSensor[] hearingSensorsToNotify;
 
+        // Set by hand per prefab instance — see IEmployee.CallsignNumber.
+        [SerializeField] private int callsignNumber = 1;
+
         private NavMeshAgent agent;
         private StateMachine fsm;
         private EmployeeBlackboard blackboard;
@@ -28,6 +31,7 @@ namespace Game.AI.Employee
         public Vector3 Position => transform.position;
         public bool IsAlive { get; private set; } = true;
         public string CurrentStateName => fsm?.GetActiveHierarchyPath() ?? string.Empty;
+        public int CallsignNumber => callsignNumber;
 
         // States are flat (no sub-state-machines), so the hierarchy path is just "/<StateName>" —
         // trimming the slash lines up exactly with the names used in BuildStateMachine.
@@ -102,9 +106,13 @@ namespace Game.AI.Employee
             blackboard.TargetZone = null;
         }
 
+        // Fully abandons whatever's assigned (releases the Zone slot/session if any) — used by any
+        // *new* command, including one that replaces a Stop()-paused task. Distinct from Stop()
+        // itself, which keeps the task alive for Continue().
         private void CancelCurrentTask()
         {
             blackboard.TargetZone = null;
+            blackboard.Paused = false;
 
             if (blackboard.PendingTask == null) return;
             blackboard.PendingTask.OnCancelled();
@@ -137,9 +145,39 @@ namespace Game.AI.Employee
         {
             if (!CanAcceptCommand) return;
 
-            CancelCurrentTask();
+            // Only an in-flight Move/AssignTask is resumable — stopping while idle/returning/etc.
+            // has nothing to remember, same as before.
+            bool wasExecutingCommand = StateId == EmployeeStateId.MovingTo || StateId == EmployeeStateId.PerformingTask;
+            if (wasExecutingCommand)
+            {
+                blackboard.PendingTask?.OnPaused();
+                blackboard.Paused = true;
+            }
+            else
+            {
+                blackboard.Paused = false;
+            }
+
             agent.ResetPath();
             fsm.RequestStateChange("Idle", forceInstantly: true);
+        }
+
+        public void Continue()
+        {
+            if (!CanAcceptCommand || !blackboard.Paused) return;
+
+            // The paused task finished or was invalidated on its own while we were stopped (e.g.
+            // another employee completed the shared activity) — nothing left to resume.
+            if (blackboard.PendingTask != null && blackboard.PendingTask.IsComplete)
+            {
+                blackboard.PendingTask = null;
+                blackboard.TargetZone = null;
+                blackboard.Paused = false;
+                return;
+            }
+
+            blackboard.Paused = false;
+            fsm.RequestStateChange("MovingTo", forceInstantly: true);
         }
 
         public void ReturnToBase()

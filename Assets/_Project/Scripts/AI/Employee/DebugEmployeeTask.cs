@@ -28,5 +28,6 @@ namespace Game.AI.Employee
 
         public void OnCompleted() => Debug.Log("[DebugEmployeeTask] Completed");
         public void OnCancelled() => Debug.Log("[DebugEmployeeTask] Cancelled");
+        public void OnPaused() => Debug.Log("[DebugEmployeeTask] Paused");
     }
 }

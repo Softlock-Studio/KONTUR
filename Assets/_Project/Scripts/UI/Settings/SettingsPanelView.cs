@@ -1,5 +1,6 @@
 using Game.Audio;
 using Game.Bootstrap;
+using Game.Localization;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -16,6 +17,7 @@ namespace Game.UI.Settings
         [SerializeField] private Slider sfxSlider;
 
         private IAudioService audioService;
+        private ILocalizationService localization;
 
         private void Awake()
         {
@@ -28,6 +30,7 @@ namespace Game.UI.Settings
         private void Start()
         {
             audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+            localization = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
 
             if (masterSlider != null)
             {
@@ -52,5 +55,9 @@ namespace Game.UI.Settings
         {
             if (panelRoot != null) panelRoot.SetActive(!panelRoot.activeSelf);
         }
+
+        // No language button exists in the panel yet — this is here so wiring one up later is just
+        // dragging this into a Button's OnClick(), no code needed at that point.
+        public void ToggleLanguage() => localization.ToggleLanguage();
     }
 }

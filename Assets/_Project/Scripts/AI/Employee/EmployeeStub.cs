@@ -16,6 +16,7 @@ namespace Game.AI.Employee
         public bool IsAlive { get; private set; } = true;
         public string CurrentStateName => "ManualControl";
         public EmployeeStateId StateId => EmployeeStateId.Idle;
+        public int CallsignNumber => 0;
         public string DestinationName => string.Empty;
 
         private void Update()
@@ -45,6 +46,7 @@ namespace Game.AI.Employee
         public bool AssignTask(IEmployeeTask task) => false;
         public void Move(Vector3 point, Zone targetZone = null) { }
         public void Stop() { }
+        public void Continue() { }
         public void ReturnToBase() { }
 
         public void ApplyAttackOutcome(bool survived)

@@ -42,8 +42,7 @@ namespace Game.UI.House
             if (unavailableRoot != null) unavailableRoot.SetActive(false);
             if (employeeCardRoot != null) employeeCardRoot.SetActive(true);
 
-            var component = employee as Component;
-            if (nameLabel != null) nameLabel.text = component != null ? component.name : Localization.Localize("Employee.Name.Fallback");
+            if (nameLabel != null) nameLabel.text = Localization.Localize("Employee.Callsign.Format", employee.CallsignNumber);
 
             // No per-employee portrait sprite exists anywhere yet (IEmployee has no such
             // accessor) — portrait is left as whatever the prefab authors, not overwritten here.

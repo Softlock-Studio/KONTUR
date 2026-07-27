@@ -14,5 +14,10 @@ namespace Game.AI.Employee
 
         public bool FleeRequested;
         public bool IsFleeing;
+
+        // Set by Stop() when it interrupts an in-flight Move/AssignTask (not idle/returning-to-
+        // base) — Continue() resumes exactly that command; any fresh command clears it again via
+        // CancelCurrentTask.
+        public bool Paused;
     }
 }

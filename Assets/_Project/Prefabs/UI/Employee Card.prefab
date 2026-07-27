@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 969327197018710629}
   - component: {fileID: 6288442749823111961}
   - component: {fileID: 1556814447085047137}
+  - component: {fileID: 4941749473163390474}
   m_Layer: 5
   m_Name: Destination Label
   m_TagString: Untagged
@@ -274,6 +275,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4941749473163390474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305650505737710061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93310205777a33946a38bd6ccd0d5801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localizationKey: Employee.Label.Destination
 --- !u!1 &2285043620504714146
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,6 +490,7 @@ GameObject:
   - component: {fileID: 1011347744229117747}
   - component: {fileID: 3228460258885367590}
   - component: {fileID: 5775744275338764081}
+  - component: {fileID: 8455076694861541543}
   m_Layer: 5
   m_Name: Goal Label
   m_TagString: Untagged
@@ -602,6 +617,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8455076694861541543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3478034694040817058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93310205777a33946a38bd6ccd0d5801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localizationKey: Employee.Label.Goal
 --- !u!1 &3603784453067669609
 GameObject:
   m_ObjectHideFlags: 0

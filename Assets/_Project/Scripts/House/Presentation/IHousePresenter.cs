@@ -11,6 +11,7 @@ namespace Game.House.Presentation
         void RequestAssignTask(ZoneId zoneId, IEmployee employee, ActivityType activityType, ZoneEventType? targetEvent);
         void RequestStopEmployee(IEmployee employee);
         void RequestMoveEmployee(IEmployee employee, Zone zone);
+        void RequestContinueEmployee(IEmployee employee);
         void RequestReturnToBaseEmployee(IEmployee employee);
     }
 }
