@@ -1,4 +1,5 @@
 using Game.Bootstrap;
+using Game.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VContainer;
@@ -12,18 +13,20 @@ namespace Game.Localization
         [SerializeField] private Key toggleKey = Key.L;
 
         private ILocalizationService localization;
+        private IInputService input;
 
         private void Start()
         {
-            localization = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
+            IObjectResolver container = LifetimeScope.Find<GameLifetimeScope>().Container;
+            localization = container.Resolve<ILocalizationService>();
+            input = container.Resolve<IInputService>();
         }
 
         private void Update()
         {
-            if (!debugEnabled || localization == null) return;
+            if (!debugEnabled || localization == null || input == null) return;
 
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard != null && keyboard[toggleKey].wasPressedThisFrame) localization.ToggleLanguage();
+            if (input.WasKeyPressedThisFrame(toggleKey)) localization.ToggleLanguage();
         }
     }
 }

@@ -29,7 +29,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DirtTex:
-        m_Texture: {fileID: 2800000, guid: e12badc9702730a4aa5a34476f2c62d2, type: 3}
+        m_Texture: {fileID: 2800000, guid: fbff7e17cfe36c040a98315ba904dcfd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -47,12 +47,14 @@ Material:
     m_Ints: []
     m_Floats:
     - _Blend: 4
-    - _DirtIntensity: 0
-    - _DirtTiling: 1
+    - _DirtIntensity: 0.62
+    - _DirtTiling: 0.22
     - _DirtVariation: 0.1
+    - _NoiseScale: 1
+    - _NoiseStrength: 0.2
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Tiling: 1
+    - _Tiling: 0.56
     m_Colors:
     - _DirtColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

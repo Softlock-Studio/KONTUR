@@ -1,7 +1,11 @@
 using Game.Audio;
+using Game.Bootstrap;
 using Game.House;
+using Game.Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VContainer;
+using VContainer.Unity;
 
 namespace Game.AI.Employee
 {
@@ -12,6 +16,8 @@ namespace Game.AI.Employee
         [SerializeField] private SoundLoudness noiseLoudness = SoundLoudness.Medium;
         [SerializeField] private Babooshka.HearingSensor[] hearingSensorsToNotify;
 
+        private IInputService input;
+
         public Vector3 Position => transform.position;
         public bool IsAlive { get; private set; } = true;
         public string CurrentStateName => "ManualControl";
@@ -19,24 +25,26 @@ namespace Game.AI.Employee
         public int CallsignNumber => 0;
         public string DestinationName => string.Empty;
 
+        private void Start()
+        {
+            input = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IInputService>();
+        }
+
         private void Update()
         {
-            if (!IsAlive) return;
-
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard == null) return;
+            if (!IsAlive || input == null) return;
 
             Vector2 axis = Vector2.zero;
-            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) axis.x -= 1f;
-            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) axis.x += 1f;
-            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) axis.y -= 1f;
-            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) axis.y += 1f;
+            if (input.IsKeyHeld(Key.A) || input.IsKeyHeld(Key.LeftArrow)) axis.x -= 1f;
+            if (input.IsKeyHeld(Key.D) || input.IsKeyHeld(Key.RightArrow)) axis.x += 1f;
+            if (input.IsKeyHeld(Key.S) || input.IsKeyHeld(Key.DownArrow)) axis.y -= 1f;
+            if (input.IsKeyHeld(Key.W) || input.IsKeyHeld(Key.UpArrow)) axis.y += 1f;
 
-            Vector3 input = new Vector3(axis.x, 0f, axis.y);
-            if (input.sqrMagnitude > 1f) input.Normalize();
-            transform.position += input * (moveSpeed * Time.deltaTime);
+            Vector3 move = new Vector3(axis.x, 0f, axis.y);
+            if (move.sqrMagnitude > 1f) move.Normalize();
+            transform.position += move * (moveSpeed * Time.deltaTime);
 
-            if (keyboard[makeNoiseKey].wasPressedThisFrame && hearingSensorsToNotify != null)
+            if (input.WasKeyPressedThisFrame(makeNoiseKey) && hearingSensorsToNotify != null)
             {
                 foreach (Babooshka.HearingSensor sensor in hearingSensorsToNotify)
                     sensor.NotifySound(transform.position, noiseLoudness);
