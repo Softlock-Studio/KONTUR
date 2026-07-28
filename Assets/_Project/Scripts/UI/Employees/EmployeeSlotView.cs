@@ -17,7 +17,7 @@ namespace Game.UI.Employees
     public sealed class EmployeeSlotView : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private GameObject unavailableRoot;
-        [SerializeField] private GameObject employeeCardRoot;
+        [SerializeField] private EmployeeCardView employeeCard;
         [SerializeField] private TMP_Text nameLabel;
         [SerializeField] private Image portrait;
         [SerializeField] private TMP_Text goalText;
@@ -31,6 +31,7 @@ namespace Game.UI.Employees
         private ILocalizationService Localization =>
             localization ??= LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
 
+        public EmployeeCardView GetEmployeeCard() => employeeCard;
         public IEmployee BoundEmployee { get; private set; }
 
         public event Action<EmployeeSlotView> Clicked;
@@ -39,8 +40,10 @@ namespace Game.UI.Employees
         {
             BoundEmployee = employee;
 
-            if (unavailableRoot != null) unavailableRoot.SetActive(false);
-            if (employeeCardRoot != null) employeeCardRoot.SetActive(true);
+            if (employeeCard != null)
+            {
+                employeeCard.gameObject.SetActive(true);
+            }
 
             if (nameLabel != null) nameLabel.text = Localization.Localize("Employee.Callsign.Format", employee.CallsignNumber);
 
@@ -55,8 +58,11 @@ namespace Game.UI.Employees
         {
             BoundEmployee = null;
 
-            if (unavailableRoot != null) unavailableRoot.SetActive(true);
-            if (employeeCardRoot != null) employeeCardRoot.SetActive(false);
+            if (employeeCard.gameObject != null)
+            {
+                employeeCard.SetSelectedSprite(false);
+                employeeCard.gameObject.SetActive(false);
+            } 
         }
 
         // IEmployee has no target-zone/task-type accessor today — StateId is the closest available

@@ -1,37 +1,39 @@
-using Game.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
-public class SettingsButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+namespace Game.UI.Settings
 {
-    private Button _button;
-
-    private void Awake()
+    [RequireComponent(typeof(Button))]
+    public class SettingsButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        _button = GetComponent<Button>();
-    }
+        private Button _button;
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (_button.IsInteractable())
-            CursorManager.Instance.ChangeCursor(CursorState.Hover);
-    }
+        private void Awake()
+        {
+            _button = GetComponent<Button>();
+        }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (_button.IsInteractable())
-            CursorManager.Instance.ChangeCursor(CursorState.Default);
-    }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_button.IsInteractable())
+                CursorManager.Instance.ChangeCursor(CursorState.Hover);
+        }
 
-    private void Start()
-    {
-        _button.onClick.AddListener(() => CursorManager.Instance.ChangeCursor(CursorState.Default));
-    }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (_button.IsInteractable())
+                CursorManager.Instance.ChangeCursor(CursorState.Default);
+        }
 
-    private void OnDestroy()
-    {
-        _button.onClick.RemoveAllListeners();
+        private void Start()
+        {
+            _button.onClick.AddListener(() => CursorManager.Instance.ChangeCursor(CursorState.Default));
+        }
+
+        private void OnDestroy()
+        {
+            _button.onClick.RemoveAllListeners();
+        }
     }
 }

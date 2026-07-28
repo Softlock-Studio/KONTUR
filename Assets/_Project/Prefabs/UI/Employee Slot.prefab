@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unavailableRoot: {fileID: 8006741495685780060}
-  employeeCardRoot: {fileID: 5428571894411388334}
+  employeeCard: {fileID: 4008788063618451086}
   nameLabel: {fileID: 6526739078653952687}
   portrait: {fileID: 2348000919183842475}
   goalText: {fileID: 8035888362932448609}
@@ -355,6 +355,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4008788063618451086 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6516351835433753668, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
+  m_PrefabInstance: {fileID: 7911884432811989706}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ce64f0591f3c646b860dff067cf40e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4666919451397291925 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3245004587397473631, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
@@ -366,11 +377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &5428571894411388334 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2781678215288913764, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
-  m_PrefabInstance: {fileID: 7911884432811989706}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6526739078653952687 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3989919226556569701, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}

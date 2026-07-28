@@ -374,7 +374,7 @@ GameObject:
   - component: {fileID: 866763137985462593}
   - component: {fileID: 5088730087343578607}
   - component: {fileID: 5718013737168219099}
-  - component: {fileID: 1594566541843726083}
+  - component: {fileID: 6516351835433753668}
   m_Layer: 5
   m_Name: Employee Card
   m_TagString: Untagged
@@ -426,14 +426,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.16170214, g: 0.17021278, b: 0.2, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9518727193efaaa4ea07d6ddcf43089e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 08f54f38407d58f4fb2161dfb9f4c62e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -443,7 +443,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 10
---- !u!114 &1594566541843726083
+--- !u!114 &6516351835433753668
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -452,9 +452,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2781678215288913764}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5adad5e4614aab84b8047d85b54b3253, type: 3}
+  m_Script: {fileID: 11500000, guid: e2ce64f0591f3c646b860dff067cf40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _backgroundImage: {fileID: 5718013737168219099}
+  _defaultSprite: {fileID: 21300000, guid: 08f54f38407d58f4fb2161dfb9f4c62e, type: 3}
+  _hoverSprite: {fileID: 21300000, guid: 2635b1f2da5bedf4585c29d5ffede59f, type: 3}
+  _selectedSprite: {fileID: 21300000, guid: 01673bc127b053542be52d06fbd7c7fe, type: 3}
 --- !u!1 &3015478704906235855
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,7 +67,9 @@ namespace Game.UI.Employees
         {
             if (selectedSlot == null) return;
 
+            selectedSlot.GetEmployeeCard().SetSelectedSprite(false);
             selectedSlot = null;
+
             SelectionChanged?.Invoke(null);
         }
 
@@ -80,8 +82,12 @@ namespace Game.UI.Employees
                 ClearSelection();
                 return;
             }
-
+            if (selectedSlot != null)
+            {
+                selectedSlot.GetEmployeeCard().SetSelectedSprite(false);
+            }
             selectedSlot = slot;
+            slot.GetEmployeeCard().SetSelectedSprite(true);
             SelectionChanged?.Invoke(slot.BoundEmployee);
         }
     }
