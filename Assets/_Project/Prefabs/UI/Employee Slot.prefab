@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4188679, g: 0.4101744, b: 0.4101744, a: 1}
+  m_Color: {r: 0.135, g: 0.135, b: 0.15, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -132,7 +132,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 50}
+  m_SizeDelta: {x: 180, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6258317179304395556
 CanvasRenderer:
@@ -164,15 +164,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Unavailable
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f7b0c132458452948baa02d5c112d4f6, type: 2}
+  m_sharedMaterial: {fileID: 6178531084812766532, guid: f7b0c132458452948baa02d5c112d4f6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4289901234
+  m_fontColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -281,11 +281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 866763137985462593, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 210
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 866763137985462593, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 250
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 866763137985462593, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
       propertyPath: m_LocalPosition.x
