@@ -52,6 +52,7 @@ namespace Game.House.Presentation
 
             view.RenderZones(viewModels);
             view.SetHouseInfection(model.GetHouseInfectionLevel01());
+            view.SetHouseInfectionRange(0.2f, 0.4f);   //TODO change to actual infection range when it's available
         }
 
         private void PushSample()

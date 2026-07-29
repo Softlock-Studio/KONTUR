@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
 using Game.AI.Employee;
 using Game.Bootstrap;
 using Game.House;
 using Game.House.Model;
 using Game.House.Presentation;
 using Game.Localization;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +16,7 @@ namespace Game.UI.House
 {
     // Small popup listing only the actions actually valid for the clicked zone right now — the
     // GDD-specified "click a zone on the map -> context menu for task assignment" flow.
-    public sealed class ZoneActionMenuView : MonoBehaviour
+    public sealed class ZoneActionMenuView : MonoBehaviour, IZoneActionMenuView
     {
         [SerializeField] private GameObject panelRoot;
         [SerializeField] private Transform buttonParent;
@@ -33,6 +33,8 @@ namespace Game.UI.House
         private ILocalizationService Localization =>
             localization ??= LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
 
+        public event Action<Zone, Vector2> OnZoneClick;
+
         private void Awake()
         {
             panelRect = panelRoot != null ? panelRoot.GetComponent<RectTransform>() : null;
@@ -41,6 +43,11 @@ namespace Game.UI.House
             rootCanvas = canvas != null ? canvas.rootCanvas : null;
 
             if (panelRoot != null) panelRoot.SetActive(false);
+        }
+
+        public void HandleClick(Zone zone, Vector2 position)
+        {
+            OnZoneClick?.Invoke(zone, position);    //this leads to calling Open(...) function seen below
         }
 
         public void Open(Zone zone, IEmployee employee, IHousePresenter presenter, Vector2 screenPosition)

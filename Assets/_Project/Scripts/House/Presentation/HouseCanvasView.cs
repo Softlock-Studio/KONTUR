@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using Game.House.Model;
 using Game.UI.House;
-using TMPro;
+using Game.UI.Settings;
+using Infection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,13 @@ namespace Game.House.Presentation
     // SetSelectedZone stay no-ops until that UI exists; see Docs/agents/systems/house.md.
     public sealed class HouseCanvasView : MonoBehaviour, IHouseView
     {
-        [SerializeField] private Slider infectionSlider;
-        [SerializeField] private TMP_Text infectionPercentLabel;
+        [SerializeField] private InfectionGroup infectionGroup;
         [SerializeField] private ResourceGridPresenter resourceGrid;
         [SerializeField] private OrdersToastView ordersToast;
         [SerializeField] private ZoneMapLabelsPresenter zoneMapLabels;
+        [Header("Pause")]
+        [SerializeField] private Button openPauseMenuButton;
+        [SerializeField] private PauseMenuView pauseMenuView;
 
         // "Infection Label" (the mission's target infection corridor, e.g. floor/ceiling range)
         // is intentionally NOT wired here — the corridor system itself isn't built yet (see
@@ -33,8 +36,18 @@ namespace Game.House.Presentation
 
         public void SetHouseInfection(float infectionPercent01)
         {
-            if (infectionSlider != null) infectionSlider.value = infectionPercent01;
-            if (infectionPercentLabel != null) infectionPercentLabel.text = $"{infectionPercent01 * 100f:F0}%";
+            if (infectionGroup != null)
+            {
+                infectionGroup.SetInfectionPercent(infectionPercent01);
+            } 
+        }
+
+        public void SetHouseInfectionRange(float min, float max)
+        {
+            if (infectionGroup != null)
+            {
+                infectionGroup.SetInfectionRangeValues(min, max);
+            }
         }
 
         public void ShowAssignmentResult(ZoneId zoneId, bool success, string failureReason)
@@ -54,6 +67,16 @@ namespace Game.House.Presentation
         public void ShowActivityAborted(ZoneId zoneId, ActivityType activityType, ResourceType resourceType)
         {
             ordersToast?.Show($"{activityType} aborted in {zoneId}: not enough {resourceType}");
+        }
+
+        private void OnEnable()
+        {
+            openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);
+        }
+
+        private void OnDisable()
+        {
+            openPauseMenuButton.onClick.RemoveListener(pauseMenuView.ShowPauseMenu);
         }
     }
 }
