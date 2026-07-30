@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Game.UI.Settings
 {
-    public class QuitPopUp : MonoBehaviour
+    public class YesNoPopUp : MonoBehaviour
     {
         [SerializeField] private Button _yesButton;
         [SerializeField] private Button _noButton;
