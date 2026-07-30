@@ -1,3 +1,4 @@
+using CameraSystem.Rendering;
 using Game.House;
 using UnityEngine;
 
@@ -21,11 +22,29 @@ namespace CameraSystem
         public void TurnOffCamera()
         {
             _correspondingCamera.targetTexture = null;
+            _correspondingCamera.enabled = false;
         }
 
         public void TurnOnCamera(RenderTexture cameraTexture)
         {
             _correspondingCamera.targetTexture = cameraTexture;
+            _correspondingCamera.enabled = true;
+        }
+
+        public bool TrySetNoiseBlend(float blend)
+        {
+            if (_correspondingCamera.TryGetComponent(out FisheyeLensMarker marker))
+            {
+                marker.SetNoiseBlend(blend);
+                return true;
+            }
+
+            return false;
+        }
+
+        public float GetNoiseBlend()
+        {
+            return _correspondingCamera.TryGetComponent(out FisheyeLensMarker marker) ? marker.NoiseBlend : 0f;
         }
     }
 }

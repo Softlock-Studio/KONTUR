@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CameraSystem.Rendering;
 using Game.Bootstrap;
 using Game.Localization;
 using TMPro;
@@ -14,6 +15,9 @@ namespace CameraSystem
         [SerializeField] private TextMeshProUGUI _cameraLabel;
         [SerializeField] private List<GameCamera> _camerasList;
         [SerializeField] private RenderTexture _renderTexture;
+        [SerializeField] private string _noSignalLocalisationKey;
+
+        private GameObject _noSignalCameraObject;
 
         private ILocalizationService localization;
 
@@ -45,6 +49,7 @@ namespace CameraSystem
                 if (cam.GetCameraID() == cameraID)
                 {
                     cam.TurnOnCamera(_renderTexture);
+                    cam.TrySetNoiseBlend(GetNoiseBlend(cameraID));
                     // GetLocalisationKey() is a lookup key, not display text — it was being shown
                     // verbatim (never routed through ILocalizationService), so switching language
                     // never affected this label.
@@ -55,6 +60,44 @@ namespace CameraSystem
                     cam.TurnOffCamera();
                 }
             }
+        }
+
+        public void ShowNoSignal()
+        {
+            foreach (GameCamera cam in _camerasList)
+            {
+                cam.TurnOffCamera();
+            }
+
+            if (_noSignalCameraObject == null)
+            {
+                _noSignalCameraObject = new GameObject("No Signal Camera (Dummy)");
+                var camera = _noSignalCameraObject.AddComponent<Camera>();
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = Color.black;
+                camera.cullingMask = 0;
+
+                var marker = _noSignalCameraObject.AddComponent<FisheyeLensMarker>();
+                marker.SetNoiseBlend(1f);
+
+                camera.targetTexture = _renderTexture;
+                camera.enabled = true;
+            }
+
+            _cameraLabel.text = Localization.Localize(_noSignalLocalisationKey);
+        }
+
+        public float GetNoiseBlend(int cameraID)
+        {
+            foreach (GameCamera cam in _camerasList)
+            {
+                if (cam.GetCameraID() == cameraID)
+                {
+                    return cam.GetNoiseBlend();
+                }
+            }
+
+            return 0f;
         }
     }
 }

@@ -6,9 +6,9 @@ using UnityEngine.Rendering.Universal;
 
 namespace CameraSystem.Rendering
 {
-    // Full-screen GoPro-style barrel distortion, restricted to cameras carrying a
-    // FisheyeLensMarker (the security-camera feed). Shares the URP Renderer asset with
-    // Main Camera / Map Camera, which are left untouched.
+    // Full-screen GoPro-style barrel distortion plus static-noise blend, restricted to
+    // cameras carrying a FisheyeLensMarker. Shares the URP Renderer asset with Main
+    // Camera / Map Camera, which are left untouched.
     public class FisheyeRendererFeature : ScriptableRendererFeature
     {
         [SerializeField] private Material _material;
@@ -31,12 +31,12 @@ namespace CameraSystem.Rendering
                 return;
             }
 
-            if (!renderingData.cameraData.camera.TryGetComponent(out FisheyeLensMarker _))
+            if (!renderingData.cameraData.camera.TryGetComponent(out FisheyeLensMarker marker))
             {
                 return;
             }
 
-            _pass.Setup(_material);
+            _pass.Setup(_material, marker.NoiseBlend);
             renderer.EnqueuePass(_pass);
         }
 
@@ -44,13 +44,16 @@ namespace CameraSystem.Rendering
         {
             private const string PassName = "Fisheye";
             private static readonly int AspectId = Shader.PropertyToID("_Aspect");
+            private static readonly int StaticNoiseBlendId = Shader.PropertyToID("_StaticNoiseBlend");
 
             private Material _material;
+            private float _staticNoiseBlend;
             private readonly MaterialPropertyBlock _propertyBlock = new();
 
-            public void Setup(Material material)
+            public void Setup(Material material, float staticNoiseBlend)
             {
                 _material = material;
+                _staticNoiseBlend = staticNoiseBlend;
                 requiresIntermediateTexture = true;
             }
 
@@ -75,6 +78,7 @@ namespace CameraSystem.Rendering
                 // BlitMaterialParameters does not populate _BlitTextureSize/_BlitTexture_TexelSize,
                 // so the shader can't derive aspect ratio from those. Feed it explicitly instead.
                 _propertyBlock.SetFloat(AspectId, cameraData.camera.pixelWidth / (float)cameraData.camera.pixelHeight);
+                _propertyBlock.SetFloat(StaticNoiseBlendId, _staticNoiseBlend);
 
                 var blitParams = new RenderGraphUtils.BlitMaterialParameters(
                     source, destination, Vector2.one, Vector2.zero, _material, 0,

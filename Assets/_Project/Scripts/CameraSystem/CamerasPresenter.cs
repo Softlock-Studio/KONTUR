@@ -17,6 +17,7 @@ namespace CameraSystem
         {
             _model.Init(_view.GetCameraList());
             _view.OnHandleClick += OnCameraSelected;
+            _view.ShowNoSignal();
         }
         public void Dispose()
         {
