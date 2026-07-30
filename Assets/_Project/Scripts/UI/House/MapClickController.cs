@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using CameraSystem;
 using Game.AI.Employee;
 using Game.House;
+using Game.UI.Employees;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -13,13 +15,13 @@ namespace Game.UI.House
     // employee, click zone -> context menu" flow. There is no "click map to move" path any more;
     // "Move" (EmployeeActionButtonsView) resumes whatever was last given via the context menu
     // instead (see EmployeeController.Stop/Continue).
-    public sealed class MapClickController : MonoBehaviour, IPointerClickHandler
+    public sealed class MapClickController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private MapUiConfig config;
         [SerializeField] private RectTransform mapRect;
         [SerializeField] private Camera mapCamera;
         [SerializeField] private CamerasView camerasView;
-        [SerializeField] private EmployeeListPresenter employeeList;
+        [SerializeField] private EmployeeListView employeeList;
         [SerializeField] private ZoneActionMenuView actionMenu;
 
         private void Start()
@@ -53,38 +55,35 @@ namespace Game.UI.House
 
             Vector2 localClick;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(mapRect, eventData.position, eventData.enterEventCamera, out localClick);
-            //localClick.y = (textureRectTransform.rect.yMin * -1) - (localClick.y * -1);
-            Debug.Log(localClick);
             Vector2 viewportClick = new Vector2(localClick.x / mapRect.rect.xMax, localClick.y / (mapRect.rect.yMin * -1));
-            Debug.Log(viewportClick);
             viewportClick += new Vector2(1, 1);
             viewportClick /= 2;
 
             Vector3 worldClick = mapCamera.ViewportToWorldPoint(viewportClick);
 
-            //if (!RawImageWorldRay.TryGetWorldRay(textureRectTransform, mapCamera, eventData.position, eventData.pressEventCamera, out Ray ray))
-            //    return;
-
-            // RaycastAll, not Raycast: the closest hit along this ray is often unrelated geometry
-            // (floor, wall, another icon) sitting in front of the small camera-icon collider —
-            // a single Raycast() would silently swallow the click on whatever's closest instead
-            // of ever reaching the GameCamera. Look through every hit instead.
             RaycastHit[] hits = Physics.RaycastAll(worldClick, Vector3.down, config.MaxRayDistance, config.RaycastMask);
-
-            // RaycastAll does not guarantee hit order. Both floors' Zone colliders sit in the same
-            // XZ footprint and stay active regardless of FloorToggleView's camera-height hack (see
-            // its comment — disabling the other floor would freeze its Zone.Update() simulation),
-            // so an unsorted scan can land on the hidden floor's room instead of the one currently
-            // shown. Sort by distance so "first match" means "nearest to the current camera", i.e.
-            // the floor actually being viewed.
             Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
+            HandleRaycastHits(hits, eventData);
+        }
+
+
+        private void HandleRaycastHits(IEnumerable<RaycastHit> hits, PointerEventData eventData)
+        {
             GameCamera camera = null;
             Zone zone = null;
+
             foreach (RaycastHit hit in hits)
             {
-                if (camera == null) camera = hit.collider.GetComponentInParent<GameCamera>();
-                if (zone == null) zone = hit.collider.GetComponentInParent<Zone>();
+                if (camera == null)
+                {
+                    camera = hit.collider.GetComponentInParent<GameCamera>();
+                }
+
+                if (zone == null)
+                { 
+                    zone = hit.collider.GetComponentInParent<Zone>(); 
+                }
             }
 
             if (camera != null)
@@ -93,13 +92,20 @@ namespace Game.UI.House
                 return;
             }
 
-            if (zone == null) return;
-
-            IEmployee employee = employeeList.SelectedEmployee;
-            if (employee == null) return;
-
-            actionMenu.Open(zone, employee, employeeList.HousePresenter, eventData.position);
+            if (zone != null)
+            {
+                actionMenu.HandleClick(zone, eventData.position);
+            }
         }
-            
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            CursorManager.Instance.ChangeCursor(CursorState.Hover);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            CursorManager.Instance.ChangeCursor(CursorState.Default);
+        }
     }
 }

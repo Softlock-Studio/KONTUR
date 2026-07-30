@@ -14,6 +14,7 @@ namespace Game.House
         [SerializeField] private string displayName;
         [SerializeField] private ZoneConfig config;
         [SerializeField] private Transform[] standingPoints;
+        public bool isDebug = false;
 
         private IEmployee[] occupants;
         private ZoneTask[] reservingTask;
@@ -475,9 +476,12 @@ namespace Game.House
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            string label = string.IsNullOrEmpty(displayName) ? name : displayName;
-            Handles.Label(transform.position + Vector3.up * 2f,
-                $"{label}\nInfection: {Infection:F1}%   Light: {(HasLight ? "On" : "Off")}");
+            if (isDebug)
+            {
+                string label = string.IsNullOrEmpty(displayName) ? name : displayName;
+                Handles.Label(transform.position + Vector3.up * 2f,
+                    $"{label}\nInfection: {Infection:F1}%   Light: {(HasLight ? "On" : "Off")}");
+            }
         }
 #endif
     }
