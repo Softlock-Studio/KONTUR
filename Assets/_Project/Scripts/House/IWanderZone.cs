@@ -9,6 +9,9 @@ namespace Game.House
         bool IsApartment { get; }
         Vector3 GetWanderPoint();
         bool TriggerInfectionOutbreak();
+
+        bool HasLight { get; }
+        bool TryTurnOffLight();
     }
 
     public interface IZoneDirectory

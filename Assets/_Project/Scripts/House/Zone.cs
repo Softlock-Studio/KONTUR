@@ -291,6 +291,15 @@ namespace Game.House
             else expiryTimers.Remove(ZoneEventType.LightOff);
         }
 
+        // IWanderZone hook: same idempotent-bool shape as TriggerInfectionOutbreak, so
+        // Babooshka's WanderState can call it directly without checking HasLight first.
+        public bool TryTurnOffLight()
+        {
+            if (!HasLight) return false;
+            SetLight(false);
+            return true;
+        }
+
         public void ReduceInfection(float amount)
         {
             Infection = Mathf.Clamp(Infection - amount, 0f, 100f);

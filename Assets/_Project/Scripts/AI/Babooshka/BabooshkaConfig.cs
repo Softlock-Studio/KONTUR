@@ -16,6 +16,8 @@ namespace Game.AI.Babooshka
         [Range(0f, 1f)] public float ApartmentVisitChance = 0.3f;
         [Tooltip("Rolled once per stand-still while inside an apartment zone.")]
         [Range(0f, 1f)] public float WallLickChance = 0.35f;
+        [Tooltip("Rolled once per stand-still while inside an apartment zone, only if the wall-lick roll above didn't already succeed (at most one \"creepy event\" per visit) — actual odds are (1 - WallLickChance) * LightOffChance, not this value directly.")]
+        [Range(0f, 1f)] public float LightOffChance = 0.2f;
 
         [Header("Senses")]
         public float SightRadius = 10f;
@@ -53,6 +55,9 @@ namespace Game.AI.Babooshka
 
         [Header("Fight")]
         public float AttackRange = 1.5f;
+        [Tooltip("How long Babooshka and the targeted employee stay frozen in their attack/reaction animations before the survive/die outcome is applied.")]
+        public float AttackReactionDuration = 1f;
+        [Tooltip("How long Babooshka lingers after the outcome is applied (death/flee), before releasing back to Wander.")]
         public float FightResolutionDuration = 1.5f;
         public float InvestigateTimeout = 6f;
         [Tooltip("How long a survivor is invisible to SightSensor right after a fight, so they get a chance to flee instead of being instantly re-engaged.")]
@@ -63,6 +68,7 @@ namespace Game.AI.Babooshka
 
         [Header("Audio")]
         public SfxCue WallLickCue;
+        public SfxCue LightOffCue;
 
         [Header("Debug")]
         [Tooltip("Gizmos (sight cone, hearing radius, state label) and console logs for this Babooshka.")]

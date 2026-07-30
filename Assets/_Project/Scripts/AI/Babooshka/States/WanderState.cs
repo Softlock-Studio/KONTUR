@@ -17,13 +17,15 @@ namespace Game.AI.Babooshka
         private readonly Transform[] corridorPoints;
         private readonly IZoneDirectory zoneDirectory;
         private readonly AudioEmitter audioEmitter;
+        private readonly BabooshkaAnimatorDriver animatorDriver;
 
         private Phase phase;
         private float standStillTimer;
         private float standStillDuration;
         private IWanderZone currentZone;
 
-        public WanderState(NavMeshAgent agent, BabooshkaConfig config, Transform[] corridorPoints, IZoneDirectory zoneDirectory, AudioEmitter audioEmitter = null)
+        public WanderState(NavMeshAgent agent, BabooshkaConfig config, Transform[] corridorPoints, IZoneDirectory zoneDirectory,
+            AudioEmitter audioEmitter = null, BabooshkaAnimatorDriver animatorDriver = null)
             : base(needsExitTime: false)
         {
             this.agent = agent;
@@ -31,6 +33,7 @@ namespace Game.AI.Babooshka
             this.corridorPoints = corridorPoints;
             this.zoneDirectory = zoneDirectory;
             this.audioEmitter = audioEmitter;
+            this.animatorDriver = animatorDriver;
         }
 
         public override void OnEnter()
@@ -53,10 +56,18 @@ namespace Game.AI.Babooshka
                     standStillTimer += Time.deltaTime;
                     if (standStillTimer < standStillDuration) return;
 
+                    // else-if, not two independent rolls: at most one "creepy event" per visit,
+                    // so we never fire two animator triggers in the same frame (see BabooshkaConfig.LightOffChance).
                     if (currentZone != null && Random.value < config.WallLickChance)
                     {
                         currentZone.TriggerInfectionOutbreak();
                         audioEmitter?.Play(config.WallLickCue);
+                        animatorDriver?.PlayWallLick();
+                    }
+                    else if (currentZone != null && Random.value < config.LightOffChance && currentZone.TryTurnOffLight())
+                    {
+                        audioEmitter?.Play(config.LightOffCue);
+                        animatorDriver?.PlayLightOff();
                     }
 
                     agent.isStopped = false;

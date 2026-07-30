@@ -48,7 +48,7 @@ namespace Game.AI.Employee
             }
         }
 
-        private bool CanAcceptCommand => IsAlive && !blackboard.IsFleeing;
+        private bool CanAcceptCommand => IsAlive && !blackboard.IsFleeing && !blackboard.IsAttacked;
 
         private void Awake()
         {
@@ -70,6 +70,8 @@ namespace Game.AI.Employee
             fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter));
             fsm.AddState("ReturningToBase", new ReturningToBaseState(agent, config, blackboard, soundEmitter));
             fsm.AddState("Fleeing", new FleeingState(agent, config, blackboard, soundEmitter));
+            var attackedState = new AttackedState(agent, config, blackboard);
+            fsm.AddState("Attacked", attackedState);
 
             fsm.SetStartState("Idle");
 
@@ -83,7 +85,13 @@ namespace Game.AI.Employee
                 t => blackboard.PendingTask != null && blackboard.PendingTask.IsComplete,
                 afterTransition: t => CompleteCurrentTask());
 
-            fsm.AddTransitionFromAny("Fleeing", t => blackboard.FleeRequested, forceInstantly: true);
+            // While currently Attacked, additionally wait for the reaction hold — everywhere else
+            // (Idle/MovingTo/PerformingTask/ReturningToBase, or a debug-triggered flee that never
+            // went through Attacked at all) this is unaffected and stays instant.
+            fsm.AddTransitionFromAny("Fleeing",
+                t => blackboard.FleeRequested && (!blackboard.IsAttacked || attackedState.HoldElapsed),
+                forceInstantly: true);
+            fsm.AddTransitionFromAny("Attacked", t => blackboard.AttackedRequested, forceInstantly: true);
 
             fsm.StateChanged += state => Debug.Log($"[{name}] FSM: {state.name}", this);
 
@@ -186,6 +194,16 @@ namespace Game.AI.Employee
 
             CancelCurrentTask();
             fsm.RequestStateChange("ReturningToBase", forceInstantly: true);
+        }
+
+        public void ReactToAttack()
+        {
+            if (!IsAlive) return;
+
+            CancelCurrentTask();
+            blackboard.AttackedRequested = true;
+            animatorDriver?.PlayAttacked();
+            audioEmitter?.Play(config.AttackedCue);
         }
 
         public void ApplyAttackOutcome(bool survived)

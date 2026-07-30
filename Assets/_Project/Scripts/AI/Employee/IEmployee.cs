@@ -37,6 +37,11 @@ namespace Game.AI.Employee
 
         void ReturnToBase();
 
+        // Stops the employee in place and plays the "got hit" reaction, before the outcome is
+        // known. The outcome (death/flee) is applied separately, later, via ApplyAttackOutcome —
+        // see Babooshka's FightState.
+        void ReactToAttack();
+
         void ApplyAttackOutcome(bool survived);
     }
 }

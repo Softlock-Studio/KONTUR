@@ -17,6 +17,7 @@ namespace Game.AI.Babooshka
         [SerializeField] private HearingSensor hearingSensor;
         [SerializeField] private Transform[] patrolPoints;
         [SerializeField] private AudioEmitter audioEmitter;
+        [SerializeField] private BabooshkaAnimatorDriver animatorDriver;
         [SerializeField, Tooltip("Must implement IInfectionDirector; optionally IZoneDirectory too (e.g. ZoneRegistry) for apartment wandering.")]
         private MonoBehaviour infectionDirectorSource;
 
@@ -38,6 +39,7 @@ namespace Game.AI.Babooshka
 
             if (sightSensor != null) sightSensor.Bind(blackboard, config);
             if (hearingSensor != null) hearingSensor.Bind(blackboard, config);
+            if (animatorDriver != null) animatorDriver.Bind(config);
         }
 
         private void Start()
@@ -53,9 +55,9 @@ namespace Game.AI.Babooshka
         {
             fsm = new StateMachine();
 
-            var fightState = new FightState(agent, config, blackboard, () => infectionDirector?.GetInfectionLevel() ?? 0f);
+            var fightState = new FightState(agent, config, blackboard, () => infectionDirector?.GetInfectionLevel() ?? 0f, animatorDriver);
 
-            fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory, audioEmitter));
+            fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory, audioEmitter, animatorDriver));
             fsm.AddState("Chase", new ChaseState(agent, config, blackboard));
             fsm.AddState("Search", new SearchState(agent, config, blackboard));
             fsm.AddState("Fight", fightState);
