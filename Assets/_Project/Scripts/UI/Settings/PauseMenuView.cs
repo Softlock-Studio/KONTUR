@@ -10,7 +10,7 @@ namespace Game.UI.Settings
     {
         [SerializeField] private SettingsPanelView _settingsPanelView;
         [SerializeField] private PauseMenuButtonsView _pauseMenuButtonsView;
-        [SerializeField] private QuitPopUp _quitPopUp;
+        [SerializeField] private YesNoPopUp _quitPopUp;
 
         private SceneController _sceneController;
 
