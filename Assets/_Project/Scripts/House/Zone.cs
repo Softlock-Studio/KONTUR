@@ -50,6 +50,7 @@ namespace Game.House
         public event Action EventsChanged;
         public event Action<ZoneEventType> EventExpired;
         public event Action<ActivityType, ResourceType> ActivityAborted;
+        public event Action<float> InfectionChanged;
 
         public int SlotCount => occupants?.Length ?? 0;
 
@@ -84,7 +85,10 @@ namespace Game.House
         private void Update()
         {
             if (infectionOutbreakActive)
+            {
                 Infection = Mathf.Clamp(Infection + GetGrowthRate() * Time.deltaTime, 0f, 100f);
+                InfectionChanged?.Invoke(Infection);
+            }
 
             TickEvents(Time.deltaTime);
             TickExpiry(Time.deltaTime);
