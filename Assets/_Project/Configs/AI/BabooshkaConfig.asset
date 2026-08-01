@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe1ca4933d4ee94fabd1279bd54f368, type: 3}
   m_Name: BabooshkaConfig
   m_EditorClassIdentifier: 
-  PatrolSpeed: 1.5
+  PatrolSpeed: 1.7
   ChaseSpeed: 3
-  WanderStandStillMinSeconds: 1.5
+  WanderStandStillMinSeconds: 4
   WanderStandStillMaxSeconds: 5
-  ApartmentVisitChance: 0.3
-  WallLickChance: 0.35
-  LightOffChance: 0.2
+  ApartmentVisitChance: 0.356
+  WallLickChance: 0.502
+  LightOffChance: 0.46
   SightRadius: 10
   SightAngle: 110
   HearingRadius: 15
