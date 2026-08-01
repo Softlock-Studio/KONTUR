@@ -37,21 +37,7 @@ namespace Game.AI.Employee
         public SfxCue AttackedCue;
 
         [Header("Sounds (TBD placeholder values, not GDD-sourced)")]
-        [Tooltip("How often (seconds) a continuous action (walking, cleaning, ...) re-triggers its configured sound while active.")]
-        public float SoundEmitIntervalSeconds = 1f;
-        public List<EmployeeSoundDefinition> Sounds = new();
-
-        public bool TryGetSound(EmployeeSoundType type, out EmployeeSoundDefinition sound)
-        {
-            foreach (EmployeeSoundDefinition candidate in Sounds)
-            {
-                if (candidate.Type != type) continue;
-                sound = candidate;
-                return true;
-            }
-
-            sound = null;
-            return false;
-        }
+        [Tooltip("Per-type re-trigger cadence — see SoundDefinition.MinIntervalSeconds/MaxIntervalSeconds.")]
+        public List<SoundDefinition<EmployeeSoundType>> Sounds = new();
     }
 }

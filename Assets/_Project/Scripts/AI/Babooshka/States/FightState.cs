@@ -1,4 +1,5 @@
 using System;
+using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
@@ -14,6 +15,7 @@ namespace Game.AI.Babooshka
         private readonly BabooshkaBlackboard blackboard;
         private readonly Func<float> getInfectionLevel;
         private readonly BabooshkaAnimatorDriver animatorDriver;
+        private readonly AudioEmitter audioEmitter;
 
         private Phase phase;
         private float elapsed;
@@ -27,7 +29,7 @@ namespace Game.AI.Babooshka
         public bool IsResolved { get; private set; }
 
         public FightState(NavMeshAgent agent, BabooshkaConfig config, BabooshkaBlackboard blackboard,
-            Func<float> getInfectionLevel, BabooshkaAnimatorDriver animatorDriver = null)
+            Func<float> getInfectionLevel, BabooshkaAnimatorDriver animatorDriver = null, AudioEmitter audioEmitter = null)
             : base(needsExitTime: false)
         {
             this.agent = agent;
@@ -35,6 +37,7 @@ namespace Game.AI.Babooshka
             this.blackboard = blackboard;
             this.getInfectionLevel = getInfectionLevel;
             this.animatorDriver = animatorDriver;
+            this.audioEmitter = audioEmitter;
         }
 
         public override void OnEnter()
@@ -46,6 +49,7 @@ namespace Game.AI.Babooshka
 
             fightTarget = blackboard.Target;
             animatorDriver?.PlayAttack();
+            audioEmitter?.Play(config.AttackCue);
             fightTarget?.ReactToAttack();
         }
 

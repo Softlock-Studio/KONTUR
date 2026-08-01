@@ -26,7 +26,7 @@ namespace Game.AI.Employee
         private NavMeshAgent agent;
         private StateMachine fsm;
         private EmployeeBlackboard blackboard;
-        private EmployeeSoundEmitter soundEmitter;
+        private LoopingSoundEmitter<EmployeeSoundType> soundEmitter;
 
         public Vector3 Position => transform.position;
         public bool IsAlive { get; private set; } = true;
@@ -56,7 +56,7 @@ namespace Game.AI.Employee
             blackboard = new EmployeeBlackboard { BasePoint = basePoint };
             ragdoll?.Bind(config);
             if (animatorDriver != null) animatorDriver.Bind(config, blackboard);
-            soundEmitter = new EmployeeSoundEmitter(transform, config, audioEmitter, hearingSensorsToNotify);
+            soundEmitter = new LoopingSoundEmitter<EmployeeSoundType>(transform, audioEmitter, config.Sounds, NotifyHearingSensors);
 
             BuildStateMachine();
         }
@@ -106,6 +106,15 @@ namespace Game.AI.Employee
         private bool HasArrived()
         {
             return !agent.pathPending && agent.remainingDistance <= config.ArrivalThreshold;
+        }
+
+        // Passed to LoopingSoundEmitter as onEmitted — every sound this employee makes (footsteps,
+        // cleaning, ...) also pings Babooshka's hearing, same as before the emitter was unified.
+        private void NotifyHearingSensors(Vector3 position, SoundLoudness loudness)
+        {
+            if (hearingSensorsToNotify == null) return;
+            foreach (Babooshka.HearingSensor sensor in hearingSensorsToNotify)
+                sensor.NotifySound(position, loudness);
         }
 
         private void CompleteCurrentTask()

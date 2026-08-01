@@ -1,4 +1,3 @@
-using Game.House;
 using UnityEngine;
 using VContainer;
 
@@ -9,18 +8,15 @@ namespace Game.Audio
     // IAudioService.PlaySfxAtPoint instead — this component is only for the attached case.
     public sealed class AudioEmitter : MonoBehaviour
     {
+        [SerializeField] private bool debugLogging = false;
+
         private IAudioService audioService;
-        private ICameraObservationService cameraObservation;
         private AudioSource source;
 
-        // cameraObservation is optional (default null) so scenes without the camera system
-        // (e.g. standalone AI test scenes with no MissionScope) don't fail this whole injection
-        // and lose audioService along with it — see IsAudible for the matching fail-open rule.
         [Inject]
-        public void Construct(IAudioService audioService, ICameraObservationService cameraObservation = null)
+        public void Construct(IAudioService audioService)
         {
             this.audioService = audioService;
-            this.cameraObservation = cameraObservation;
         }
 
         // Deferred to Start: [Inject] runs during the owning LifetimeScope's build, which isn't
@@ -37,33 +33,36 @@ namespace Game.Audio
             source = audioService.CreateAttachedSource(transform);
         }
 
-        public void Play(SfxCue cue, Zone zone = null)
-        {
-            if (cue == null || source == null || !IsAudible(zone)) return;
+        public void Play(SfxCue cue) => TryPlay(cue, loop: false);
 
-            ApplyCue(cue);
-            source.loop = false;
-            source.Play();
-        }
-
-        public void PlayLoop(SfxCue cue, Zone zone = null)
-        {
-            if (cue == null || source == null || !IsAudible(zone)) return;
-
-            ApplyCue(cue);
-            source.loop = true;
-            source.Play();
-        }
+        public void PlayLoop(SfxCue cue) => TryPlay(cue, loop: true);
 
         public void Stop() => source?.Stop();
 
-        // The player never hears this "in the room" — only through whichever camera is currently
-        // selected. Falls open (audible) if the camera system isn't wired up in this scene, same
-        // rationale as Zone.TrySpendResource's standalone-debug-path fallback.
-        private bool IsAudible(Zone zone)
+        private void TryPlay(SfxCue cue, bool loop)
         {
-            if (cameraObservation == null) return true;
-            return zone != null ? cameraObservation.IsObserving(zone) : cameraObservation.IsObserving(transform.position);
+            if (cue == null || source == null)
+            {
+#if UNITY_EDITOR
+                if (debugLogging)
+                {
+                    string reason = source == null
+                        ? "no AudioSource (IAudioService never injected — add this GameObject to the owning LifetimeScope's Auto Inject Game Objects list)"
+                        : "cue is null (SfxCue field not assigned in the config)";
+                    Debug.Log($"[{name}] AudioEmitter skipped: {reason}", this);
+                }
+#endif
+                return;
+            }
+
+            ApplyCue(cue);
+            source.loop = loop;
+            source.Play();
+
+#if UNITY_EDITOR
+            if (debugLogging)
+                Debug.Log($"[{name}] AudioEmitter played {cue.name} → clip \"{(source.clip != null ? source.clip.name : "none — Clips[] is empty on this SfxCue")}\"", this);
+#endif
         }
 
         private void ApplyCue(SfxCue cue)

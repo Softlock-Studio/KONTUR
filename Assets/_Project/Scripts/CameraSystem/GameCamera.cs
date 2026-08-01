@@ -11,10 +11,15 @@ namespace CameraSystem
         [SerializeField] private string _localisationKey;
         [SerializeField] private Zone _observedZone;
         private int _cameraID;
+        private AudioListener _audioListener;
 
         private void Awake()
         {
             _cameraID = gameObject.GetInstanceID();
+            // Auto-discovered, not serialized: every camera in AllCamera.prefab already has one
+            // on the same GameObject as _correspondingCamera. Null-safe — a camera without one
+            // just never produces spatial audio, nothing else breaks.
+            _audioListener = _correspondingCamera.GetComponent<AudioListener>();
         }
         public int GetCameraID() => _cameraID;
         public string GetLocalisationKey() => _localisationKey;
@@ -23,12 +28,16 @@ namespace CameraSystem
         {
             _correspondingCamera.targetTexture = null;
             _correspondingCamera.enabled = false;
+            if (_audioListener != null) _audioListener.enabled = false;
         }
 
         public void TurnOnCamera(RenderTexture cameraTexture)
         {
             _correspondingCamera.targetTexture = cameraTexture;
             _correspondingCamera.enabled = true;
+            // Listener follows the selected camera, so world sounds (AudioService.CreateAttachedSource)
+            // are heard as if standing where this camera is — see Game.Audio.AudioService.
+            if (_audioListener != null) _audioListener.enabled = true;
         }
 
         public bool TrySetNoiseBlend(float blend)

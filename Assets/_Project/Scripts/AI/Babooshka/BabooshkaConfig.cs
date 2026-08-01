@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Audio;
 using UnityEngine;
 
@@ -69,6 +70,12 @@ namespace Game.AI.Babooshka
         [Header("Audio")]
         public SfxCue WallLickCue;
         public SfxCue LightOffCue;
+        public SfxCue AttackCue;
+
+        [Header("Sounds (TBD placeholder values, not GDD-sourced)")]
+        [Tooltip("Per-type re-trigger cadence — see SoundDefinition.MinIntervalSeconds/MaxIntervalSeconds. " +
+                 "Footstep/Laugh/Anger — Attack has its own one-shot AttackCue above instead, it's not periodic.")]
+        public List<SoundDefinition<BabooshkaSoundType>> Sounds = new();
 
         [Header("Debug")]
         [Tooltip("Gizmos (sight cone, hearing radius, state label) and console logs for this Babooshka.")]

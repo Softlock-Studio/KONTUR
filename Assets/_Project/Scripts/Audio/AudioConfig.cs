@@ -35,5 +35,11 @@ namespace Game.Audio
 
         [Header("Pooling")]
         public int SfxPoolSize = 8;
+
+        [Header("World SFX 3D falloff (TBD placeholder values, not GDD-sourced)")]
+        [Tooltip("AudioSource.minDistance/maxDistance for world sounds (attached emitters and " +
+                 "PlaySfxAtPoint) — tuned to house-room scale, not Unity's oversized defaults (1/500).")]
+        public float WorldSfxMinDistance = 1f;
+        public float WorldSfxMaxDistance = 15f;
     }
 }

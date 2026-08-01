@@ -18,6 +18,9 @@ namespace Game.AI.Babooshka
         private readonly IZoneDirectory zoneDirectory;
         private readonly AudioEmitter audioEmitter;
         private readonly BabooshkaAnimatorDriver animatorDriver;
+        private readonly LoopingSoundEmitter<BabooshkaSoundType> soundEmitter;
+
+        private readonly BabooshkaBlackboard blackboard;
 
         private Phase phase;
         private float standStillTimer;
@@ -25,7 +28,8 @@ namespace Game.AI.Babooshka
         private IWanderZone currentZone;
 
         public WanderState(NavMeshAgent agent, BabooshkaConfig config, Transform[] corridorPoints, IZoneDirectory zoneDirectory,
-            AudioEmitter audioEmitter = null, BabooshkaAnimatorDriver animatorDriver = null)
+            AudioEmitter audioEmitter = null, BabooshkaAnimatorDriver animatorDriver = null,
+            LoopingSoundEmitter<BabooshkaSoundType> soundEmitter = null, BabooshkaBlackboard blackboard = null)
             : base(needsExitTime: false)
         {
             this.agent = agent;
@@ -34,20 +38,32 @@ namespace Game.AI.Babooshka
             this.zoneDirectory = zoneDirectory;
             this.audioEmitter = audioEmitter;
             this.animatorDriver = animatorDriver;
+            this.soundEmitter = soundEmitter;
+            this.blackboard = blackboard;
         }
 
         public override void OnEnter()
         {
             agent.speed = config.PatrolSpeed;
             agent.isStopped = false;
+
+            // Fully disengaged from any hunt — forget who she's already barked Anger at, so the
+            // next spotting (this employee again, or someone else) counts as a fresh encounter.
+            if (blackboard != null) blackboard.LastAngeredTarget = null;
+
             PickNextDestination();
         }
 
         public override void OnLogic()
         {
+            // Laughs whether moving or standing still ("пока просто ходит" — the whole time she's
+            // idly wandering, not gated to mid-stride); footsteps only while actually moving.
+            soundEmitter?.Tick(BabooshkaSoundType.Laugh, Time.deltaTime);
+
             switch (phase)
             {
                 case Phase.Moving:
+                    soundEmitter?.Tick(BabooshkaSoundType.Footstep, Time.deltaTime);
                     if (agent.pathPending || agent.remainingDistance > ArrivalThreshold) return;
                     BeginStandingStill();
                     return;

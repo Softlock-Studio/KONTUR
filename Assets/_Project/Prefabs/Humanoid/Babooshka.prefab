@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8960889894502461943}
   - component: {fileID: 7490209863421764543}
   - component: {fileID: 7739269514645196063}
+  - component: {fileID: 4781877642953373549}
   m_Layer: 6
   m_Name: Babooshka
   m_TagString: Untagged
@@ -78,7 +79,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
-  audioEmitter: {fileID: 0}
+  audioEmitter: {fileID: 4781877642953373549}
   animatorDriver: {fileID: 7739269514645196063}
   infectionDirectorSource: {fileID: 0}
 --- !u!114 &8960889894502461943
@@ -119,6 +120,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationSmoothTime: 0.2
+--- !u!114 &4781877642953373549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968838481705717037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b00a10145d811548817e5cd061d11cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4454716868386074727
 GameObject:
   m_ObjectHideFlags: 0

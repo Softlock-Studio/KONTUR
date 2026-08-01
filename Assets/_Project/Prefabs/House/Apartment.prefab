@@ -3526,14 +3526,15 @@ PrefabInstance:
       value: 7139
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 9085431944167121942, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 7464584585680746594, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7022601398694140739}
     - targetCorrespondingSourceObject: {fileID: 8709273559944738732, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2764975365036992975}
+    - targetCorrespondingSourceObject: {fileID: 7464584585680746594, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7022601398694140739}
     - targetCorrespondingSourceObject: {fileID: 7537438000988716079, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1619556906146902073}
@@ -3565,6 +3566,12 @@ MonoBehaviour:
   standingPoints:
   - {fileID: 2450519431149400112}
   - {fileID: 3285665720555530659}
+  isDebug: 0
+--- !u!4 &5697312368214403153 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8709273559944738732, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
+  m_PrefabInstance: {fileID: 4020981374070480893}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5790201270743967647 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7464584585680746594, guid: 7869fac4b3e81c343afe839b2dc99df3, type: 3}
