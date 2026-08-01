@@ -1,15 +1,32 @@
+using Game.Audio;
+using Game.Bootstrap;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace Game.UI.Employees
 {
-    public class EmployeeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class EmployeeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Sprite _defaultSprite;
         [SerializeField] private Sprite _hoverSprite;
         [SerializeField] private Sprite _selectedSprite;
+        [SerializeField] private SfxCue _clickCue;
+
+        private IAudioService _audioService;
+
+        private void Start()
+        {
+            _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            _audioService.PlayUiSfx(_clickCue);
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
