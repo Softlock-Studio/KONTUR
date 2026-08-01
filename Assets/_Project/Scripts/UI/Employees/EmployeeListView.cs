@@ -77,6 +77,7 @@ namespace Game.UI.Employees
         {
             // Second left-click on the already-selected slot toggles selection off instead of
             // re-selecting the same employee.
+            slot.GetEmployeeCard().PlayClickEffects();
             if (selectedSlot == slot)
             {
                 ClearSelection();

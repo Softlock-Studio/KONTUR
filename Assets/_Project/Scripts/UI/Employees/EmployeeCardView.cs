@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace Game.UI.Employees
 {
-    public class EmployeeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    public class EmployeeCardView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Sprite _defaultSprite;
@@ -23,7 +23,7 @@ namespace Game.UI.Employees
             _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        public void PlayClickEffects()
         {
             _audioService.PlayUiSfx(_clickCue);
         }
