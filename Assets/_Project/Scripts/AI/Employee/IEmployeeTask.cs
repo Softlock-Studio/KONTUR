@@ -15,7 +15,7 @@ namespace Game.AI.Employee
         EmployeeSoundType? AmbientSoundType { get; }
 
         // Null = resolve the zone from the emitter's own position instead (e.g. a raw debug move
-        // through a corridor, not tied to a specific room) — see EmployeeSoundEmitter/AudioEmitter.
+        // through a corridor, not tied to a specific room) — see LoopingSoundEmitter/AudioEmitter.
         Zone SoundZone { get; }
 
         // Return false to abort right here (e.g. a resource ran out between assignment and

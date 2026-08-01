@@ -56,6 +56,7 @@ namespace Game.AI.Employee
         public void Stop() { }
         public void Continue() { }
         public void ReturnToBase() { }
+        public void ReactToAttack() { }
 
         public void ApplyAttackOutcome(bool survived)
         {

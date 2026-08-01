@@ -18,6 +18,7 @@ MonoBehaviour:
   WanderStandStillMaxSeconds: 5
   ApartmentVisitChance: 0.3
   WallLickChance: 0.35
+  LightOffChance: 0.2
   SightRadius: 10
   SightAngle: 110
   HearingRadius: 15
@@ -28,7 +29,13 @@ MonoBehaviour:
   ObstacleMask:
     serializedVersion: 2
     m_Bits: 256
+  LowLoudnessRadiusMultiplier: 0.5
+  MediumLoudnessRadiusMultiplier: 1
+  HighLoudnessRadiusMultiplier: 1.75
+  SameFloorHeightTolerance: 2.5
+  DifferentFloorRadiusMultiplier: 0.35
   AttackRange: 1.5
+  AttackReactionDuration: 1
   FightResolutionDuration: 1.5
   InvestigateTimeout: 6
   PostFightMercyDuration: 3
@@ -57,4 +64,27 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   WallLickCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+  LightOffCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+  AttackCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+  Sounds:
+  - Type: 1
+    Cue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+    Loudness: 0
+    MinIntervalSeconds: 50
+    MaxIntervalSeconds: 60
+  - Type: 0
+    Cue: {fileID: 0}
+    Loudness: 0
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
+  - Type: 2
+    Cue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+    Loudness: 0
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
+  - Type: 3
+    Cue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+    Loudness: 0
+    MinIntervalSeconds: 10
+    MaxIntervalSeconds: 10
   EnableDebugVisuals: 0

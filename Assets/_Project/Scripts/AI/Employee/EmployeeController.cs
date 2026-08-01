@@ -26,7 +26,7 @@ namespace Game.AI.Employee
         private NavMeshAgent agent;
         private StateMachine fsm;
         private EmployeeBlackboard blackboard;
-        private EmployeeSoundEmitter soundEmitter;
+        private LoopingSoundEmitter<EmployeeSoundType> soundEmitter;
 
         public Vector3 Position => transform.position;
         public bool IsAlive { get; private set; } = true;
@@ -48,7 +48,7 @@ namespace Game.AI.Employee
             }
         }
 
-        private bool CanAcceptCommand => IsAlive && !blackboard.IsFleeing;
+        private bool CanAcceptCommand => IsAlive && !blackboard.IsFleeing && !blackboard.IsAttacked;
 
         private void Awake()
         {
@@ -56,7 +56,7 @@ namespace Game.AI.Employee
             blackboard = new EmployeeBlackboard { BasePoint = basePoint };
             ragdoll?.Bind(config);
             if (animatorDriver != null) animatorDriver.Bind(config, blackboard);
-            soundEmitter = new EmployeeSoundEmitter(transform, config, audioEmitter, hearingSensorsToNotify);
+            soundEmitter = new LoopingSoundEmitter<EmployeeSoundType>(transform, audioEmitter, config.Sounds, NotifyHearingSensors);
 
             BuildStateMachine();
         }
@@ -70,6 +70,8 @@ namespace Game.AI.Employee
             fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter));
             fsm.AddState("ReturningToBase", new ReturningToBaseState(agent, config, blackboard, soundEmitter));
             fsm.AddState("Fleeing", new FleeingState(agent, config, blackboard, soundEmitter));
+            var attackedState = new AttackedState(agent, config, blackboard);
+            fsm.AddState("Attacked", attackedState);
 
             fsm.SetStartState("Idle");
 
@@ -83,7 +85,13 @@ namespace Game.AI.Employee
                 t => blackboard.PendingTask != null && blackboard.PendingTask.IsComplete,
                 afterTransition: t => CompleteCurrentTask());
 
-            fsm.AddTransitionFromAny("Fleeing", t => blackboard.FleeRequested, forceInstantly: true);
+            // While currently Attacked, additionally wait for the reaction hold — everywhere else
+            // (Idle/MovingTo/PerformingTask/ReturningToBase, or a debug-triggered flee that never
+            // went through Attacked at all) this is unaffected and stays instant.
+            fsm.AddTransitionFromAny("Fleeing",
+                t => blackboard.FleeRequested && (!blackboard.IsAttacked || attackedState.HoldElapsed),
+                forceInstantly: true);
+            fsm.AddTransitionFromAny("Attacked", t => blackboard.AttackedRequested, forceInstantly: true);
 
             fsm.StateChanged += state => Debug.Log($"[{name}] FSM: {state.name}", this);
 
@@ -98,6 +106,15 @@ namespace Game.AI.Employee
         private bool HasArrived()
         {
             return !agent.pathPending && agent.remainingDistance <= config.ArrivalThreshold;
+        }
+
+        // Passed to LoopingSoundEmitter as onEmitted — every sound this employee makes (footsteps,
+        // cleaning, ...) also pings Babooshka's hearing, same as before the emitter was unified.
+        private void NotifyHearingSensors(Vector3 position, SoundLoudness loudness)
+        {
+            if (hearingSensorsToNotify == null) return;
+            foreach (Babooshka.HearingSensor sensor in hearingSensorsToNotify)
+                sensor.NotifySound(position, loudness);
         }
 
         private void CompleteCurrentTask()
@@ -186,6 +203,16 @@ namespace Game.AI.Employee
 
             CancelCurrentTask();
             fsm.RequestStateChange("ReturningToBase", forceInstantly: true);
+        }
+
+        public void ReactToAttack()
+        {
+            if (!IsAlive) return;
+
+            CancelCurrentTask();
+            blackboard.AttackedRequested = true;
+            animatorDriver?.PlayAttacked();
+            audioEmitter?.Play(config.AttackedCue);
         }
 
         public void ApplyAttackOutcome(bool survived)

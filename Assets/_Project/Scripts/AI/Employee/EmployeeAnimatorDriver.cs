@@ -16,6 +16,7 @@ namespace Game.AI.Employee
         private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
         private static readonly int IsStrafing = Animator.StringToHash("IsStrafing");
         private static readonly int IsSprinting = Animator.StringToHash("IsSprinting");
+        private static readonly int AttackedTrigger = Animator.StringToHash("Attacked");
 
         [SerializeField] private float animationSmoothTime = 0.2f;
 
@@ -93,5 +94,7 @@ namespace Game.AI.Employee
             animator.SetBool(IsStrafing, true);
             animator.SetBool(IsSprinting, isFleeing);
         }
+
+        public void PlayAttacked() => animator?.SetTrigger(AttackedTrigger);
     }
 }
