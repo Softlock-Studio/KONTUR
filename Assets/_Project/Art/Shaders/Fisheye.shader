@@ -98,18 +98,21 @@ Shader "Hidden/KONTUR/Fisheye"
 
             half4 Frag(Varyings input) : SV_Target
             {
-                float2 uv = input.texcoord;
-                float noise = frac(_Time * 1000 * _NoiseSpeed) - (1.0 - uv.y);
-                uv.x += sin(radians(clamp(noise * 360.0 * _NoiseWaveNum, 0.0, 360.0 * _NoiseClampNum))) * _NoisePower;
+                float2 screenUV = input.texcoord;
+                float2 barrelUV = DistortUV(screenUV, _Aspect);
+                bool outOfBounds = any(barrelUV < 0.0) || any(barrelUV > 1.0);
 
-                float2 uvR = DistortUV(uv + float2(_ChromaticAberration, 0), _Aspect);
-                float2 uvG = DistortUV(uv, _Aspect);
-                float2 uvB = DistortUV(uv - float2(_ChromaticAberration, 0), _Aspect);
+                float noise = frac(_Time.y * _NoiseSpeed) - (1.0 - screenUV.y);
+                float wave = sin(radians(clamp(noise * 360.0 * _NoiseWaveNum, 0.0, 360.0 * _NoiseClampNum))) * _NoisePower;
 
-                bool outOfBounds = any(uvG < 0.0) || any(uvG > 1.0);
+                float2 uvG = barrelUV + float2(wave, 0.0);
+                float2 uvR = uvG + float2(_ChromaticAberration, 0);
+                float2 uvB = uvG - float2(_ChromaticAberration, 0);
 
-                // Noise is sampled at the already-distorted UV (uvG) so it warps through the
-                // same barrel-distortion field as the image, instead of sitting static on top.
+                uvR = saturate(uvR);
+                uvG = saturate(uvG);
+                uvB = saturate(uvB);
+
                 float n = StaticNoise(float3(uvG.x, uvG.y, _Time.y), _StaticNoiseScale);
 
                 half r = lerp(SAMPLE_TEXTURE2D_X_LOD(_BlitTexture, sampler_LinearClamp, uvR, 0).r, n, _StaticNoiseBlend);
@@ -122,7 +125,7 @@ Shader "Hidden/KONTUR/Fisheye"
                     col = _VignetteColor;
                 }
 
-                float vignette = saturate(1.0 - dot(input.texcoord - 0.5, input.texcoord - 0.5) * 4.0 * _VignetteAmount);
+                float vignette = saturate(1.0 - dot(screenUV - 0.5, screenUV - 0.5) * 4.0 * _VignetteAmount);
                 col.rgb = lerp(_VignetteColor.rgb, col.rgb, vignette);
 
                 return col;
