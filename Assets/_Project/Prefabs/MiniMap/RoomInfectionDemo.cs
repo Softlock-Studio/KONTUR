@@ -28,10 +28,14 @@ public class RoomInfectionDemo : MonoBehaviour
 
     void Apply()
     {
-        rend.GetPropertyBlock(mpb);
-        mpb.SetFloat(InfectionId, infectionAmount);
-        rend.SetPropertyBlock(mpb);
-        lastValue = infectionAmount;
+
+        if(mpb != null)
+        {
+            rend.GetPropertyBlock(mpb);
+            mpb.SetFloat(InfectionId, infectionAmount);
+            rend.SetPropertyBlock(mpb);
+            lastValue = infectionAmount;
+        }
     }
 
 #if UNITY_EDITOR
