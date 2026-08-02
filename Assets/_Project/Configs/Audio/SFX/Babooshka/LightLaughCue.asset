@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f6e2d325200d146857fc967ee46369, type: 3}
+  m_Name: LightLaughCue
+  m_EditorClassIdentifier: 
+  Clips:
+  - {fileID: 8300000, guid: ad6396b7283c6a345a016ef5a27faa2a, type: 3}
+  - {fileID: 8300000, guid: ac3817c9a06700c4c8e07c0dfac22ec5, type: 3}
+  Volume: 0.498
+  PitchRange: {x: 1, y: 1}

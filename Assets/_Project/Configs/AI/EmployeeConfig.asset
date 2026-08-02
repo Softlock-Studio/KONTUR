@@ -23,7 +23,45 @@ MonoBehaviour:
   CorpseDespawnDelaySeconds: 20
   CorpseCollisionDisableEnabled: 1
   CorpseCollisionDisableDelaySeconds: 5
-  DeathCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
-  FleeCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
-  AttackedCue: {fileID: 0}
-  Sounds: []
+  DeathCue: {fileID: 11400000, guid: 0c6bc308f5b2a4644b6f13f40990e5f1, type: 2}
+  FleeCue: {fileID: 11400000, guid: 1f064fae16a785c44981504c7a3884af, type: 2}
+  AttackedCue: {fileID: 11400000, guid: 88a9a3beb92a78a40ab14e3ea1f93c9b, type: 2}
+  CleaningVariantCount: 3
+  LightbulbChangeVariantCount: 1
+  AttackedVariantCount: 3
+  Sounds:
+  - Type: 0
+    Cue: {fileID: 11400000, guid: 609512c9a582e0e4ab690c270935df5d, type: 2}
+    Channel: 1
+    MustFinishPlaying: 1
+    Loudness: 0
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
+  - Type: 1
+    Cue: {fileID: 11400000, guid: 609512c9a582e0e4ab690c270935df5d, type: 2}
+    Channel: 1
+    MustFinishPlaying: 1
+    Loudness: 0
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
+  - Type: 3
+    Cue: {fileID: 11400000, guid: 5ec863590ccf4794ebf28ad727bc5ba4, type: 2}
+    Channel: 2
+    MustFinishPlaying: 0
+    Loudness: 1
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
+  - Type: 4
+    Cue: {fileID: 11400000, guid: e557e5ddb1c66164ca53282a2291c14b, type: 2}
+    Channel: 2
+    MustFinishPlaying: 0
+    Loudness: 0
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
+  - Type: 2
+    Cue: {fileID: 11400000, guid: 3773bc6ea1d084a4cadbbc312f4a57bf, type: 2}
+    Channel: 0
+    MustFinishPlaying: 1
+    Loudness: 0
+    MinIntervalSeconds: 30
+    MaxIntervalSeconds: 40

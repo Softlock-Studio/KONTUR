@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 945743633000243584}
   - component: {fileID: 8469650923887167486}
   - component: {fileID: 7969873128829567332}
+  - component: {fileID: 837591222781554849}
   m_Layer: 7
   m_Name: Employee
   m_TagString: Untagged
@@ -75,10 +76,10 @@ MonoBehaviour:
   basePoint: {fileID: 0}
   ragdoll: {fileID: 8469650923887167486}
   animatorDriver: {fileID: 7969873128829567332}
-  audioEmitter: {fileID: 0}
+  audioEmitter: {fileID: 837591222781554849}
   hearingSensorsToNotify:
   - {fileID: 0}
-  callsignNumber: 12
+  callsignNumber: 3
 --- !u!114 &8469650923887167486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,6 +106,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationSmoothTime: 0.2
+--- !u!114 &837591222781554849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269938018681049810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b00a10145d811548817e5cd061d11cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogging: 0
 --- !u!1001 &2254240779933659397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -489,7 +503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: ccd6c684af22357418455a989c6ce7a7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: ccd6c684af22357418455a989c6ce7a7, type: 3}
       propertyPath: m_LocalRotation.w

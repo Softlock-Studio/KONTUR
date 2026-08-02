@@ -67,7 +67,7 @@ namespace Game.AI.Employee
 
             fsm.AddState("Idle", new IdleState(agent));
             fsm.AddState("MovingTo", new MovingToState(agent, config, blackboard, soundEmitter));
-            fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter));
+            fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter, animatorDriver));
             fsm.AddState("ReturningToBase", new ReturningToBaseState(agent, config, blackboard, soundEmitter));
             fsm.AddState("Fleeing", new FleeingState(agent, config, blackboard, soundEmitter));
             var attackedState = new AttackedState(agent, config, blackboard);
