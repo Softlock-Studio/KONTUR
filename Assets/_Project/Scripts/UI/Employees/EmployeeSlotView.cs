@@ -38,7 +38,10 @@ namespace Game.UI.Employees
 
         public void Bind(IEmployee employee)
         {
+            if (BoundEmployee != null) BoundEmployee.Died -= OnBoundEmployeeDied;
+
             BoundEmployee = employee;
+            employee.Died += OnBoundEmployeeDied;
 
             if (employeeCard != null)
             {
@@ -56,17 +59,26 @@ namespace Game.UI.Employees
 
         public void SetEmpty()
         {
+            if (BoundEmployee != null) BoundEmployee.Died -= OnBoundEmployeeDied;
             BoundEmployee = null;
 
             if (employeeCard.gameObject != null)
             {
                 employeeCard.SetSelectedSprite(false);
                 employeeCard.gameObject.SetActive(false);
-            } 
+            }
         }
 
-        // IEmployee has no target-zone/task-type accessor today — StateId is the closest available
-        // approximation for the Card's "Goal" field (see plan's flagged gap).
+        private void OnDestroy()
+        {
+            if (BoundEmployee != null) BoundEmployee.Died -= OnBoundEmployeeDied;
+        }
+
+        private void OnBoundEmployeeDied()
+        {
+            throw new NotImplementedException();
+        }
+
         public void RefreshGoal()
         {
             if (BoundEmployee == null || goalText == null) return;

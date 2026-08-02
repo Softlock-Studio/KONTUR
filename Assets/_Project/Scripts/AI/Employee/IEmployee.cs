@@ -1,3 +1,4 @@
+using System;
 using Game.House;
 using UnityEngine;
 
@@ -8,6 +9,11 @@ namespace Game.AI.Employee
         Vector3 Position { get; }
         bool IsAlive { get; }
         string CurrentStateName { get; }
+
+        // Fires once, right when IsAlive flips to false (ApplyAttackOutcome(survived: false)) —
+        // so UI (Employee Card) can react immediately instead of waiting on a poll. No payload:
+        // subscribers already know which employee they're bound to.
+        event Action Died;
 
         // Fixed per-instance roster number ("MOS #3") — designer-authored on the prefab, not
         // computed at runtime, so it's stable for the employee's whole lifetime and never reused

@@ -33,6 +33,8 @@ namespace Game.AI.Employee
         public string CurrentStateName => fsm?.GetActiveHierarchyPath() ?? string.Empty;
         public int CallsignNumber => callsignNumber;
 
+        public event Action Died;
+
         // States are flat (no sub-state-machines), so the hierarchy path is just "/<StateName>" —
         // trimming the slash lines up exactly with the names used in BuildStateMachine.
         public EmployeeStateId StateId =>
@@ -227,6 +229,7 @@ namespace Game.AI.Employee
                 enabled = false;
                 ragdoll?.TriggerDeath();
                 audioEmitter?.Play(config.DeathCue);
+                Died?.Invoke();
                 return;
             }
 
