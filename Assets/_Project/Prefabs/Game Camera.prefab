@@ -54,8 +54,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 2
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 3.42
+  m_Center: {x: -4.75, y: -3.54, z: 0}
 --- !u!114 &2435764180797877286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +71,10 @@ MonoBehaviour:
   _correspondingCamera: {fileID: 5432258966856698065}
   _localisationKey: 
   _observedZone: {fileID: 0}
+  _iconRenderer: {fileID: 7081088376854461354}
+  _defaultSprite: {fileID: 21300000, guid: 715e808b31827b04497f23490be38b9e, type: 3}
+  _selectedSprite: {fileID: 21300000, guid: 471e120f99bb3a14b83ece0463e61906, type: 3}
+  _clickCue: {fileID: 11400000, guid: f70c2da578142fa409d03a1c0ea7df11, type: 2}
 --- !u!1 &6506897143624296506
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce0771b5f5dbf5e47ada52403988a89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _noiseBlend: 0
 --- !u!1001 &7064136632998372428
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -220,6 +225,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3566462937585763717}
     m_Modifications:
+    - target: {fileID: 21900672072916966, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 715e808b31827b04497f23490be38b9e, type: 3}
+    - target: {fileID: 1899836736540728541, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1899836736540728541, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1899836736540728541, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1899836736540728541, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -265,6 +286,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
+--- !u!212 &7081088376854461354 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 21900672072916966, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}
+  m_PrefabInstance: {fileID: 7064136632998372428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8670917631295781009 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1899836736540728541, guid: 35a1b90e74d9f874682894f33cd6e663, type: 3}

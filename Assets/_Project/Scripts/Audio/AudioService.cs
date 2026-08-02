@@ -165,19 +165,21 @@ namespace Game.Audio
             source.outputAudioMixerGroup = config.WorldSfxGroup;
             source.transform.position = position;
             source.spatialBlend = 1f;
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
+            source.minDistance = config.WorldSfxMinDistance;
+            source.maxDistance = config.WorldSfxMaxDistance;
             source.clip = cue.GetClip();
             source.volume = cue.Volume;
             source.pitch = cue.GetPitch();
             source.Play();
         }
 
-        // Entities are always heard through the currently selected security camera, never
-        // "in the room" — so attached emitters (footsteps, growls, ...) route through
-        // WorldSfxGroup (for the shared TV/speaker coloring filter) and stay fully 2D: the player
-        // isn't physically anywhere in the house for a 3D position to make sense against. Whether
-        // it's audible AT ALL (i.e. whether the currently selected camera is even watching the
-        // room the sound came from) is decided by the caller via AudioEmitter/ICameraObservationService,
-        // not here.
+        // Entities are heard through the currently selected security camera's own AudioListener
+        // (GameCamera.TurnOnCamera/TurnOffCamera toggles it to follow the selection) — so attached
+        // emitters (footsteps, growls, ...) are fully 3D (spatialBlend 1, room-scale min/max
+        // distance from AudioConfig): the player hears them positioned as if standing where that
+        // camera is, from anywhere in range — no per-zone "is the camera even watching that room"
+        // gate on top; distance/rolloff alone decide audibility.
         public AudioSource CreateAttachedSource(Transform parent)
         {
             var go = new GameObject("AudioEmitterSource");
@@ -186,7 +188,10 @@ namespace Game.Audio
 
             var source = go.AddComponent<AudioSource>();
             source.playOnAwake = false;
-            source.spatialBlend = 0f;
+            source.spatialBlend = 1f;
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
+            source.minDistance = config.WorldSfxMinDistance;
+            source.maxDistance = config.WorldSfxMaxDistance;
             source.outputAudioMixerGroup = config.WorldSfxGroup;
             return source;
         }

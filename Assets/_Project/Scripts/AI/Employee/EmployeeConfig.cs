@@ -19,6 +19,10 @@ namespace Game.AI.Employee
         [Tooltip("Remaining path distance below which the employee decelerates back to a walk before arriving.")]
         public float BrakingDistance = 4f;
 
+        [Header("Attacked reaction")]
+        [Tooltip("How long the employee stays frozen in the Attacked state (reaction animation) before being allowed to flee, regardless of when Babooshka's fight already decided the outcome. Tune to match the length of whatever hit-reaction animation/sequence is authored, so fleeing doesn't cut it short.")]
+        public float AttackedHoldDurationSeconds = 1.5f;
+
         [Header("Death")]
         public bool CorpseDespawnEnabled = false;
         public float CorpseDespawnDelaySeconds = 20f;
@@ -30,23 +34,10 @@ namespace Game.AI.Employee
         [Header("Audio")]
         public SfxCue DeathCue;
         public SfxCue FleeCue;
+        public SfxCue AttackedCue;
 
         [Header("Sounds (TBD placeholder values, not GDD-sourced)")]
-        [Tooltip("How often (seconds) a continuous action (walking, cleaning, ...) re-triggers its configured sound while active.")]
-        public float SoundEmitIntervalSeconds = 1f;
-        public List<EmployeeSoundDefinition> Sounds = new();
-
-        public bool TryGetSound(EmployeeSoundType type, out EmployeeSoundDefinition sound)
-        {
-            foreach (EmployeeSoundDefinition candidate in Sounds)
-            {
-                if (candidate.Type != type) continue;
-                sound = candidate;
-                return true;
-            }
-
-            sound = null;
-            return false;
-        }
+        [Tooltip("Per-type re-trigger cadence — see SoundDefinition.MinIntervalSeconds/MaxIntervalSeconds.")]
+        public List<SoundDefinition<EmployeeSoundType>> Sounds = new();
     }
 }

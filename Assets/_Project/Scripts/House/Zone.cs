@@ -14,6 +14,7 @@ namespace Game.House
         [SerializeField] private string displayName;
         [SerializeField] private ZoneConfig config;
         [SerializeField] private Transform[] standingPoints;
+        public bool isDebug = false;
 
         private IEmployee[] occupants;
         private ZoneTask[] reservingTask;
@@ -49,6 +50,7 @@ namespace Game.House
         public event Action EventsChanged;
         public event Action<ZoneEventType> EventExpired;
         public event Action<ActivityType, ResourceType> ActivityAborted;
+        public event Action<float> InfectionChanged;
 
         public int SlotCount => occupants?.Length ?? 0;
 
@@ -83,7 +85,10 @@ namespace Game.House
         private void Update()
         {
             if (infectionOutbreakActive)
+            {
                 Infection = Mathf.Clamp(Infection + GetGrowthRate() * Time.deltaTime, 0f, 100f);
+                InfectionChanged?.Invoke(Infection);
+            }
 
             TickEvents(Time.deltaTime);
             TickExpiry(Time.deltaTime);
@@ -290,6 +295,15 @@ namespace Game.House
             else expiryTimers.Remove(ZoneEventType.LightOff);
         }
 
+        // IWanderZone hook: same idempotent-bool shape as TriggerInfectionOutbreak, so
+        // Babooshka's WanderState can call it directly without checking HasLight first.
+        public bool TryTurnOffLight()
+        {
+            if (!HasLight) return false;
+            SetLight(false);
+            return true;
+        }
+
         public void ReduceInfection(float amount)
         {
             Infection = Mathf.Clamp(Infection - amount, 0f, 100f);
@@ -475,9 +489,12 @@ namespace Game.House
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            string label = string.IsNullOrEmpty(displayName) ? name : displayName;
-            Handles.Label(transform.position + Vector3.up * 2f,
-                $"{label}\nInfection: {Infection:F1}%   Light: {(HasLight ? "On" : "Off")}");
+            if (isDebug)
+            {
+                string label = string.IsNullOrEmpty(displayName) ? name : displayName;
+                Handles.Label(transform.position + Vector3.up * 2f,
+                    $"{label}\nInfection: {Infection:F1}%   Light: {(HasLight ? "On" : "Off")}");
+            }
         }
 #endif
     }

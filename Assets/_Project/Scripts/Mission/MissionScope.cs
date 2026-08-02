@@ -1,6 +1,5 @@
 using CameraSystem;
 using Game.AI.Employee;
-using Game.Audio;
 using Game.House;
 using Game.House.Model;
 using Game.House.Presentation;
@@ -33,12 +32,8 @@ namespace Game.Mission
             // none exists, same class of bug as the BackgroundMusicTrigger incident earlier.
             builder.RegisterComponentInHierarchy<HouseCanvasView>().As<IHouseView>();
 
-            // Also exposed as ICameraObservationService — AudioEmitter (scene-level, injected via
-            // this same scope) uses it to decide whether a world sound is currently audible to the
-            // player (only through the selected camera's room), not registered in GameLifetimeScope
-            // since it depends on ZoneRegistry, which is mission-scoped.
             builder.RegisterComponentInHierarchy<CamerasView>().As<ICamerasView>();
-            builder.Register<CamerasModel>(Lifetime.Scoped).AsSelf().As<ICameraObservationService>();
+            builder.Register<CamerasModel>(Lifetime.Scoped).AsSelf();
             builder.RegisterEntryPoint<CamerasPresenter>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<ZoneActionMenuPresenter>(Lifetime.Scoped);

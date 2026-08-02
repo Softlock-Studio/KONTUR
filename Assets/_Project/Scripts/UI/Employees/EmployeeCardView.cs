@@ -1,6 +1,10 @@
+using Game.Audio;
+using Game.Bootstrap;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace Game.UI.Employees
 {
@@ -10,6 +14,19 @@ namespace Game.UI.Employees
         [SerializeField] private Sprite _defaultSprite;
         [SerializeField] private Sprite _hoverSprite;
         [SerializeField] private Sprite _selectedSprite;
+        [SerializeField] private SfxCue _clickCue;
+
+        private IAudioService _audioService;
+
+        private void Start()
+        {
+            _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+        }
+
+        public void PlayClickEffects()
+        {
+            _audioService.PlayUiSfx(_clickCue);
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
