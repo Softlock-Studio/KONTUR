@@ -1,13 +1,20 @@
+using Game.Audio;
+using Game.Bootstrap;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace Game.UI.Settings
 {
     [RequireComponent(typeof(Button))]
     public class SettingsButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private Button _button;
+        [SerializeField] private SfxCue _clickCue;
+        [SerializeField] private Button _button;
+
+        private IAudioService _audioService;            
 
         private void Awake()
         {
@@ -26,14 +33,21 @@ namespace Game.UI.Settings
                 CursorManager.Instance.ChangeCursor(CursorState.Default);
         }
 
+        private void ButtonClick()
+        {
+            CursorManager.Instance.ChangeCursor(CursorState.Default);
+            _audioService.PlayUiSfx(_clickCue);
+        }
+
         private void Start()
         {
-            _button.onClick.AddListener(() => CursorManager.Instance.ChangeCursor(CursorState.Default));
+            _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+            _button.onClick.AddListener(ButtonClick);
         }
 
         private void OnDestroy()
         {
-            _button.onClick.RemoveAllListeners();
+            _button.onClick.RemoveListener(ButtonClick);
         }
     }
 }

@@ -6,8 +6,11 @@ namespace Game.House.Presentation
     [RequireComponent(typeof(Zone))]
     public class ZoneLightView : MonoBehaviour
     {
+        [SerializeField] private Camera _cameraRoom;
+        [Space]
         [SerializeField] private GameObject _dayVolume;
         [SerializeField] private GameObject _nightVolume;
+        [SerializeField] private GameObject _lightObject;
         [Space]
         [SerializeField] private AnimationCurve _curveParticle;
         [SerializeField] private float _minValue = 5;
@@ -39,6 +42,26 @@ namespace Game.House.Presentation
             var em = _particle.emission;
             em.rateOverTime = _minValue;
             _particle.Play();
+        }
+
+        private void Update()
+        {
+            if(_cameraRoom.enabled)
+                SetActiveObject(true);
+            else
+                SetActiveObject(false);
+        }
+
+        private void SetActiveObject(bool isActive)
+        {
+            if(_lightObject != null)
+                _lightObject.SetActive(isActive);
+
+            if (_particle != null)
+            {
+                _particle.gameObject.SetActive(isActive);
+                _particle.Play();
+            }
         }
 
         private void OnLightChanged()

@@ -22,6 +22,7 @@ namespace Game.UI.House
         [SerializeField] private Vector3 labelEuler = new Vector3(90f, 0f, 0f);
         [SerializeField] private float fontSize = 3f;
         [SerializeField] private Color labelColor = Color.white;
+        [SerializeField] private TMP_FontAsset labelFont;
 
         private readonly Dictionary<ZoneId, TextMeshPro> labels = new();
 
@@ -78,6 +79,7 @@ namespace Game.UI.House
             var label = labelObject.AddComponent<TextMeshPro>();
             label.alignment = TextAlignmentOptions.Center;
             label.fontSize = fontSize;
+            label.font = labelFont;
             label.color = labelColor;
 
             return label;
