@@ -22,5 +22,14 @@ namespace Game.Audio
         void PlaySfxAtPoint(SfxCue cue, Vector3 position);
 
         AudioSource CreateAttachedSource(Transform parent);
+
+        // Moves the single persistent world listener to hear as if standing at this position/
+        // rotation — call when a camera becomes the selected one. UI/music are unaffected (they
+        // don't spatialize), only attached/point world sounds change in audibility from this.
+        void SetWorldListenerPosition(Vector3 position, Quaternion rotation);
+
+        // Parks the world listener far away so every world sound falls silent — call when no
+        // camera is selected (no signal).
+        void ParkWorldListener();
     }
 }

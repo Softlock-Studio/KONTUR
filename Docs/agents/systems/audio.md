@@ -33,15 +33,17 @@ Namespace `Game.Audio` · folder `Assets/_Project/Scripts/Audio/`. Game-wide, re
 
 ## No player avatar — sound is heard "through the camera", not "in the room"
 Per the GDD (`Docs/agents/gdd/concept.md`), the player never has a body in the 3D world — they
-sit in the observation room and see it only through whichever security camera is selected. Two
-consequences for audio, one already handled, one not yet ours to fix:
-- **Positioning**: Unity's 3D spatialization (`spatialBlend = 1`, used by `PlaySfxAtPoint` and
-  `AudioEmitter`) is always relative to the scene's single `AudioListener`. Since there's no
-  player object to put it on, the **Camera system** (currently Planned, no code yet — see
-  `Docs/agents/systems/ai.md`/map) must move/reparent the one `AudioListener` onto whichever
-  camera is currently selected when the player switches feeds. Nothing in `Game.Audio` needs to
-  change for this to work — it's a property of wherever the listener sits, not of how sounds are
-  played.
+sit in the observation room and see it only through whichever security camera is selected.
+- **Positioning**: `AudioService` owns a single persistent `AudioListener` (created once in
+  `Start()`, always enabled — Unity only ever hears through one). `IAudioService` exposes
+  `SetWorldListenerPosition(position, rotation)` and `ParkWorldListener()`; `GameCamera.
+  TurnOnCamera` calls the former with its own camera's transform whenever it's selected, and
+  `CamerasView.ShowNoSignal()` calls the latter (moves it to `AudioConfig.
+  WorldListenerParkPosition`, far past `WorldSfxMaxDistance`) when no camera is selected. This is
+  why `PlayUiSfx`/`PlayMusic` stay always audible (`spatialBlend = 0`, listener-position-
+  independent) while `PlaySfxAtPoint`/`AudioEmitter` (`spatialBlend = 1`) are only audible near
+  the currently selected camera — no separate zone/observation gate needed on top, distance
+  falloff from the (re)positioned listener does it alone.
 - **Coloring**: to sell "coming through a camera/TV speaker" rather than "standing in the room",
   in-world sound needs a filter (Lowpass/Distortion) that UI sound must NOT have — a button click
   is the player's own interface, not something transmitted through a camera mic. This is why
@@ -96,9 +98,9 @@ in `Start()` rather than assuming it always runs (this bit both components initi
 4. Add an `AudioEmitter`/`BackgroundMusicTrigger` component to a prefab or scene object, wire its
    fields, and add that GameObject to the scope's **Auto Inject Game Objects** list (see above) —
    otherwise it compiles and runs but never actually receives `IAudioService`.
-5. When the Camera system exists: make it move the scene's `AudioListener` to the active camera
-   on every switch (see above) — nothing else here depends on it, but nothing sounds "positioned"
-   correctly until it does.
+5. Make sure no other `AudioListener` exists anywhere in the scene (e.g. on a UI `Canvas`, or the
+   default `Main Camera`) — `AudioService` creates and owns the one persistent listener; a second
+   enabled one causes Unity's "multiple AudioListeners" warning and ambiguous audio.
 
 ## Rules of thumb
 - New sound = new cue asset + a field on the relevant system's `*Config`, never a hardcoded

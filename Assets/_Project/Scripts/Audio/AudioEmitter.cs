@@ -61,9 +61,25 @@ namespace Game.Audio
 
 #if UNITY_EDITOR
             if (debugLogging)
-                Debug.Log($"[{name}] AudioEmitter played {cue.name} → clip \"{(source.clip != null ? source.clip.name : "none — Clips[] is empty on this SfxCue")}\"", this);
+                Debug.Log($"[{name}] AudioEmitter played {cue.name} → clip \"{(source.clip != null ? source.clip.name : "none — Clips[] is empty on this SfxCue")}\" | active listener: {DescribeActiveListener()}", this);
 #endif
         }
+
+#if UNITY_EDITOR
+        // Answers "where is this actually being heard from right now" — logs every enabled
+        // AudioListener in the scene (there should be exactly one; more is a Unity-level bug that
+        // logs its own warning, zero means this sound is genuinely inaudible).
+        private static string DescribeActiveListener()
+        {
+            AudioListener[] listeners = Object.FindObjectsByType<AudioListener>(FindObjectsSortMode.None);
+            var enabled = new System.Collections.Generic.List<string>();
+            foreach (AudioListener listener in listeners)
+                if (listener.enabled && listener.gameObject.activeInHierarchy)
+                    enabled.Add($"{listener.name} @ {listener.transform.position}");
+
+            return enabled.Count == 0 ? "NONE (should be silent — if you can hear this, something else is off)" : string.Join(", ", enabled);
+        }
+#endif
 
         private void ApplyCue(SfxCue cue)
         {

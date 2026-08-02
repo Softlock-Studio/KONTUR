@@ -41,5 +41,10 @@ namespace Game.Audio
                  "PlaySfxAtPoint) — tuned to house-room scale, not Unity's oversized defaults (1/500).")]
         public float WorldSfxMinDistance = 1f;
         public float WorldSfxMaxDistance = 15f;
+
+        [Tooltip("Where the single persistent world AudioListener sits when no camera is selected " +
+                 "— far enough past WorldSfxMaxDistance that every world sound falls silent, while " +
+                 "UI/music (spatialBlend 0, listener-position-independent) stay audible.")]
+        public Vector3 WorldListenerParkPosition = new(0f, -1000f, 0f);
     }
 }
