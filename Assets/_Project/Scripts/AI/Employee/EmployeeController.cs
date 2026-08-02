@@ -212,7 +212,7 @@ namespace Game.AI.Employee
             CancelCurrentTask();
             blackboard.AttackedRequested = true;
             animatorDriver?.PlayAttacked();
-            audioEmitter?.Play(config.AttackedCue);
+            audioEmitter?.Play(config.AttackedCue, AudioChannel.Action);
         }
 
         public void ApplyAttackOutcome(bool survived)
