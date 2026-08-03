@@ -351,6 +351,7 @@ MonoBehaviour:
   resourceGrid: {fileID: 8137494972943996389}
   ordersToast: {fileID: 0}
   zoneMapLabels: {fileID: 2615465576262481919}
+  reportView: {fileID: 803108114934392912}
   openPauseMenuButton: {fileID: 6939342640362078864}
   pauseMenuView: {fileID: 5874892305091433895}
 --- !u!81 &1342596051963080045
@@ -6071,6 +6072,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a33647b928fb4a84c82ae81cc3c2008e, type: 3}
+--- !u!114 &803108114934392912 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2476356573770114331, guid: a33647b928fb4a84c82ae81cc3c2008e, type: 3}
+  m_PrefabInstance: {fileID: 2988419542895594827}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 188b341cd22518548827c0803e224233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7442087802408336224 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5638336105287808555, guid: a33647b928fb4a84c82ae81cc3c2008e, type: 3}
