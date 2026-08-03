@@ -4,6 +4,7 @@ namespace Game.AI.Employee
     {
         Walk,
         Run,
+        Breathing,
         CleaningRoom,
         LightbulbChange
     }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f6e2d325200d146857fc967ee46369, type: 3}
+  m_Name: FootstepsBabooshkaCue
+  m_EditorClassIdentifier: 
+  Clips:
+  - {fileID: 8300000, guid: bfa0558a0b1fa1d43a96c429c3447cc5, type: 3}
+  - {fileID: 8300000, guid: 09492167607dadb4885ed75d7afd45f2, type: 3}
+  - {fileID: 8300000, guid: ed69b9ebb21c65b42ab1a5e71cf70444, type: 3}
+  - {fileID: 8300000, guid: 4c72100163dfa9d409ab388d3c20b79e, type: 3}
+  - {fileID: 8300000, guid: 31812f287ba730643b4339ab2f5a0650, type: 3}
+  - {fileID: 8300000, guid: a40b3cf8760b012418ded9fd28cc6a71, type: 3}
+  - {fileID: 8300000, guid: 9a431db33fa08b84ba10b13525c1b195, type: 3}
+  - {fileID: 8300000, guid: 673f0f62979604d409bd3367ae76a11b, type: 3}
+  - {fileID: 8300000, guid: d6f28d0ad7c3fb146a74f1c50e82e4b5, type: 3}
+  Volume: 1
+  PitchRange: {x: 0.9, y: 1.1}

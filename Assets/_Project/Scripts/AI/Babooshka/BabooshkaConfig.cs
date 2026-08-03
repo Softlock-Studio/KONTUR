@@ -17,8 +17,12 @@ namespace Game.AI.Babooshka
         [Range(0f, 1f)] public float ApartmentVisitChance = 0.3f;
         [Tooltip("Rolled once per stand-still while inside an apartment zone.")]
         [Range(0f, 1f)] public float WallLickChance = 0.35f;
+        [Tooltip("How long she stays stopped, licking the wall, before moving on again — tune to roughly match the WallLick animation clip length.")]
+        public float WallLickDuration = 2f;
         [Tooltip("Rolled once per stand-still while inside an apartment zone, only if the wall-lick roll above didn't already succeed (at most one \"creepy event\" per visit) — actual odds are (1 - WallLickChance) * LightOffChance, not this value directly.")]
         [Range(0f, 1f)] public float LightOffChance = 0.2f;
+        [Tooltip("How long she stays stopped, reaching for the light, before moving on again — tune to roughly match the LightOff animation clip length.")]
+        public float LightOffDuration = 1.5f;
 
         [Header("Senses")]
         public float SightRadius = 10f;

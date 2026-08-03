@@ -10,14 +10,16 @@ namespace Game.AI.Employee
         private readonly NavMeshAgent agent;
         private readonly EmployeeBlackboard blackboard;
         private readonly LoopingSoundEmitter<EmployeeSoundType> soundEmitter;
+        private readonly EmployeeAnimatorDriver animatorDriver;
 
         public PerformingTaskState(NavMeshAgent agent, EmployeeBlackboard blackboard,
-            LoopingSoundEmitter<EmployeeSoundType> soundEmitter)
+            LoopingSoundEmitter<EmployeeSoundType> soundEmitter, EmployeeAnimatorDriver animatorDriver = null)
             : base(needsExitTime: false)
         {
             this.agent = agent;
             this.blackboard = blackboard;
             this.soundEmitter = soundEmitter;
+            this.animatorDriver = animatorDriver;
         }
 
         public override void OnEnter()
@@ -36,7 +38,11 @@ namespace Game.AI.Employee
             // emitter can't reset a timer for a type it doesn't have yet, and there's nothing to
             // pulse immediately for a task that emits no ambient sound at all.
             EmployeeSoundType? soundType = task?.AmbientSoundType;
-            if (soundType.HasValue) soundEmitter?.ResetTimer(soundType.Value);
+            if (soundType.HasValue)
+            {
+                soundEmitter?.ResetTimer(soundType.Value);
+                PlayTaskAnimation(soundType.Value);
+            }
         }
 
         public override void OnLogic()
@@ -44,6 +50,17 @@ namespace Game.AI.Employee
             IEmployeeTask task = blackboard.PendingTask;
             EmployeeSoundType? soundType = task?.AmbientSoundType;
             if (soundType.HasValue) soundEmitter?.Tick(soundType.Value, Time.deltaTime);
+        }
+
+        // Only the two task types with an authored reaction animation trigger something here —
+        // this intentionally does not also play a sound (see EmployeeAnimatorDriver.PlayCleaning).
+        private void PlayTaskAnimation(EmployeeSoundType soundType)
+        {
+            switch (soundType)
+            {
+                case EmployeeSoundType.CleaningRoom: animatorDriver?.PlayCleaning(); break;
+                case EmployeeSoundType.LightbulbChange: animatorDriver?.PlayLightbulbChange(); break;
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ namespace CameraSystem
             _correspondingCamera.enabled = true;
             _iconRenderer.sprite = _selectedSprite;
             _audioService.PlayUiSfx(_clickCue);
-
+            _audioService.SetWorldListenerPosition(_correspondingCamera.transform.position, _correspondingCamera.transform.rotation);
         }
 
         public bool TrySetNoiseBlend(float blend)

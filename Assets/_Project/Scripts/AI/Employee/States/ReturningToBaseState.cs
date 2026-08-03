@@ -28,11 +28,13 @@ namespace Game.AI.Employee
             agent.isStopped = false;
             if (blackboard.BasePoint != null) agent.SetDestination(blackboard.BasePoint.position);
             soundEmitter?.ResetTimer(EmployeeSoundType.Walk);
+            // Breathing is deliberately not reset here — see MovingToState.OnEnter.
         }
 
         public override void OnLogic()
         {
             soundEmitter?.Tick(EmployeeSoundType.Walk, Time.deltaTime);
+            soundEmitter?.Tick(EmployeeSoundType.Breathing, Time.deltaTime);
         }
     }
 }
