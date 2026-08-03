@@ -56,7 +56,7 @@ public class RoomInfectionDemo : MonoBehaviour
 
     private void OnInfectionChanged(float Infection)
     {
-        infectionAmount = Infection;
+        infectionAmount = Infection/100f;
     }
 
 #if UNITY_EDITOR
