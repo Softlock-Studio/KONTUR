@@ -32,15 +32,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: e12badc9702730a4aa5a34476f2c62d2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _InfectionDirtTex:
+        m_Texture: {fileID: 2800000, guid: e12badc9702730a4aa5a34476f2c62d2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Blend: 4
     - _DirtIntensity: 0.5
     - _DirtTiling: 0.17
+    - _MaskNoiseScale: 0.17
+    - _MaskThreshold: 0.67
+    - _MaxEffectiveInfection: 1.37
     - _NoiseScale: 1
     - _NoiseStrength: 0.2
+    - _Softness: 1.27
     - _Tiling: 0.61
-    m_Colors: []
+    m_Colors:
+    - _InfectionDirtColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6856320154141561544
