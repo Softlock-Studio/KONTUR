@@ -75,6 +75,7 @@ namespace CameraSystem
             }
 
             AudioService.ParkWorldListener();
+            AudioService.StopUiLoop();
 
             if (_noSignalCameraObject == null)
             {

@@ -1,5 +1,7 @@
+using Game.Bootstrap;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace Game.Audio
 {
@@ -15,6 +17,14 @@ namespace Game.Audio
     {
         private static readonly int ChannelCount = System.Enum.GetValues(typeof(AudioChannel)).Length;
 
+        [Header("Auto-play (optional)")]
+        [Tooltip("For static level props with no script deciding when to make sound (a TV, a " +
+                 "vent, a dripping pipe, ...) — plays this once the emitter is ready. Leave empty " +
+                 "for anything driven by code instead (Play/PlayLoop calls, e.g. Employee/Babooshka).")]
+        [SerializeField] private SfxCue autoPlayCue;
+        [SerializeField] private AudioChannel autoPlayChannel = AudioChannel.General;
+        [SerializeField] private bool autoPlayLoop = true;
+
         [SerializeField] private bool debugLogging = false;
 
         private IAudioService audioService;
@@ -25,27 +35,23 @@ namespace Game.Audio
         // it short; once it finishes on its own, the channel is free again for anything.
         private bool[] protectedChannel;
 
-        [Inject]
-        public void Construct(IAudioService audioService)
-        {
-            this.audioService = audioService;
-        }
-
-        // Deferred to Start: [Inject] runs during the owning LifetimeScope's build, which isn't
-        // guaranteed to complete before this object's own Awake — Unity only guarantees all
-        // Awakes finish before any Start (same pattern as LocalizedTextTMP.Construct).
+        // Resolved directly instead of [Inject], so this never depends on the GameObject being
+        // added to the owning LifetimeScope's Auto Inject Game Objects list — same pattern as
+        // GameCamera/CamerasView. One-time scene lookup, cached; not repeated per Play() call.
         private void Start()
         {
-            if (audioService == null)
-            {
-                Debug.LogWarning($"[{name}] AudioEmitter has no IAudioService — add this GameObject to the owning LifetimeScope's Auto Inject Game Objects list.", this);
-                return;
-            }
+            audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
 
             sources = new AudioSource[ChannelCount];
             protectedChannel = new bool[ChannelCount];
             for (int i = 0; i < sources.Length; i++)
                 sources[i] = audioService.CreateAttachedSource(transform);
+
+            if (autoPlayCue != null)
+            {
+                if (autoPlayLoop) PlayLoop(autoPlayCue, autoPlayChannel);
+                else Play(autoPlayCue, autoPlayChannel);
+            }
         }
 
         // Returns whether it actually started — false means the channel is busy with a
@@ -75,7 +81,7 @@ namespace Game.Audio
                 if (debugLogging)
                 {
                     string reason = source == null
-                        ? "no AudioSource (IAudioService never injected — add this GameObject to the owning LifetimeScope's Auto Inject Game Objects list)"
+                        ? "no AudioSource yet (Start() hasn't run on this AudioEmitter — called too early, or the GameObject is inactive)"
                         : "cue is null (SfxCue field not assigned in the config)";
                     Debug.Log($"[{name}] AudioEmitter skipped: {reason}", this);
                 }
