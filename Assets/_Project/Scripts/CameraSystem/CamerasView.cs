@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CameraSystem.Rendering;
+using Game.Audio;
 using Game.Bootstrap;
 using Game.Localization;
 using TMPro;
@@ -20,6 +21,7 @@ namespace CameraSystem
         private GameObject _noSignalCameraObject;
 
         private ILocalizationService localization;
+        private IAudioService audioService;
 
         public event Action<int> OnHandleClick;
 
@@ -27,6 +29,9 @@ namespace CameraSystem
         // resolve pattern as SettingsPanelView/EmployeeSlotView.
         private ILocalizationService Localization =>
             localization ??= LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
+
+        private IAudioService AudioService =>
+            audioService ??= LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
 
         // Auto-populated so every GameCamera in the scene is found, instead of relying on a
         // manually-maintained (and easy to leave incomplete) serialized list.
@@ -68,6 +73,8 @@ namespace CameraSystem
             {
                 cam.TurnOffCamera();
             }
+
+            AudioService.ParkWorldListener();
 
             if (_noSignalCameraObject == null)
             {

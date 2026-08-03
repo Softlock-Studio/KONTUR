@@ -20,7 +20,10 @@ MonoBehaviour:
   MusicVolumeParam: MusicVolume
   SfxVolumeParam: SfxVolume
   DefaultMasterVolume: 1
-  DefaultMusicVolume: 0.215
+  DefaultMusicVolume: 0.647
   DefaultSfxVolume: 1
   DefaultMusicFadeSeconds: 1.5
   SfxPoolSize: 8
+  WorldSfxMinDistance: 3
+  WorldSfxMaxDistance: 15
+  WorldListenerParkPosition: {x: 0, y: -1000, z: 0}

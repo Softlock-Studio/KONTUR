@@ -33,6 +33,8 @@ namespace Game.AI.Employee
         public string CurrentStateName => fsm?.GetActiveHierarchyPath() ?? string.Empty;
         public int CallsignNumber => callsignNumber;
 
+        public event Action Died;
+
         // States are flat (no sub-state-machines), so the hierarchy path is just "/<StateName>" —
         // trimming the slash lines up exactly with the names used in BuildStateMachine.
         public EmployeeStateId StateId =>
@@ -67,7 +69,7 @@ namespace Game.AI.Employee
 
             fsm.AddState("Idle", new IdleState(agent));
             fsm.AddState("MovingTo", new MovingToState(agent, config, blackboard, soundEmitter));
-            fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter));
+            fsm.AddState("PerformingTask", new PerformingTaskState(agent, blackboard, soundEmitter, animatorDriver));
             fsm.AddState("ReturningToBase", new ReturningToBaseState(agent, config, blackboard, soundEmitter));
             fsm.AddState("Fleeing", new FleeingState(agent, config, blackboard, soundEmitter));
             var attackedState = new AttackedState(agent, config, blackboard);
@@ -212,7 +214,7 @@ namespace Game.AI.Employee
             CancelCurrentTask();
             blackboard.AttackedRequested = true;
             animatorDriver?.PlayAttacked();
-            audioEmitter?.Play(config.AttackedCue);
+            audioEmitter?.Play(config.AttackedCue, AudioChannel.Action);
         }
 
         public void ApplyAttackOutcome(bool survived)
@@ -227,6 +229,7 @@ namespace Game.AI.Employee
                 enabled = false;
                 ragdoll?.TriggerDeath();
                 audioEmitter?.Play(config.DeathCue);
+                Died?.Invoke();
                 return;
             }
 

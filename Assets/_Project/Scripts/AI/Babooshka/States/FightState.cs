@@ -49,7 +49,7 @@ namespace Game.AI.Babooshka
 
             fightTarget = blackboard.Target;
             animatorDriver?.PlayAttack();
-            audioEmitter?.Play(config.AttackCue);
+            audioEmitter?.Play(config.AttackCue, AudioChannel.Action);
             fightTarget?.ReactToAttack();
         }
 

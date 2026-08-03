@@ -36,6 +36,15 @@ namespace Game.AI.Employee
         public SfxCue FleeCue;
         public SfxCue AttackedCue;
 
+        [Header("Animation variants")]
+        [Tooltip("How many randomized clip variants exist in the Animator for each one-shot action " +
+                 "— the driver rolls Random.Range(0, count) into the Animator's \"Variant\" int " +
+                 "parameter right before firing the matching trigger. Set to however many variant " +
+                 "states you've wired for that action in the graph (1 = no variation, always the same clip).")]
+        public int CleaningVariantCount = 1;
+        public int LightbulbChangeVariantCount = 1;
+        public int AttackedVariantCount = 1;
+
         [Header("Sounds (TBD placeholder values, not GDD-sourced)")]
         [Tooltip("Per-type re-trigger cadence — see SoundDefinition.MinIntervalSeconds/MaxIntervalSeconds.")]
         public List<SoundDefinition<EmployeeSoundType>> Sounds = new();

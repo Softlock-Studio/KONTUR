@@ -1,6 +1,10 @@
 using CameraSystem.Rendering;
+using Game.Audio;
+using Game.Bootstrap;
 using Game.House;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace CameraSystem
 {
@@ -10,17 +14,23 @@ namespace CameraSystem
         [SerializeField] private Camera _correspondingCamera;
         [SerializeField] private string _localisationKey;
         [SerializeField] private Zone _observedZone;
+        [SerializeField] private SpriteRenderer _iconRenderer;
+        [SerializeField] private Sprite _defaultSprite;
+        [SerializeField] private Sprite _selectedSprite;
+        [SerializeField] private SfxCue _clickCue;
+
         private int _cameraID;
-        private AudioListener _audioListener;
+        private IAudioService _audioService;
 
         private void Awake()
         {
             _cameraID = gameObject.GetInstanceID();
-            // Auto-discovered, not serialized: every camera in AllCamera.prefab already has one
-            // on the same GameObject as _correspondingCamera. Null-safe — a camera without one
-            // just never produces spatial audio, nothing else breaks.
-            _audioListener = _correspondingCamera.GetComponent<AudioListener>();
         }
+        private void Start()
+        {
+            _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+        }
+
         public int GetCameraID() => _cameraID;
         public string GetLocalisationKey() => _localisationKey;
         public Zone GetObservedZone() => _observedZone;
@@ -28,16 +38,16 @@ namespace CameraSystem
         {
             _correspondingCamera.targetTexture = null;
             _correspondingCamera.enabled = false;
-            if (_audioListener != null) _audioListener.enabled = false;
+            _iconRenderer.sprite = _defaultSprite;
         }
 
         public void TurnOnCamera(RenderTexture cameraTexture)
         {
             _correspondingCamera.targetTexture = cameraTexture;
             _correspondingCamera.enabled = true;
-            // Listener follows the selected camera, so world sounds (AudioService.CreateAttachedSource)
-            // are heard as if standing where this camera is — see Game.Audio.AudioService.
-            if (_audioListener != null) _audioListener.enabled = true;
+            _iconRenderer.sprite = _selectedSprite;
+            _audioService.PlayUiSfx(_clickCue);
+            _audioService.SetWorldListenerPosition(_correspondingCamera.transform.position, _correspondingCamera.transform.rotation);
         }
 
         public bool TrySetNoiseBlend(float blend)
