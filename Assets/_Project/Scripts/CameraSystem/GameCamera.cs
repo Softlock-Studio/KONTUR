@@ -18,6 +18,7 @@ namespace CameraSystem
         [SerializeField] private Sprite _defaultSprite;
         [SerializeField] private Sprite _selectedSprite;
         [SerializeField] private SfxCue _clickCue;
+        [SerializeField] private SfxCue _viewHumCue;
 
         private int _cameraID;
         private IAudioService _audioService;
@@ -47,6 +48,7 @@ namespace CameraSystem
             _correspondingCamera.enabled = true;
             _iconRenderer.sprite = _selectedSprite;
             _audioService.PlayUiSfx(_clickCue);
+            _audioService.PlayUiLoop(_viewHumCue);
             _audioService.SetWorldListenerPosition(_correspondingCamera.transform.position, _correspondingCamera.transform.rotation);
         }
 

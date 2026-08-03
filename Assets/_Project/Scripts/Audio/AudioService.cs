@@ -17,6 +17,8 @@ namespace Game.Audio
         private AudioListener worldListener;
         private AudioSource musicA;
         private AudioSource musicB;
+        private AudioSource uiLoopSource;
+        private SfxCue currentUiLoopCue;
         private AudioSource[] sfxPool;
         private int sfxCursor;
 
@@ -45,6 +47,7 @@ namespace Game.Audio
 
             musicA = CreateSource("MusicA", config.MusicGroup, spatialBlend: 0f);
             musicB = CreateSource("MusicB", config.MusicGroup, spatialBlend: 0f);
+            uiLoopSource = CreateSource("UiLoop", config.UiSfxGroup, spatialBlend: 0f);
 
             sfxPool = new AudioSource[Mathf.Max(1, config.SfxPoolSize)];
             for (int i = 0; i < sfxPool.Length; i++)
@@ -165,6 +168,24 @@ namespace Game.Audio
             source.volume = cue.Volume;
             source.pitch = cue.GetPitch();
             source.Play();
+        }
+
+        public void PlayUiLoop(SfxCue cue)
+        {
+            if (cue == null || cue == currentUiLoopCue) return;
+
+            currentUiLoopCue = cue;
+            uiLoopSource.clip = cue.GetClip();
+            uiLoopSource.volume = cue.Volume;
+            uiLoopSource.pitch = cue.GetPitch();
+            uiLoopSource.loop = true;
+            uiLoopSource.Play();
+        }
+
+        public void StopUiLoop()
+        {
+            currentUiLoopCue = null;
+            uiLoopSource.Stop();
         }
 
         public void PlaySfxAtPoint(SfxCue cue, Vector3 position)
