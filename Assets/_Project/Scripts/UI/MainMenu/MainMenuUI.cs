@@ -1,6 +1,7 @@
 using Game.Bootstrap;
 using Game.UI.Settings;
 using Loader.SceneController;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -11,12 +12,18 @@ namespace Game.UI.MainMenu
     public class MainMenuUI : MonoBehaviour
     {
         [SerializeField] private SettingsPanelView _settingsPanelView;
+        [SerializeField] private Animator _menuAnimator;
         [SerializeField] private YesNoPopUp _startGamePopUpView;
         [SerializeField] private GameObject _mainMenuButtonsObject;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _quitButton;
+
+        private const string SETTINGS_ANIM_TRIGGER = "SETTINGS_APPEAR";
+        private const string MENU_ANIM_TRIGGER = "MENU_APPEAR";
+        private const string CLOSE_SETTINGS_STATE = "ButtonsPanelLeftToRight";
+        private const string CLOSE_MENU_STATE = "ButtonsPanelRightToLeft";
 
         private SceneController _sceneController;
 
@@ -75,15 +82,30 @@ namespace Game.UI.MainMenu
 
         private void OpenSettingsMenu()
         {
-            _settingsPanelView.gameObject.SetActive(true);
-            _mainMenuButtonsObject.gameObject.SetActive(false);
+            StartCoroutine(PlayOpenSettingsAnimation());
         }
 
         private void OpenMainMenu()
         {
-            _settingsPanelView.gameObject.SetActive(false);
-            _mainMenuButtonsObject.gameObject.SetActive(true);
+            StartCoroutine(PlayOpenMenuAnimation());
         }
+
+        private IEnumerator PlayOpenMenuAnimation()
+        {
+            _menuAnimator.SetTrigger(MENU_ANIM_TRIGGER);
+            _mainMenuButtonsObject.gameObject.SetActive(true);
+            yield return new WaitUntil(delegate { return _menuAnimator.GetCurrentAnimatorStateInfo(0).IsName(CLOSE_SETTINGS_STATE); });
+            _settingsPanelView.gameObject.SetActive(false);
+        }
+
+        private IEnumerator PlayOpenSettingsAnimation()
+        {
+            _menuAnimator.SetTrigger(SETTINGS_ANIM_TRIGGER);
+            _settingsPanelView.gameObject.SetActive(true);
+            yield return new WaitUntil(delegate { return _menuAnimator.GetCurrentAnimatorStateInfo(0).IsName(CLOSE_MENU_STATE); });
+            _mainMenuButtonsObject.gameObject.SetActive(false);
+        }
+
 
         private void QuitGame()
         {

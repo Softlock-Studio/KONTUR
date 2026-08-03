@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7062577294363092177
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -7,9 +20,15 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<<< HEAD:Assets/_Project/Art/Surfaces/SH_Wallpaper_20.mat
   m_Name: SH_Wallpaper_20
   m_Shader: {fileID: -6465566751694194690, guid: 44ed0c04e58e8f34dbdc21b59a0c198f, type: 3}
   m_Parent: {fileID: 0}
+========
+  m_Name: MiiniMap_Corner
+  m_Shader: {fileID: -6465566751694194690, guid: 1475ee1efc328e8458a8db3158a79f17, type: 3}
+  m_Parent: {fileID: 2100000, guid: 61de5f1cde3711d4fbe42c92443b4a6b, type: 2}
+>>>>>>>> development:Assets/_Project/Prefabs/MiniMap/MiiniMap_Corner.mat
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -23,6 +42,7 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
+<<<<<<<< HEAD:Assets/_Project/Art/Surfaces/SH_Wallpaper_20.mat
     m_TexEnvs:
     - _BaseTex:
         m_Texture: {fileID: 2800000, guid: 140bc1d69fe6e6b49bb2140b4b3a77e2, type: 3}
@@ -72,3 +92,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 10
+========
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _EdgeMask: {r: 1, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+>>>>>>>> development:Assets/_Project/Prefabs/MiniMap/MiiniMap_Corner.mat

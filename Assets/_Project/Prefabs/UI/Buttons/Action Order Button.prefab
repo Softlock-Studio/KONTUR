@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 2600454122908604305}
   - component: {fileID: 6787240326778912460}
   - component: {fileID: 2117688495598352852}
-  - component: {fileID: 5402490884547346055}
+  - component: {fileID: 194632891909135968}
   m_Layer: 5
   m_Name: Action Order Button
   m_TagString: Untagged
@@ -273,7 +273,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5402490884547346055
+--- !u!114 &194632891909135968
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -282,8 +282,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 6494926938875329625}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5df2a06cc81d6544bc223ae2fb74c40, type: 3}
+  m_Script: {fileID: 11500000, guid: 6892531fe4f07074b95dce5ddeab8dc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _button: {fileID: 2117688495598352852}
   _clickCue: {fileID: 11400000, guid: 721105e93392ff841bf9577716a3f4c4, type: 2}
+  _button: {fileID: 2117688495598352852}

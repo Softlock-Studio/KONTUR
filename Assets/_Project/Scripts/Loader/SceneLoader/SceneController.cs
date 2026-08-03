@@ -13,6 +13,9 @@ namespace Loader.SceneController
         private Dictionary<LevelType, string> _sceneDictionary = new();
 
         private string _currentLevelScene = "";
+        private LevelType _currentLevelType;
+
+        public LevelType GetCurrentLevelType() => _currentLevelType;
 
         public SceneController(LevelLoaderConfig config, bool isDebug = false)
         {
@@ -41,6 +44,7 @@ namespace Loader.SceneController
                 }
 
                 _currentLevelScene = _sceneDictionary[sceneType];
+                _currentLevelType = sceneType;
             }
         }
 
