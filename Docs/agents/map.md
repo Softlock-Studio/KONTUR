@@ -29,6 +29,7 @@ means design-only, nothing under `Scripts/` yet.
 | Resident events (random events, help requests, emergencies) | Partially built — event *scaffolding* (spawn/expiry/resolve) is generic and live; specific resident-event content is not authored | `Scripts/House/ZoneEventType.cs`, `ResolveZoneEventEffect.cs` | [residents.md](gdd/residents.md) |
 | Defeat conditions (full team death; critical infection; infection below floor ×2) | Built (partial) — full team death and infection maxed (100%) checked in `MissionManager.Tick`; corridor floor-breach-twice not implemented (no floor/ceiling values wired up, see `HousePresenter`'s `SetHouseInfectionRange` TODO) | `Scripts/Mission/MissionManager.cs` | [defeat.md](gdd/defeat.md) |
 | Object stabilization (camera-as-stabilizer rule) | Planned | — | [lore-stabilization.md](gdd/lore-stabilization.md) |
+| Save (single-slot autosave on level start: resource counts, alive employee count) | Built (partial) — write-only checkpoint; load/continue flow not wired up | `Scripts/Save/` | — |
 
 ## Test scenes
 - `Assets/_Project/Scenes/TestScenes/TestAI/` — Babooshka + Employee FSMs.
@@ -42,5 +43,6 @@ means design-only, nothing under `Scripts/` yet.
 `Docs/agents/systems/ai.md` (Babooshka + Employee), `Docs/agents/systems/house.md`
 (Zone/HouseModel/events), `Docs/agents/systems/audio.md` (music/SFX/volume),
 `Docs/agents/systems/input.md` (mouse/keyboard polling), `Docs/agents/systems/ui.md` (Display
-Canvas wiring: employee list, map/camera clicks, zone action menu, timer, settings). Read the
-relevant one before editing that system.
+Canvas wiring: employee list, map/camera clicks, zone action menu, timer, settings),
+`Docs/agents/systems/save.md` (autosave checkpoint on level start). Read the relevant one
+before editing that system.

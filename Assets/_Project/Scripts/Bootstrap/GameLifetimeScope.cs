@@ -3,6 +3,7 @@ using Game.House;
 using Game.House.Model;
 using Game.Input;
 using Game.Localization;
+using Game.Save;
 using Loader.SceneController;
 using UnityEngine;
 using VContainer;
@@ -33,6 +34,8 @@ namespace Game.Bootstrap
 
             // Persists across missions, unlike everything registered in MissionScope.
             builder.Register<ResourceInventory>(Lifetime.Singleton);
+
+            builder.Register<SaveService>(Lifetime.Singleton).As<ISaveService>();
 
             builder.Register<SceneController>(Lifetime.Singleton).AsSelf().WithParameter("isDebug", _isDebug);
 
