@@ -15,8 +15,18 @@ namespace Game.UI.Employees
         [SerializeField] private Sprite _hoverSprite;
         [SerializeField] private Sprite _selectedSprite;
         [SerializeField] private SfxCue _clickCue;
-
+        [SerializeField] private GameObject _deactivationMask;
+        private bool _isActive = true;
         private IAudioService _audioService;
+
+        public bool IsActive() => _isActive;
+
+        public void Deactivate()
+        {
+            _deactivationMask.SetActive(true);
+            _isActive = false;
+            _backgroundImage.sprite = _defaultSprite;
+        }
 
         private void Start()
         {
@@ -30,6 +40,8 @@ namespace Game.UI.Employees
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (!_isActive) return;
+
             CursorManager.Instance.ChangeCursor(CursorState.Hover);
 
             if (_backgroundImage.sprite == _selectedSprite) return;
@@ -39,6 +51,8 @@ namespace Game.UI.Employees
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (!_isActive) return;
+
             CursorManager.Instance.ChangeCursor(CursorState.Default);
 
             if (_backgroundImage.sprite == _selectedSprite) return;

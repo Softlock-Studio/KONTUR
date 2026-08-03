@@ -76,7 +76,7 @@ namespace Game.UI.Employees
 
         private void OnBoundEmployeeDied()
         {
-            throw new NotImplementedException();
+            employeeCard.Deactivate();
         }
 
         public void RefreshGoal()
@@ -105,7 +105,7 @@ namespace Game.UI.Employees
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (BoundEmployee != null) Clicked?.Invoke(this);
+            if (BoundEmployee != null && employeeCard.IsActive()) Clicked?.Invoke(this);
         }
     }
 }
