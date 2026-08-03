@@ -9,7 +9,7 @@ using VContainer.Unity;
 namespace Game.UI.Settings
 {
     [RequireComponent(typeof(Button))]
-    public class SettingsButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class DefaultButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private SfxCue _clickCue;
         [SerializeField] private Button _button;
