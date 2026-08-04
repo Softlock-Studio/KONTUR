@@ -15,6 +15,11 @@ namespace Game.House
         [SerializeField] private ZoneConfig config;
         [SerializeField] private Transform[] standingPoints;
         [SerializeField] private bool includeInInfectionStats = true;
+
+        [Header("Initial state (editor-authored starting values)")]
+        [SerializeField, Range(0f, 100f)] private float initialInfection = 0f;
+        [SerializeField] private bool initialLightOn = true;
+
         public bool isDebug = false;
 
         private IEmployee[] occupants;
@@ -43,7 +48,7 @@ namespace Game.House
         public string DisplayName => displayName;
         public bool IncludeInInfectionStats => includeInInfectionStats;
         public float Infection { get; private set; }
-        public bool HasLight { get; private set; } = true;
+        public bool HasLight { get; private set; }
         public bool IsApartment => roomType == RoomType.Apartment;
 
         public event Action LightChanged;
@@ -74,6 +79,10 @@ namespace Game.House
             reservingTask = new ZoneTask[count];
             activityFinished = new bool[count];
             zoneCollider = GetComponent<Collider>();
+
+            Infection = Mathf.Clamp(initialInfection, 0f, 100f);
+            HasLight = initialLightOn;
+            infectionOutbreakActive = Infection > 0f;
         }
 
         // Convex-collider-only trick: Collider.ClosestPoint returns the same point back when it's
