@@ -13,6 +13,8 @@ namespace Game.Mission
         private readonly HouseModel houseModel;
         private readonly EmployeeRegistry employeeRegistry;
         private readonly MissionTimer missionTimer;
+        private readonly float infectionFloor01;
+        private readonly float infectionCeiling01;
 
         private bool hasEnded;
         private float maxInfectionReached01;
@@ -22,10 +24,12 @@ namespace Game.Mission
         public bool IsEndDay => missionTimer.IsEndOfDay;
         public int CurrentNight { get; }
 
-        // Fires exactly once per mission, either when the timer runs out (victory — the night was
-        // survived) or a defeat condition is hit first (infection maxed out / whole team dead).
-        // Subscribe to this to drive the results screen's Show(isVictory, maxInfectionReached01,
-        // employeesKilled).
+        // Fires exactly once per mission: when the timer runs out, victory requires infection to
+        // be within [infectionFloor01; infectionCeiling01] at that moment (otherwise it's a
+        // defeat, same report screen, just isVictory: false) — or a hard defeat is hit first
+        // (infection maxed out at 100% / whole team dead), which ends the mission immediately
+        // instead of waiting for day-end. Subscribe to this to drive the results screen's
+        // Show(isVictory, maxInfectionReached01, employeesKilled).
         public event Action<LevelEndResult> LevelEnded;
 
         public MissionManager(HouseConfig houseConfig, HouseModel houseModel, EmployeeRegistry employeeRegistry)
@@ -35,6 +39,8 @@ namespace Game.Mission
 
             missionTimer = new MissionTimer(houseConfig.DayDurationInSecond);
             CurrentNight = houseConfig.NightNumber;
+            infectionFloor01 = houseConfig.InfectionFloor01;
+            infectionCeiling01 = houseConfig.InfectionCeiling01;
         }
 
         // Deferred from the constructor because EmployeeRegistry.Employees is only populated in
@@ -61,13 +67,12 @@ namespace Game.Mission
                 return;
             }
 
-            if (IsEndDay) EndLevel(isVictory: true);
+            if (IsEndDay) EndLevel(isVictory: IsInfectionWithinCorridor());
         }
 
-        // Defeat, per the GDD (Docs/agents/gdd/defeat.md): whole team dead, or infection maxed
-        // out. The third candidate there — infection corridor floor breached twice — isn't checked
-        // here because no floor/ceiling values are wired up yet (see HousePresenter's
-        // SetHouseInfectionRange TODO).
+        // Hard, instant defeat per the GDD (Docs/agents/gdd/defeat.md): whole team dead, or
+        // infection maxed out at 100%. Ends the mission the moment it happens instead of waiting
+        // for day-end — unlike the corridor check below, which only matters at day-end.
         private bool IsDefeated()
         {
             if (houseModel.GetHouseInfectionLevel01() >= 1f) return true;
@@ -79,6 +84,14 @@ namespace Game.Mission
                 if (employee.IsAlive) return false;
 
             return true;
+        }
+
+        // The GDD's "infection corridor" condition (Docs/agents/gdd/defeat.md): the night must
+        // end with infection inside [floor; ceiling], not just under the 100% hard cap above.
+        private bool IsInfectionWithinCorridor()
+        {
+            float infection = houseModel.GetHouseInfectionLevel01();
+            return infection >= infectionFloor01 && infection <= infectionCeiling01;
         }
 
         private void EndLevel(bool isVictory)
