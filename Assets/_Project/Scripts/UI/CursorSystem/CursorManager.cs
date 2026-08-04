@@ -14,7 +14,7 @@ namespace Game.UI
     //TODO get rid of singletone and put into DI
     public class CursorManager : MonoBehaviour
     {
-        [SerializeField] List<CursorTextureTuple> cursors;
+        [SerializeField] List<CursorSettings> cursors;
 
         public static CursorManager Instance;
 
@@ -32,18 +32,19 @@ namespace Game.UI
 
         public void ChangeCursor(CursorState state)
         {
-            foreach (var pair in cursors)
+            foreach (var settings in cursors)
             { 
-                if (pair._state == state)
-                    Cursor.SetCursor(pair._texture, Vector2.zero, CursorMode.Auto);
+                if (settings._state == state)
+                    Cursor.SetCursor(settings._texture, settings._hotspot, CursorMode.ForceSoftware);
             }
         }
     }
 
     [Serializable]
-    public class CursorTextureTuple
+    public struct CursorSettings
     {
         public CursorState _state;
+        public Vector2 _hotspot;
         public Texture2D _texture;
     }
 }
