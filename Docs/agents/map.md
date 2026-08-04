@@ -29,6 +29,7 @@ means design-only, nothing under `Scripts/` yet.
 | Resident events (random events, help requests, emergencies) | Partially built — event *scaffolding* (spawn/expiry/resolve) is generic and live; specific resident-event content is not authored | `Scripts/House/ZoneEventType.cs`, `ResolveZoneEventEffect.cs` | [residents.md](gdd/residents.md) |
 | Defeat conditions (full team death; critical infection; infection corridor) | Built — full team death and infection maxed (100%) end the mission instantly (`MissionManager.IsDefeated`); infection outside `HouseConfig.InfectionFloor01`/`InfectionCeiling01` at night-end is also a defeat (`MissionManager.IsInfectionWithinCorridor`), checked as a snapshot when the timer runs out rather than counting mid-night breaches (deviates from the GDD's "floor breached twice" draft — floor/ceiling are static per-level values, no night-to-night escalation) | `Scripts/Mission/MissionManager.cs`, `Scripts/House/HouseConfig.cs` | [defeat.md](gdd/defeat.md) |
 | Object stabilization (camera-as-stabilizer rule) | Planned | — | [lore-stabilization.md](gdd/lore-stabilization.md) |
+| Save (single-slot autosave on level start: resource counts, alive employee count) | Built (partial) — write-only checkpoint; load/continue flow not wired up | `Scripts/Save/` | — |
 
 ## Test scenes
 - `Assets/_Project/Scenes/TestScenes/TestAI/` — Babooshka + Employee FSMs.
@@ -42,5 +43,6 @@ means design-only, nothing under `Scripts/` yet.
 `Docs/agents/systems/ai.md` (Babooshka + Employee), `Docs/agents/systems/house.md`
 (Zone/HouseModel/events), `Docs/agents/systems/audio.md` (music/SFX/volume),
 `Docs/agents/systems/input.md` (mouse/keyboard polling), `Docs/agents/systems/ui.md` (Display
-Canvas wiring: employee list, map/camera clicks, zone action menu, timer, settings). Read the
-relevant one before editing that system.
+Canvas wiring: employee list, map/camera clicks, zone action menu, timer, settings),
+`Docs/agents/systems/save.md` (autosave checkpoint on level start). Read the relevant one
+before editing that system.
