@@ -63,6 +63,7 @@ namespace Game.UI.House
             Vector3 worldClick = mapCamera.ViewportToWorldPoint(viewportClick);
 
             RaycastHit[] hits = Physics.RaycastAll(worldClick, Vector3.down, config.MaxRayDistance, config.RaycastMask);
+            Debug.DrawRay(worldClick, Vector3.down * config.MaxRayDistance, Color.yellow, 10);
             Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
             HandleRaycastHits(hits, eventData);
