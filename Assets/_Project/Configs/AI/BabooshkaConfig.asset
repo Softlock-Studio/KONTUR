@@ -16,10 +16,10 @@ MonoBehaviour:
   ChaseSpeed: 3
   WanderStandStillMinSeconds: 2
   WanderStandStillMaxSeconds: 5
-  ApartmentVisitChance: 1
-  WallLickChance: 1
+  ApartmentVisitChance: 0.35
+  WallLickChance: 0.35
   WallLickDuration: 4.07
-  LightOffChance: 0.702
+  LightOffChance: 0.25
   LightOffDuration: 6.05
   SightRadius: 10
   SightAngle: 110
@@ -37,7 +37,7 @@ MonoBehaviour:
   SameFloorHeightTolerance: 2.5
   DifferentFloorRadiusMultiplier: 0.35
   AttackRange: 1.5
-  AttackReactionDuration: 10
+  AttackReactionDuration: 2.5
   FightResolutionDuration: 3
   InvestigateTimeout: 6
   PostFightMercyDuration: 5

@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d24738a5efd8d644aa9602ae9116d43, type: 3}
   m_Name: HouseConfig
   m_EditorClassIdentifier: 
-  DayDurationInSecond: 1000
+  DayDurationInSecond: 420
+  NightNumber: 1
+  InfectionFloor01: 0.2
+  InfectionCeiling01: 0.4

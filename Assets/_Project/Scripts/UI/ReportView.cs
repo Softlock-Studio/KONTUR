@@ -1,7 +1,6 @@
 using Game.Audio;
 using Game.Bootstrap;
 using Game.Localization;
-using Game.Mission;
 using Loader.SceneController;
 using TMPro;
 using UnityEngine;
@@ -29,18 +28,22 @@ public class ReportView : MonoBehaviour
     private SceneController _sceneController;
     private IAudioService _audioService;
 
-    public void ShowReport(LevelEndResult endResult)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="hasClearedLevel">if set to true, button changes to "continue", otherwise it changes to "replay day"</param>
+    public void ShowReport(bool hasClearedLevel, int maxInfection, int numOfDeadEmployees)
     {
         _sceneController = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<SceneController>();
         _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
 
-        _maxInfectionText.text = $"{endResult.MaxInfectionReached01:F0}";
-        _deadEmployeesText.text = endResult.EmployeesKilled.ToString();
+        _maxInfectionText.text = maxInfection.ToString();
+        _deadEmployeesText.text = numOfDeadEmployees.ToString();
         _extraText.SetKey("Report.Worker.Extra." + ((int)_sceneController.GetCurrentLevelType()).ToString());
 
-        _konturText.SetKey("Report.Kontur." + (endResult.IsVictory ? "SuccessText." : "FailText.") + ((int)_sceneController.GetCurrentLevelType()).ToString());
+        _konturText.SetKey("Report.Kontur." + (hasClearedLevel ? "SuccessText." : "FailText.") + ((int)_sceneController.GetCurrentLevelType()).ToString());
 
-        if (endResult.IsVictory)
+        if (hasClearedLevel)
         {
             _buttonText.SetKey("Report.ContinueButton");
             _button.onClick.AddListener(() => { _sceneController.LevelLoad(_sceneController.GetCurrentLevelType() + 1); });

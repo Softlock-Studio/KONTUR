@@ -33,15 +33,18 @@ namespace Game.House.Presentation
         private void Start()
         {
             missionManager = LifetimeScope.Find<MissionScope>().Container.Resolve<MissionManager>();
-            missionManager.LevelEnded += reportView.ShowReport;
+            missionManager.LevelEnded += OnLevelEnded;
             openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);
         }
 
         private void OnDestroy()
         {
-            missionManager.LevelEnded -= reportView.ShowReport;
+            missionManager.LevelEnded -= OnLevelEnded;
             openPauseMenuButton.onClick.RemoveListener(pauseMenuView.ShowPauseMenu);
         }
+
+        private void OnLevelEnded(LevelEndResult result) =>
+            reportView.ShowReport(result.IsVictory, Mathf.RoundToInt(result.MaxInfectionReached01 * 100f), result.EmployeesKilled);
 
         // "Infection Label" (the mission's target infection corridor, e.g. floor/ceiling range)
         // is intentionally NOT wired here — the corridor system itself isn't built yet (see
