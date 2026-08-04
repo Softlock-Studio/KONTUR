@@ -12,6 +12,7 @@ namespace Game.UI.MainMenu
     public class MainMenuUI : MonoBehaviour
     {
         [SerializeField] private SettingsPanelView _settingsPanelView;
+        [SerializeField] private InstructionsView _instructionsView;
         [SerializeField] private Animator _menuAnimator;
         [SerializeField] private YesNoPopUp _startGamePopUpView;
         [SerializeField] private GameObject _mainMenuButtonsObject;
@@ -43,6 +44,8 @@ namespace Game.UI.MainMenu
             _quitButton.onClick.AddListener(QuitGame);
             _startGamePopUpView.GetYesButton().onClick.AddListener(LoadNewGame);
             _startGamePopUpView.GetNoButton().onClick.AddListener(ClosePopUp);
+
+            _instructionsView.GetStartButton().onClick.AddListener(() => { _sceneController.LevelLoad(LevelType.Level1); });
         }
 
         private void ContinueGame()
@@ -67,7 +70,7 @@ namespace Game.UI.MainMenu
 
         private void LoadNewGame()
         {
-            _sceneController.LevelLoad(LevelType.Level1);
+            _instructionsView.ShowInstruction();
         }
 
         private void OpenPopUp()
@@ -122,6 +125,7 @@ namespace Game.UI.MainMenu
             _quitButton.onClick.RemoveListener(QuitGame);
             _startGamePopUpView.GetYesButton();
             _startGamePopUpView.GetNoButton();
+            _instructionsView.GetStartButton().onClick.RemoveAllListeners();
         }
     }
 }
