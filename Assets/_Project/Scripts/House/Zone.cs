@@ -14,6 +14,7 @@ namespace Game.House
         [SerializeField] private string displayName;
         [SerializeField] private ZoneConfig config;
         [SerializeField] private Transform[] standingPoints;
+        [SerializeField] private bool includeInInfectionStats = true;
         public bool isDebug = false;
 
         private IEmployee[] occupants;
@@ -40,6 +41,7 @@ namespace Game.House
 
         public RoomType RoomType => roomType;
         public string DisplayName => displayName;
+        public bool IncludeInInfectionStats => includeInInfectionStats;
         public float Infection { get; private set; }
         public bool HasLight { get; private set; } = true;
         public bool IsApartment => roomType == RoomType.Apartment;

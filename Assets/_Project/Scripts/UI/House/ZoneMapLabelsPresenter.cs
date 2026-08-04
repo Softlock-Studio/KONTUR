@@ -69,6 +69,7 @@ namespace Game.UI.House
         private TextMeshPro TrySpawnLabel(ZoneId zoneId)
         {
             if (!ZonesById.TryGetValue(zoneId, out Zone zone) || zone == null) return null;
+            if (!zone.IncludeInInfectionStats) return null;
 
             var labelObject = new GameObject("Infection Label");
             labelObject.layer = LayerMask.NameToLayer(MapIconLayerName);

@@ -19,8 +19,12 @@ namespace Game.House
 
         public float GetInfectionLevel()
         {
-            if (zones == null || zones.Length == 0) return 0f;
-            return zones.Average(z => z.Infection) / 100f;
+            if (zones == null) return 0f;
+
+            Zone[] counted = zones.Where(z => z != null && z.IncludeInInfectionStats).ToArray();
+            if (counted.Length == 0) return 0f;
+
+            return counted.Average(z => z.Infection) / 100f;
         }
 
         public IReadOnlyList<IWanderZone> GetZones() => (IReadOnlyList<IWanderZone>)zones ?? System.Array.Empty<IWanderZone>();
