@@ -14,7 +14,7 @@ namespace Game.House.AdditionalFunctions
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log(other.name);
+            // Debug.Log(other.name);
             if (other.gameObject.TryGetComponent<BabooshkaController>(out BabooshkaController _) || other.gameObject.TryGetComponent<EmployeeController>(out EmployeeController _))
             {
                 _count++;
