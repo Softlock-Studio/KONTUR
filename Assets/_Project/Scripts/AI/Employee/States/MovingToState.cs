@@ -28,11 +28,15 @@ namespace Game.AI.Employee
             agent.isStopped = false;
             agent.SetDestination(blackboard.Destination);
             soundEmitter?.ResetTimer(EmployeeSoundType.Walk);
+            // Breathing is deliberately not reset here — like Babooshka's Laugh, it runs on its
+            // own random cadence (EmployeeConfig.Sounds) independent of state entry, instead of
+            // pulsing immediately every time the employee is sent somewhere new.
         }
 
         public override void OnLogic()
         {
             soundEmitter?.Tick(EmployeeSoundType.Walk, Time.deltaTime);
+            soundEmitter?.Tick(EmployeeSoundType.Breathing, Time.deltaTime);
         }
     }
 }

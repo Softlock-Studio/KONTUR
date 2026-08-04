@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10cea469bf5f6234594540468d30d666, type: 3}
   m_Name: ApartVar 11_ZoneApartmentConfig
   m_EditorClassIdentifier: 
-  BaseGrowthPerSecond: 0.005
-  DarknessGrowthPerSecond: 0.001
+  BaseGrowthPerSecond: 0.05
+  DarknessGrowthPerSecond: 0.08
   TreatmentDurationSeconds: 20
   TreatmentInfectionReduction: 20
   TreatmentIodineCost: 1
@@ -24,21 +24,21 @@ MonoBehaviour:
   - Type: 2
     Kind: 1
     CheckIntervalSeconds: 10
-    SpawnChance: 1
+    SpawnChance: 0.55
     MaxConcurrent: 0
     ExpirySeconds: 0
   - Type: 1
     Kind: 1
     CheckIntervalSeconds: 100
-    SpawnChance: 1
+    SpawnChance: 0.4
     MaxConcurrent: 0
     ExpirySeconds: 0
   - Type: 0
     Kind: 0
     CheckIntervalSeconds: 10000
-    SpawnChance: 1
+    SpawnChance: 0.6
     MaxConcurrent: 1
-    ExpirySeconds: 10
+    ExpirySeconds: 20
   WorkerCountSpeedMultiplier:
     serializedVersion: 2
     m_Curve:

@@ -1,8 +1,10 @@
+using System;
 using CameraSystem;
 using Game.AI.Employee;
 using Game.House;
 using Game.House.Model;
 using Game.House.Presentation;
+using Game.Save;
 using VContainer;
 using VContainer.Unity;
 using UnityEngine;
@@ -25,7 +27,10 @@ namespace Game.Mission
             builder.Register<HouseModel>(Lifetime.Scoped);
 
             builder.RegisterEntryPoint<HousePresenter>(Lifetime.Scoped);
-            builder.RegisterEntryPoint<MissionManager>(Lifetime.Scoped).As<ITickable>().AsSelf();
+            builder.RegisterEntryPoint<MissionManager>(Lifetime.Scoped)
+                .As<IStartable>().As<ITickable>().As<IDisposable>().AsSelf();
+
+            builder.RegisterEntryPoint<LevelStartSaveTrigger>(Lifetime.Scoped);
 
             // Requires a HouseCanvasView somewhere in the scene (added via the AgentTools scene-edit
             // menu item, or manually) — RegisterComponentInHierarchy throws at container-build if

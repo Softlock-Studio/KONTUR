@@ -48,9 +48,22 @@ namespace Game.Audio
                 return;
             }
 
-            timers[type] = UnityEngine.Random.Range(definition.MinIntervalSeconds, definition.MaxIntervalSeconds);
+            // MinIntervalSeconds/MaxIntervalSeconds set the minimum gap between repeats, but if
+            // MustFinishPlaying is set and the channel is still busy with a protected sound (its
+            // own previous repeat, or something else that must finish), AudioEmitter.Play holds
+            // off and returns false — keep the timer at 0 (not re-rolled) so we retry every frame
+            // until the channel frees up, instead of skipping this repeat outright.
+            if (audioEmitter != null)
+            {
+                bool played = audioEmitter.Play(definition.Cue, definition.Channel, definition.MustFinishPlaying);
+                if (!played)
+                {
+                    timers[type] = 0f;
+                    return;
+                }
+            }
 
-            audioEmitter?.Play(definition.Cue);
+            timers[type] = UnityEngine.Random.Range(definition.MinIntervalSeconds, definition.MaxIntervalSeconds);
             onEmitted?.Invoke(origin.position, definition.Loudness);
         }
 

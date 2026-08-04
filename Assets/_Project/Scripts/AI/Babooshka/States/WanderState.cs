@@ -10,7 +10,7 @@ namespace Game.AI.Babooshka
     {
         private const float ArrivalThreshold = 0.15f;
 
-        private enum Phase { Moving, Standing }
+        private enum Phase { Moving, Standing, PerformingAction }
 
         private readonly NavMeshAgent agent;
         private readonly BabooshkaConfig config;
@@ -25,6 +25,8 @@ namespace Game.AI.Babooshka
         private Phase phase;
         private float standStillTimer;
         private float standStillDuration;
+        private float actionTimer;
+        private float actionDuration;
         private IWanderZone currentZone;
 
         public WanderState(NavMeshAgent agent, BabooshkaConfig config, Transform[] corridorPoints, IZoneDirectory zoneDirectory,
@@ -77,19 +79,44 @@ namespace Game.AI.Babooshka
                     if (currentZone != null && Random.value < config.WallLickChance)
                     {
                         currentZone.TriggerInfectionOutbreak();
-                        audioEmitter?.Play(config.WallLickCue);
+                        // mustFinish: false — she stops licking as soon as this visit's over, so the
+                        // sound shouldn't keep playing after the next thing (e.g. Laugh) needs the
+                        // General channel; unlike Laugh/Anger/Taunt/LightOff/Attack, which must finish.
+                        audioEmitter?.Play(config.WallLickCue, mustFinish: false);
                         animatorDriver?.PlayWallLick();
+                        BeginPerformingAction(config.WallLickDuration);
+                        return;
                     }
-                    else if (currentZone != null && Random.value < config.LightOffChance && currentZone.TryTurnOffLight())
+
+                    if (currentZone != null && Random.value < config.LightOffChance && currentZone.TryTurnOffLight())
                     {
                         audioEmitter?.Play(config.LightOffCue);
                         animatorDriver?.PlayLightOff();
+                        BeginPerformingAction(config.LightOffDuration);
+                        return;
                     }
 
                     agent.isStopped = false;
                     PickNextDestination();
                     return;
+
+                case Phase.PerformingAction:
+                    // Stays stopped for the wall-lick/light-off animation's own duration — she only
+                    // moves on once it's actually finished, not the instant the trigger fires.
+                    actionTimer += Time.deltaTime;
+                    if (actionTimer < actionDuration) return;
+
+                    agent.isStopped = false;
+                    PickNextDestination();
+                    return;
             }
+        }
+
+        private void BeginPerformingAction(float duration)
+        {
+            phase = Phase.PerformingAction;
+            actionTimer = 0f;
+            actionDuration = duration;
         }
 
         private void BeginStandingStill()

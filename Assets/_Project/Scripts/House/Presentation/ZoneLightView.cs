@@ -76,7 +76,7 @@ namespace Game.House.Presentation
                 return;
 
             var em = _particle.emission;
-            em.rateOverTime = _curveParticle.Evaluate(infection);
+            em.rateOverTime = _curveParticle.Evaluate(infection / 100f);
         }
     }
 }

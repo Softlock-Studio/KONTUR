@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe1ca4933d4ee94fabd1279bd54f368, type: 3}
   m_Name: BabooshkaConfig
   m_EditorClassIdentifier: 
-  PatrolSpeed: 1.5
+  PatrolSpeed: 1.7
   ChaseSpeed: 3
-  WanderStandStillMinSeconds: 1.5
+  WanderStandStillMinSeconds: 2
   WanderStandStillMaxSeconds: 5
-  ApartmentVisitChance: 0.3
+  ApartmentVisitChance: 0.35
   WallLickChance: 0.35
-  LightOffChance: 0.2
+  WallLickDuration: 4.07
+  LightOffChance: 0.25
+  LightOffDuration: 6.05
   SightRadius: 10
   SightAngle: 110
   HearingRadius: 15
@@ -28,17 +30,17 @@ MonoBehaviour:
     m_Bits: 128
   ObstacleMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 257
   LowLoudnessRadiusMultiplier: 0.5
   MediumLoudnessRadiusMultiplier: 1
   HighLoudnessRadiusMultiplier: 1.75
   SameFloorHeightTolerance: 2.5
   DifferentFloorRadiusMultiplier: 0.35
   AttackRange: 1.5
-  AttackReactionDuration: 1
-  FightResolutionDuration: 1.5
+  AttackReactionDuration: 2.5
+  FightResolutionDuration: 3
   InvestigateTimeout: 6
-  PostFightMercyDuration: 3
+  PostFightMercyDuration: 5
   DeathChanceCurve:
     serializedVersion: 2
     m_Curve:
@@ -63,28 +65,36 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  WallLickCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
-  LightOffCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
-  AttackCue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+  WallLickCue: {fileID: 11400000, guid: 37b7535ea6a0e2044869f98b56d09edb, type: 2}
+  LightOffCue: {fileID: 11400000, guid: 3990dbc0d4235b54f8f86fd60046ba33, type: 2}
+  AttackCue: {fileID: 11400000, guid: dcbfba6a11b60754e919c17473351781, type: 2}
   Sounds:
   - Type: 1
-    Cue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+    Cue: {fileID: 11400000, guid: 20ca31bd10cc80d44ba9f3b346dfefb6, type: 2}
+    Channel: 0
+    MustFinishPlaying: 1
     Loudness: 0
     MinIntervalSeconds: 50
     MaxIntervalSeconds: 60
-  - Type: 0
-    Cue: {fileID: 0}
-    Loudness: 0
-    MinIntervalSeconds: 0
-    MaxIntervalSeconds: 0
   - Type: 2
-    Cue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+    Cue: {fileID: 11400000, guid: 3b2c97ba04eff3c44b28824b7a6c5b3e, type: 2}
+    Channel: 0
+    MustFinishPlaying: 1
     Loudness: 0
     MinIntervalSeconds: 0
     MaxIntervalSeconds: 0
   - Type: 3
     Cue: {fileID: 11400000, guid: 177606bc775cc134096ed8580b2682ac, type: 2}
+    Channel: 0
+    MustFinishPlaying: 1
     Loudness: 0
     MinIntervalSeconds: 10
     MaxIntervalSeconds: 10
+  - Type: 0
+    Cue: {fileID: 11400000, guid: d2d0a6edc0d3ae54d8742168bf2c9153, type: 2}
+    Channel: 1
+    MustFinishPlaying: 1
+    Loudness: 0
+    MinIntervalSeconds: 0
+    MaxIntervalSeconds: 0
   EnableDebugVisuals: 0

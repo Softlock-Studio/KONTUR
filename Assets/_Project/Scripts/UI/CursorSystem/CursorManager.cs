@@ -35,7 +35,7 @@ namespace Game.UI
             foreach (var settings in cursors)
             { 
                 if (settings._state == state)
-                    Cursor.SetCursor(settings._texture, settings._hotspot, CursorMode.ForceSoftware);
+                    Cursor.SetCursor(settings._texture, settings._hotspot, CursorMode.Auto);
             }
         }
     }

@@ -15,6 +15,7 @@ namespace Loader.SceneController
         private string _currentLevelScene = "";
         private LevelType _currentLevelType;
 
+        public string CurrentLevel => _currentLevelScene;
         public LevelType GetCurrentLevelType() => _currentLevelType;
 
         public SceneController(LevelLoaderConfig config, bool isDebug = false)

@@ -13,14 +13,16 @@ namespace Game.House.Presentation
 
         private readonly HouseModel model;
         private readonly IHouseView view;
+        private readonly HouseConfig houseConfig;
 
         private ZoneId? selectedZoneId;
         private float sampleTimer;
 
-        public HousePresenter(HouseModel model, IHouseView view)
+        public HousePresenter(HouseModel model, IHouseView view, HouseConfig houseConfig)
         {
             this.model = model;
             this.view = view;
+            this.houseConfig = houseConfig;
         }
 
         public void Start()
@@ -52,7 +54,7 @@ namespace Game.House.Presentation
 
             view.RenderZones(viewModels);
             view.SetHouseInfection(model.GetHouseInfectionLevel01());
-            view.SetHouseInfectionRange(0.2f, 0.4f);   //TODO change to actual infection range when it's available
+            view.SetHouseInfectionRange(houseConfig.InfectionFloor01, houseConfig.InfectionCeiling01);
         }
 
         private void PushSample()

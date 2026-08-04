@@ -147,13 +147,13 @@ public class TVLightEffect : MonoBehaviour
             else if (flickerPattern < 40) // Короткое выключение
             {
                 tvLight.intensity = 0;
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.25f);
                 tvLight.intensity = baseIntensity;
                 yield return new WaitForSeconds(0.1f);
             }
             else if (flickerPattern < 50) // Яркая вспышка
             {
-                tvLight.intensity = baseIntensity * 2f;
+                tvLight.intensity = baseIntensity * 1f;
                 yield return new WaitForSeconds(0.05f);
                 tvLight.intensity = baseIntensity;
                 yield return new WaitForSeconds(0.2f);

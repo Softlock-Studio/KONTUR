@@ -17,6 +17,12 @@ namespace Game.AI.Employee
         private static readonly int IsStrafing = Animator.StringToHash("IsStrafing");
         private static readonly int IsSprinting = Animator.StringToHash("IsSprinting");
         private static readonly int AttackedTrigger = Animator.StringToHash("Attacked");
+        private static readonly int CleaningTrigger = Animator.StringToHash("Cleaning");
+        private static readonly int LightbulbChangeTrigger = Animator.StringToHash("LightbulbChange");
+
+        // Shared by all three one-shot actions — safe because it's only ever read together with
+        // its own trigger's condition (e.g. "Cleaning && Variant == 1"), never across triggers.
+        private static readonly int Variant = Animator.StringToHash("Variant");
 
         [SerializeField] private float animationSmoothTime = 0.2f;
 
@@ -95,6 +101,25 @@ namespace Game.AI.Employee
             animator.SetBool(IsSprinting, isFleeing);
         }
 
-        public void PlayAttacked() => animator?.SetTrigger(AttackedTrigger);
+        public void PlayAttacked() => PlayVariant(AttackedTrigger, config != null ? config.AttackedVariantCount : 1);
+
+        // No accompanying one-shot sound here on purpose (unlike PlayAttacked, which pairs with
+        // AttackedCue) — Cleaning/LightbulbChange already have their own ongoing sound via
+        // EmployeeConfig.Sounds/LoopingSoundEmitter, ticked independently of when this trigger
+        // fires. Firing a second, animation-coupled sound here would just double up on that.
+        public void PlayCleaning() => PlayVariant(CleaningTrigger, config != null ? config.CleaningVariantCount : 1);
+        public void PlayLightbulbChange() => PlayVariant(LightbulbChangeTrigger, config != null ? config.LightbulbChangeVariantCount : 1);
+
+        // Rolls a random Variant index in [0, variantCount) before firing the trigger, so the
+        // Animator Controller can gate several parallel "Trigger && Variant == i" transitions into
+        // different clips for the same action. Set must happen before SetTrigger so the state
+        // machine sees the matching Variant value when it consumes the trigger this frame.
+        private void PlayVariant(int trigger, int variantCount)
+        {
+            if (animator == null) return;
+
+            animator.SetInteger(Variant, Random.Range(0, Mathf.Max(1, variantCount)));
+            animator.SetTrigger(trigger);
+        }
     }
 }

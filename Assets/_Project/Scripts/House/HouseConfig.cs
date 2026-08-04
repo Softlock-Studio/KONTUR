@@ -12,5 +12,13 @@ namespace Game.House
         // just "which night is this level/scene", set per HouseConfig instance by hand.
         [Header("Night")]
         public int NightNumber = 1;
+
+        // Target infection range for this level. Checked once, at night end (see
+        // MissionManager.Tick) — infection outside [Floor; Ceiling] when the timer runs out is a
+        // defeat, same as the existing "hit 100%" hard cap but evaluated only at day-end rather
+        // than instantly. No cross-night escalation yet — tune per level by hand, same as NightNumber.
+        [Header("Infection Corridor")]
+        [Range(0f, 1f)] public float InfectionFloor01 = 0.2f;
+        [Range(0f, 1f)] public float InfectionCeiling01 = 0.4f;
     }
 }

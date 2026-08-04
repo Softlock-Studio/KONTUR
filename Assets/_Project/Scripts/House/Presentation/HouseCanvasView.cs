@@ -1,10 +1,15 @@
-using System.Collections.Generic;
+using Game.AI.Employee;
+using Game.Bootstrap;
 using Game.House.Model;
+using Game.Mission;
 using Game.UI.House;
 using Game.UI.Settings;
 using Infection;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace Game.House.Presentation
 {
@@ -17,9 +22,29 @@ namespace Game.House.Presentation
         [SerializeField] private ResourceGridPresenter resourceGrid;
         [SerializeField] private OrdersToastView ordersToast;
         [SerializeField] private ZoneMapLabelsPresenter zoneMapLabels;
+
+        [SerializeField] private ReportView reportView;
         [Header("Pause")]
         [SerializeField] private Button openPauseMenuButton;
         [SerializeField] private PauseMenuView pauseMenuView;
+
+        private MissionManager missionManager;
+
+        private void Start()
+        {
+            missionManager = LifetimeScope.Find<MissionScope>().Container.Resolve<MissionManager>();
+            missionManager.LevelEnded += OnLevelEnded;
+            openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);
+        }
+
+        private void OnDestroy()
+        {
+            missionManager.LevelEnded -= OnLevelEnded;
+            openPauseMenuButton.onClick.RemoveListener(pauseMenuView.ShowPauseMenu);
+        }
+
+        private void OnLevelEnded(LevelEndResult result) =>
+            reportView.ShowReport(result.IsVictory, Mathf.RoundToInt(result.MaxInfectionReached01 * 100f), result.EmployeesKilled);
 
         // "Infection Label" (the mission's target infection corridor, e.g. floor/ceiling range)
         // is intentionally NOT wired here — the corridor system itself isn't built yet (see
@@ -67,16 +92,6 @@ namespace Game.House.Presentation
         public void ShowActivityAborted(ZoneId zoneId, ActivityType activityType, ResourceType resourceType)
         {
             ordersToast?.Show($"{activityType} aborted in {zoneId}: not enough {resourceType}");
-        }
-
-        private void OnEnable()
-        {
-            openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);
-        }
-
-        private void OnDisable()
-        {
-            openPauseMenuButton.onClick.RemoveListener(pauseMenuView.ShowPauseMenu);
         }
     }
 }
