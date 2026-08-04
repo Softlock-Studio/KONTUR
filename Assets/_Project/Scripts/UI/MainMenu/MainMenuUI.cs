@@ -1,4 +1,5 @@
 using Game.Bootstrap;
+using Game.Save;
 using Game.UI.Settings;
 using Loader.SceneController;
 using System.Collections;
@@ -27,15 +28,16 @@ namespace Game.UI.MainMenu
         private const string CLOSE_MENU_STATE = "ButtonsPanelRightToLeft";
 
         private SceneController _sceneController;
+        private ISaveService _saveService;
 
         private void Start()
         {
             var scope = LifetimeScope.Find<GameLifetimeScope>();
 
             _sceneController = scope.Container.Resolve<SceneController>();
+            _saveService = scope.Container.Resolve<ISaveService>();
 
-            //TODO connect saving system when ready
-            _continueButton.interactable = /*has found existing save file */ false;
+            _continueButton.interactable = _saveService.TryLoad(out _);
 
             _settingsPanelView.GetBackButton().onClick.AddListener(OpenMainMenu);
             _continueButton.onClick.AddListener(ContinueGame);
@@ -50,15 +52,13 @@ namespace Game.UI.MainMenu
 
         private void ContinueGame()
         {
-            //TODO connect saving system when ready
-
-            _sceneController.LevelLoad(LevelType.Level1);
+            if (_saveService.TryLoad(out SaveData data))
+                _sceneController.LevelLoad(data.LevelType);
         }
 
         private void StartNewGame()
         {
-            //TODO connect saving system when ready
-            if (/**/ true)
+            if (_saveService.TryLoad(out _))
             {
                 OpenPopUp();
             }
