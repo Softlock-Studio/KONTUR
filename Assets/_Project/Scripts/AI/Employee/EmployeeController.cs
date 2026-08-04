@@ -23,6 +23,11 @@ namespace Game.AI.Employee
         // Set by hand per prefab instance — see IEmployee.CallsignNumber.
         [SerializeField] private int callsignNumber = 1;
 
+        [Header("Sprite")]
+        [SerializeField] private SpriteRenderer mapIcon;
+        [SerializeField] private Sprite defaultSprite;
+        [SerializeField] private Sprite selectedSprite;
+
         private NavMeshAgent agent;
         private StateMachine fsm;
         private EmployeeBlackboard blackboard;
@@ -243,6 +248,11 @@ namespace Game.AI.Employee
         {
             if (fsm == null) return;
             Handles.Label(transform.position + Vector3.up * 2.2f, CurrentStateName);
+        }
+
+        public void SetSelectionVisuals(bool isSelected)
+        {
+            mapIcon.sprite = isSelected ? selectedSprite : defaultSprite;
         }
 #endif
     }

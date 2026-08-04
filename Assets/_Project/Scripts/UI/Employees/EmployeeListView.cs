@@ -1,5 +1,6 @@
 using Game.AI.Employee;
 using Game.Mission;
+using GLTF.Schema.KHR_lights_punctual;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,6 +68,7 @@ namespace Game.UI.Employees
         {
             if (selectedSlot == null) return;
 
+            selectedSlot.BoundEmployee.SetSelectionVisuals(false);
             selectedSlot.GetEmployeeCard().SetSelectedSprite(false);
             selectedSlot = null;
 
@@ -86,9 +88,12 @@ namespace Game.UI.Employees
             if (selectedSlot != null)
             {
                 selectedSlot.GetEmployeeCard().SetSelectedSprite(false);
+                selectedSlot.BoundEmployee.SetSelectionVisuals(false);
             }
+            
             selectedSlot = slot;
             slot.GetEmployeeCard().SetSelectedSprite(true);
+            slot.BoundEmployee.SetSelectionVisuals(true);
             SelectionChanged?.Invoke(slot.BoundEmployee);
         }
     }

@@ -10,6 +10,8 @@ namespace Game.AI.Employee
         bool IsAlive { get; }
         string CurrentStateName { get; }
 
+        void SetSelectionVisuals(bool isSelected);
+
         // Fires once, right when IsAlive flips to false (ApplyAttackOutcome(survived: false)) —
         // so UI (Employee Card) can react immediately instead of waiting on a poll. No payload:
         // subscribers already know which employee they're bound to.

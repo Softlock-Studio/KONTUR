@@ -67,5 +67,10 @@ namespace Game.AI.Employee
             IsAlive = false;
             Died?.Invoke();
         }
+
+        public void SetSelectionVisuals(bool isSelected)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }
