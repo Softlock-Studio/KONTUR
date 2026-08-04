@@ -8,28 +8,31 @@ namespace Game.Audio
     [Serializable]
     public sealed class SoundDefinition<TSoundType> where TSoundType : struct, Enum
     {
+        [Tooltip("Тип звука из перечисления, специфичного для этой сущности (сотрудник, бабушка и т.д.).")]
         public TSoundType Type;
+        [Tooltip("Звуковой файл (SfxCue), который проигрывается для этого типа.")]
         public SfxCue Cue;
 
-        [Tooltip("Which AudioEmitter channel this plays on — sounds on different channels can " +
-                 "overlap (e.g. footsteps under an attack bark). Whether same-channel sounds cut " +
-                 "each other off is decided by MustFinishPlaying below, not by the channel alone. " +
-                 "Set Movement for locomotion sounds, Action for attacks/important one-offs, leave " +
-                 "General for everything else.")]
+        [Tooltip("На каком канале AudioEmitter проигрывается звук — звуки на разных каналах могут " +
+                 "звучать одновременно (например, шаги поверх атакующего рыка). Обрывает ли звук на " +
+                 "том же канале другой звук — решает не сам канал, а флаг MustFinishPlaying ниже. " +
+                 "Ставьте Movement для звуков передвижения, Action для атак/важных разовых звуков, " +
+                 "General оставляйте для всего остального.")]
         public AudioChannel Channel = AudioChannel.General;
 
-        [Tooltip("If true, this sound can't be cut off by another sound on the same channel until " +
-                 "it finishes playing on its own (new same-channel plays are held off instead). If " +
-                 "false, this sound can be cut off early by the next same-channel sound that wants " +
-                 "to play (e.g. wall-lick should stop as soon as she's done with that action).")]
+        [Tooltip("Если включено, этот звук нельзя прервать другим звуком на том же канале, пока он " +
+                 "не доиграет сам (новые проигрывания на этом канале ждут своей очереди). Если " +
+                 "выключено, звук может быть прерван следующим звуком на том же канале раньше " +
+                 "времени (например, облизывание стены должно обрываться, как только действие закончилось).")]
         public bool MustFinishPlaying = true;
 
-        // Only consulted if the owning LoopingSoundEmitter was constructed with an onEmitted
-        // callback (e.g. Employee wires this to Babooshka's HearingSensor.NotifySound).
+        [Tooltip("Громкость звука с точки зрения слуха ИИ (Low/Medium/High). Учитывается только " +
+                 "если издающий звук объект передаёт события в HearingSensor через callback onEmitted.")]
         public SoundLoudness Loudness = SoundLoudness.Medium;
 
-        [Tooltip("Randomized delay between repeats while this sound type stays active. Set both to the same value for a fixed cadence.")]
+        [Tooltip("Случайная задержка между повторами, пока этот тип звука активен. Минимальное значение диапазона повтора — поставьте одинаковые Min и Max для фиксированного интервала.")]
         public float MinIntervalSeconds = 1f;
+        [Tooltip("Случайная задержка между повторами, пока этот тип звука активен. Максимальное значение диапазона повтора — поставьте одинаковые Min и Max для фиксированного интервала.")]
         public float MaxIntervalSeconds = 1f;
     }
 }

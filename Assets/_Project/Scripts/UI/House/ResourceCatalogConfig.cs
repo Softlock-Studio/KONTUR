@@ -12,11 +12,15 @@ namespace Game.UI.House
         [Serializable]
         public struct Entry
         {
+            [Tooltip("Тип ресурса (йод, лампочка и т.д.).")]
             public ResourceType Type;
+            [Tooltip("Иконка ресурса, отображаемая в UI.")]
             public Sprite Icon;
+            [Tooltip("Ключ локализации для отображаемого названия ресурса.")]
             public string NameLocalizationKey;
         }
 
+        [Tooltip("Список всех ресурсов и их отображения (иконка + название) для UI.")]
         public Entry[] Resources;
 
         public bool TryFind(ResourceType type, out Entry entry)
