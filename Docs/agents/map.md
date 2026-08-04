@@ -24,10 +24,10 @@ means design-only, nothing under `Scripts/` yet.
 | Camera system (switch by clicking a camera's Map Icon; `CamerasModel`/`CamerasPresenter`/`ICamerasView`; ACS/visual tracking not built) | Built (partial) | `Scripts/CameraSystem/` | [cameras.md](gdd/cameras.md) |
 | Floor map / mini-map (top-down `Map Camera` feed, click-to-select-camera, click-a-zone-for-task-context-menu; GPS/fog-of-war overlay, floor system) | Built (partial) — temporary floor "system" just repositions the Map Camera between two Y presets, no real multi-floor support | `Scripts/UI/House/MapClickController.cs`, `FloorToggleView.cs`, `ZoneActionMenuView.cs` | [floor-map.md](gdd/floor-map.md) |
 | Grandmother feed schedule / chains | Planned (roam+chase FSM exists, see Babooshka AI above) | — | [grandmother.md](gdd/grandmother.md) |
-| Night timer (~7 real min per night) | Planned | — | [nights.md](gdd/nights.md) |
+| Night timer (~7 real min per night) | Built (partial) — countdown + `LevelEnded` event (timeout=victory, defeat detected first=loss), carrying max infection reached and employees-killed count; no pause/between-levels screen yet | `Scripts/Mission/MissionManager.cs`, `MissionTimer.cs`, `LevelEndResult.cs` | [nights.md](gdd/nights.md) |
 | Night cycle (multi-night infection corridor [floor; ceiling]) | Planned | — | [game-loop.md](gdd/game-loop.md) |
 | Resident events (random events, help requests, emergencies) | Partially built — event *scaffolding* (spawn/expiry/resolve) is generic and live; specific resident-event content is not authored | `Scripts/House/ZoneEventType.cs`, `ResolveZoneEventEffect.cs` | [residents.md](gdd/residents.md) |
-| Defeat conditions (full team death; critical infection; infection below floor ×2) | Planned | — | [defeat.md](gdd/defeat.md) |
+| Defeat conditions (full team death; critical infection; infection below floor ×2) | Built (partial) — full team death and infection maxed (100%) checked in `MissionManager.Tick`; corridor floor-breach-twice not implemented (no floor/ceiling values wired up, see `HousePresenter`'s `SetHouseInfectionRange` TODO) | `Scripts/Mission/MissionManager.cs` | [defeat.md](gdd/defeat.md) |
 | Object stabilization (camera-as-stabilizer rule) | Planned | — | [lore-stabilization.md](gdd/lore-stabilization.md) |
 
 ## Test scenes

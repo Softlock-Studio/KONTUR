@@ -1,3 +1,4 @@
+using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
@@ -9,10 +10,10 @@ namespace Game.AI.Employee
         private readonly NavMeshAgent agent;
         private readonly EmployeeConfig config;
         private readonly EmployeeBlackboard blackboard;
-        private readonly EmployeeSoundEmitter soundEmitter;
+        private readonly LoopingSoundEmitter<EmployeeSoundType> soundEmitter;
 
         public ReturningToBaseState(NavMeshAgent agent, EmployeeConfig config, EmployeeBlackboard blackboard,
-            EmployeeSoundEmitter soundEmitter)
+            LoopingSoundEmitter<EmployeeSoundType> soundEmitter)
             : base(needsExitTime: false)
         {
             this.agent = agent;
@@ -26,12 +27,14 @@ namespace Game.AI.Employee
             agent.speed = config.ReturnSpeed;
             agent.isStopped = false;
             if (blackboard.BasePoint != null) agent.SetDestination(blackboard.BasePoint.position);
-            soundEmitter?.ResetTimer();
+            soundEmitter?.ResetTimer(EmployeeSoundType.Walk);
+            // Breathing is deliberately not reset here — see MovingToState.OnEnter.
         }
 
         public override void OnLogic()
         {
             soundEmitter?.Tick(EmployeeSoundType.Walk, Time.deltaTime);
+            soundEmitter?.Tick(EmployeeSoundType.Breathing, Time.deltaTime);
         }
     }
 }

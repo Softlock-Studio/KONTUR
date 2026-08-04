@@ -1,6 +1,7 @@
 using Game.Audio;
 using Game.Bootstrap;
 using Game.Localization;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -10,54 +11,70 @@ namespace Game.UI.Settings
 {
     public sealed class SettingsPanelView : MonoBehaviour
     {
-        [SerializeField] private GameObject panelRoot;
-        [SerializeField] private Button openButton;
-        [SerializeField] private Slider masterSlider;
-        [SerializeField] private Slider musicSlider;
-        [SerializeField] private Slider sfxSlider;
+        [SerializeField] private Slider _masterSlider;
+        [SerializeField] private Slider _musicSlider;
+        [SerializeField] private Slider _sfxSlider;
+        [SerializeField] private TMP_Dropdown _languageDropdown;
+        [SerializeField] private Button _backButton;
 
-        private IAudioService audioService;
-        private ILocalizationService localization;
+        public Button GetBackButton() => _backButton;
 
-        private void Awake()
-        {
-            if (panelRoot != null) panelRoot.SetActive(false);
-            if (openButton != null) openButton.onClick.AddListener(TogglePanel);
-        }
+        private IAudioService _audioService;
+        private ILocalizationService _localization;
 
-        // IAudioService is game-wide (GameLifetimeScope), not mission-scoped — resolve from the
-        // persistent root scope, not MissionScope.
         private void Start()
         {
-            audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
-            localization = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
+            _audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+            _localization = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
 
-            if (masterSlider != null)
-            {
-                masterSlider.SetValueWithoutNotify(audioService.MasterVolume);
-                masterSlider.onValueChanged.AddListener(audioService.SetMasterVolume);
-            }
+            if (_masterSlider == null)
+                Debug.LogError($"Master Slider wasn't set in {gameObject.name}");
 
-            if (musicSlider != null)
-            {
-                musicSlider.SetValueWithoutNotify(audioService.MusicVolume);
-                musicSlider.onValueChanged.AddListener(audioService.SetMusicVolume);
-            }
+            if (_musicSlider == null)
+                Debug.LogError($"Music Slider wasn't set in {gameObject.name}");
 
-            if (sfxSlider != null)
-            {
-                sfxSlider.SetValueWithoutNotify(audioService.SfxVolume);
-                sfxSlider.onValueChanged.AddListener(audioService.SetSfxVolume);
-            }
+            if (_sfxSlider == null)
+                Debug.LogError($"SFX Slider wasn't set in {gameObject.name}");
+
+            if (_languageDropdown == null)
+                Debug.LogError($"Language Dropdown wasn't set in {gameObject.name}");
+
+            if (_backButton == null)
+                Debug.LogError($"Back button wasn't set in {gameObject.name}");
+
+            _masterSlider.SetValueWithoutNotify(_audioService.MasterVolume);
+            _masterSlider.onValueChanged.AddListener(_audioService.SetMasterVolume);
+
+            _musicSlider.SetValueWithoutNotify(_audioService.MusicVolume);
+            _musicSlider.onValueChanged.AddListener(_audioService.SetMusicVolume);
+
+            _sfxSlider.SetValueWithoutNotify(_audioService.SfxVolume);
+            _sfxSlider.onValueChanged.AddListener(_audioService.SetSfxVolume);
+
+            _languageDropdown.onValueChanged.AddListener(ChangeLanguage);
+
+            _languageDropdown.value = _localization.CurrentLanguage == "English" ? 0 : 1;
         }
 
-        private void TogglePanel()
+        private void ChangeLanguage(int num)
         {
-            if (panelRoot != null) panelRoot.SetActive(!panelRoot.activeSelf);
+            switch (num)
+            {
+                case 0:
+                    _localization.SetLanguage("English");
+                    break;
+                case 1:
+                    _localization.SetLanguage("Russian");
+                    break;
+            }
         }
 
-        // No language button exists in the panel yet — this is here so wiring one up later is just
-        // dragging this into a Button's OnClick(), no code needed at that point.
-        public void ToggleLanguage() => localization.ToggleLanguage();
+        private void OnDestroy()
+        {
+            _masterSlider.onValueChanged.RemoveListener(_audioService.SetMasterVolume);
+            _musicSlider.onValueChanged.RemoveListener(_audioService.SetMusicVolume);
+            _sfxSlider.onValueChanged.RemoveListener(_audioService.SetSfxVolume);
+            _languageDropdown.onValueChanged.RemoveListener(ChangeLanguage);
+        }
     }
 }

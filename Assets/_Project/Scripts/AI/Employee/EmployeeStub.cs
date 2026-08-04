@@ -1,3 +1,4 @@
+using System;
 using Game.Audio;
 using Game.Bootstrap;
 using Game.House;
@@ -24,6 +25,7 @@ namespace Game.AI.Employee
         public EmployeeStateId StateId => EmployeeStateId.Idle;
         public int CallsignNumber => 0;
         public string DestinationName => string.Empty;
+        public event Action Died;
 
         private void Start()
         {
@@ -56,10 +58,14 @@ namespace Game.AI.Employee
         public void Stop() { }
         public void Continue() { }
         public void ReturnToBase() { }
+        public void ReactToAttack() { }
 
         public void ApplyAttackOutcome(bool survived)
         {
-            if (!survived) IsAlive = false;
+            if (survived || !IsAlive) return;
+
+            IsAlive = false;
+            Died?.Invoke();
         }
     }
 }

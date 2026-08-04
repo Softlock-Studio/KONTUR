@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Loader.SceneController
 {
@@ -11,7 +12,10 @@ namespace Loader.SceneController
         private SceneLoader _sceneLoader;
         private Dictionary<LevelType, string> _sceneDictionary = new();
 
-        private string _currentLevelScene = "MainMenu";
+        private string _currentLevelScene = "";
+        private LevelType _currentLevelType;
+
+        public LevelType GetCurrentLevelType() => _currentLevelType;
 
         public SceneController(LevelLoaderConfig config, bool isDebug = false)
         {
@@ -21,6 +25,8 @@ namespace Loader.SceneController
                 _sceneDictionary[container.LevelType] = container.NameLevel;
 
             _sceneLoader = new SceneLoader();
+
+            _currentLevelScene = SceneManager.GetActiveScene().name;
         }
 
         public async void LevelLoad(LevelType sceneType)
@@ -38,6 +44,7 @@ namespace Loader.SceneController
                 }
 
                 _currentLevelScene = _sceneDictionary[sceneType];
+                _currentLevelType = sceneType;
             }
         }
 

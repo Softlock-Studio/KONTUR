@@ -17,6 +17,7 @@ namespace Game.AI.Babooshka
         [SerializeField] private HearingSensor hearingSensor;
         [SerializeField] private Transform[] patrolPoints;
         [SerializeField] private AudioEmitter audioEmitter;
+        [SerializeField] private BabooshkaAnimatorDriver animatorDriver;
         [SerializeField, Tooltip("Must implement IInfectionDirector; optionally IZoneDirectory too (e.g. ZoneRegistry) for apartment wandering.")]
         private MonoBehaviour infectionDirectorSource;
 
@@ -25,6 +26,7 @@ namespace Game.AI.Babooshka
         private BabooshkaBlackboard blackboard;
         private IInfectionDirector infectionDirector;
         private IZoneDirectory zoneDirectory;
+        private LoopingSoundEmitter<BabooshkaSoundType> soundEmitter;
 
         public Vector3 Position => transform.position;
         public string CurrentStateName => fsm?.GetActiveHierarchyPath() ?? string.Empty;
@@ -38,6 +40,11 @@ namespace Game.AI.Babooshka
 
             if (sightSensor != null) sightSensor.Bind(blackboard, config);
             if (hearingSensor != null) hearingSensor.Bind(blackboard, config);
+            if (animatorDriver != null) animatorDriver.Bind(config);
+
+            // No onEmitted callback: nothing needs to be notified of Babooshka's own sounds
+            // (unlike Employee's, which also pings her HearingSensor).
+            soundEmitter = new LoopingSoundEmitter<BabooshkaSoundType>(transform, audioEmitter, config.Sounds);
         }
 
         private void Start()
@@ -53,11 +60,12 @@ namespace Game.AI.Babooshka
         {
             fsm = new StateMachine();
 
-            var fightState = new FightState(agent, config, blackboard, () => infectionDirector?.GetInfectionLevel() ?? 0f);
+            var fightState = new FightState(agent, config, blackboard, () => infectionDirector?.GetInfectionLevel() ?? 0f,
+                animatorDriver, audioEmitter);
 
-            fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory, audioEmitter));
-            fsm.AddState("Chase", new ChaseState(agent, config, blackboard));
-            fsm.AddState("Search", new SearchState(agent, config, blackboard));
+            fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory, audioEmitter, animatorDriver, soundEmitter, blackboard));
+            fsm.AddState("Chase", new ChaseState(agent, config, blackboard, soundEmitter));
+            fsm.AddState("Search", new SearchState(agent, config, blackboard, soundEmitter));
             fsm.AddState("Fight", fightState);
 
             fsm.SetStartState("Wander");

@@ -11,6 +11,7 @@ namespace Game.Map
     {
         [SerializeField] private Vector3 fixedWorldEulerAngles = new Vector3(90f, 0f, 0f);
         [SerializeField] private float sameFloorHeightTolerance = 30f;
+        [SerializeField] private bool isCam = false;
 
         private Renderer[] renderers;
 
@@ -21,7 +22,8 @@ namespace Game.Map
 
         private void LateUpdate()
         {
-            transform.rotation = Quaternion.Euler(fixedWorldEulerAngles);
+            if (!isCam)
+                transform.rotation = Quaternion.Euler(fixedWorldEulerAngles);
             UpdateFloorVisibility();
         }
 

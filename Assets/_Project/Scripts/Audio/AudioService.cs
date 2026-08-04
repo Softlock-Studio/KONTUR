@@ -14,8 +14,11 @@ namespace Game.Audio
         private readonly AudioConfig config;
 
         private GameObject root;
+        private AudioListener worldListener;
         private AudioSource musicA;
         private AudioSource musicB;
+        private AudioSource uiLoopSource;
+        private SfxCue currentUiLoopCue;
         private AudioSource[] sfxPool;
         private int sfxCursor;
 
@@ -44,10 +47,20 @@ namespace Game.Audio
 
             musicA = CreateSource("MusicA", config.MusicGroup, spatialBlend: 0f);
             musicB = CreateSource("MusicB", config.MusicGroup, spatialBlend: 0f);
+            uiLoopSource = CreateSource("UiLoop", config.UiSfxGroup, spatialBlend: 0f);
 
             sfxPool = new AudioSource[Mathf.Max(1, config.SfxPoolSize)];
             for (int i = 0; i < sfxPool.Length; i++)
                 sfxPool[i] = CreateSource($"Sfx{i}", config.WorldSfxGroup, spatialBlend: 0f);
+
+            // Single persistent listener (Unity only ever hears through one) — always enabled, so
+            // 2D UI/music sounds (spatialBlend 0, listener-position-independent) are always audible;
+            // moved to the selected camera by SetWorldListenerPosition, or parked out of world-sfx
+            // range by ParkWorldListener when no camera is selected.
+            var listenerGo = new GameObject("WorldListener");
+            listenerGo.transform.SetParent(root.transform, worldPositionStays: false);
+            listenerGo.transform.position = config.WorldListenerParkPosition;
+            worldListener = listenerGo.AddComponent<AudioListener>();
 
             MasterVolume = PlayerPrefs.GetFloat(MasterVolumeKey, config.DefaultMasterVolume);
             MusicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, config.DefaultMusicVolume);
@@ -157,6 +170,24 @@ namespace Game.Audio
             source.Play();
         }
 
+        public void PlayUiLoop(SfxCue cue)
+        {
+            if (cue == null || cue == currentUiLoopCue) return;
+
+            currentUiLoopCue = cue;
+            uiLoopSource.clip = cue.GetClip();
+            uiLoopSource.volume = cue.Volume;
+            uiLoopSource.pitch = cue.GetPitch();
+            uiLoopSource.loop = true;
+            uiLoopSource.Play();
+        }
+
+        public void StopUiLoop()
+        {
+            currentUiLoopCue = null;
+            uiLoopSource.Stop();
+        }
+
         public void PlaySfxAtPoint(SfxCue cue, Vector3 position)
         {
             if (cue == null) return;
@@ -165,19 +196,21 @@ namespace Game.Audio
             source.outputAudioMixerGroup = config.WorldSfxGroup;
             source.transform.position = position;
             source.spatialBlend = 1f;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            source.minDistance = config.WorldSfxMinDistance;
+            source.maxDistance = config.WorldSfxMaxDistance;
             source.clip = cue.GetClip();
             source.volume = cue.Volume;
             source.pitch = cue.GetPitch();
             source.Play();
         }
 
-        // Entities are always heard through the currently selected security camera, never
-        // "in the room" — so attached emitters (footsteps, growls, ...) route through
-        // WorldSfxGroup (for the shared TV/speaker coloring filter) and stay fully 2D: the player
-        // isn't physically anywhere in the house for a 3D position to make sense against. Whether
-        // it's audible AT ALL (i.e. whether the currently selected camera is even watching the
-        // room the sound came from) is decided by the caller via AudioEmitter/ICameraObservationService,
-        // not here.
+        // Entities are heard through the single persistent world listener, repositioned to the
+        // selected camera by SetWorldListenerPosition (or parked out of range by ParkWorldListener
+        // when no camera is selected) — so attached emitters (footsteps, growls, ...) are fully 3D
+        // (spatialBlend 1, room-scale min/max distance from AudioConfig): the player hears them
+        // positioned as if standing where that camera is, from anywhere in range; distance/rolloff
+        // alone decide audibility, with no per-zone gate on top.
         public AudioSource CreateAttachedSource(Transform parent)
         {
             var go = new GameObject("AudioEmitterSource");
@@ -186,9 +219,22 @@ namespace Game.Audio
 
             var source = go.AddComponent<AudioSource>();
             source.playOnAwake = false;
-            source.spatialBlend = 0f;
+            source.spatialBlend = 1f;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            source.minDistance = config.WorldSfxMinDistance;
+            source.maxDistance = config.WorldSfxMaxDistance;
             source.outputAudioMixerGroup = config.WorldSfxGroup;
             return source;
+        }
+
+        public void SetWorldListenerPosition(Vector3 position, Quaternion rotation)
+        {
+            worldListener.transform.SetPositionAndRotation(position, rotation);
+        }
+
+        public void ParkWorldListener()
+        {
+            worldListener.transform.position = config.WorldListenerParkPosition;
         }
 
         public void Dispose()

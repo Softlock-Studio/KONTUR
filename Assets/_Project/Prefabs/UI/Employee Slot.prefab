@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4188679, g: 0.4101744, b: 0.4101744, a: 1}
+  m_Color: {r: 0.135, g: 0.135, b: 0.15, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unavailableRoot: {fileID: 8006741495685780060}
-  employeeCardRoot: {fileID: 5428571894411388334}
+  employeeCard: {fileID: 4008788063618451086}
   nameLabel: {fileID: 6526739078653952687}
   portrait: {fileID: 2348000919183842475}
   goalText: {fileID: 8035888362932448609}
@@ -132,7 +132,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 50}
+  m_SizeDelta: {x: 180, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6258317179304395556
 CanvasRenderer:
@@ -164,15 +164,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Unavailable
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f7b0c132458452948baa02d5c112d4f6, type: 2}
+  m_sharedMaterial: {fileID: 6178531084812766532, guid: f7b0c132458452948baa02d5c112d4f6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4289901234
+  m_fontColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -281,11 +281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 866763137985462593, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 210
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 866763137985462593, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 250
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 866763137985462593, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -355,6 +355,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4008788063618451086 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6516351835433753668, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
+  m_PrefabInstance: {fileID: 7911884432811989706}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ce64f0591f3c646b860dff067cf40e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4666919451397291925 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3245004587397473631, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
@@ -366,11 +377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &5428571894411388334 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2781678215288913764, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}
-  m_PrefabInstance: {fileID: 7911884432811989706}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6526739078653952687 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3989919226556569701, guid: f23d865cde13a9841b6d21ccae99b69c, type: 3}

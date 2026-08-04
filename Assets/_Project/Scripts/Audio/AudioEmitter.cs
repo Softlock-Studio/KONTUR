@@ -1,72 +1,132 @@
-using Game.House;
+using Game.Bootstrap;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace Game.Audio
 {
     // Attach to any entity that needs a sound following its transform (Employee, Babooshka, ...).
     // For one-off world sounds that don't need to track a moving object, use
     // IAudioService.PlaySfxAtPoint instead — this component is only for the attached case.
+    //
+    // One AudioSource per AudioChannel (not a pool): different channels never cut each other off
+    // (e.g. an Action-channel attack bark can play over Movement-channel footsteps), but two
+    // sounds on the *same* channel compete for that one source. Whether the new one is allowed to
+    // cut off whichever is already playing there is decided per-call by mustFinish — see Play.
     public sealed class AudioEmitter : MonoBehaviour
     {
+        private static readonly int ChannelCount = System.Enum.GetValues(typeof(AudioChannel)).Length;
+
+        [Header("Auto-play (optional)")]
+        [Tooltip("For static level props with no script deciding when to make sound (a TV, a " +
+                 "vent, a dripping pipe, ...) — plays this once the emitter is ready. Leave empty " +
+                 "for anything driven by code instead (Play/PlayLoop calls, e.g. Employee/Babooshka).")]
+        [SerializeField] private SfxCue autoPlayCue;
+        [SerializeField] private AudioChannel autoPlayChannel = AudioChannel.General;
+        [SerializeField] private bool autoPlayLoop = true;
+
+        [SerializeField] private bool debugLogging = false;
+
         private IAudioService audioService;
-        private ICameraObservationService cameraObservation;
-        private AudioSource source;
+        private AudioSource[] sources;
 
-        // cameraObservation is optional (default null) so scenes without the camera system
-        // (e.g. standalone AI test scenes with no MissionScope) don't fail this whole injection
-        // and lose audioService along with it — see IsAudible for the matching fail-open rule.
-        [Inject]
-        public void Construct(IAudioService audioService, ICameraObservationService cameraObservation = null)
-        {
-            this.audioService = audioService;
-            this.cameraObservation = cameraObservation;
-        }
+        // Per channel: was the sound currently playing there started with mustFinish: true? If so,
+        // a new same-channel Play() is held off (returns false, plays nothing) instead of cutting
+        // it short; once it finishes on its own, the channel is free again for anything.
+        private bool[] protectedChannel;
 
-        // Deferred to Start: [Inject] runs during the owning LifetimeScope's build, which isn't
-        // guaranteed to complete before this object's own Awake — Unity only guarantees all
-        // Awakes finish before any Start (same pattern as LocalizedTextTMP.Construct).
+        // Resolved directly instead of [Inject], so this never depends on the GameObject being
+        // added to the owning LifetimeScope's Auto Inject Game Objects list — same pattern as
+        // GameCamera/CamerasView. One-time scene lookup, cached; not repeated per Play() call.
         private void Start()
         {
-            if (audioService == null)
+            audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
+
+            sources = new AudioSource[ChannelCount];
+            protectedChannel = new bool[ChannelCount];
+            for (int i = 0; i < sources.Length; i++)
+                sources[i] = audioService.CreateAttachedSource(transform);
+
+            if (autoPlayCue != null)
             {
-                Debug.LogWarning($"[{name}] AudioEmitter has no IAudioService — add this GameObject to the owning LifetimeScope's Auto Inject Game Objects list.", this);
-                return;
+                if (autoPlayLoop) PlayLoop(autoPlayCue, autoPlayChannel);
+                else Play(autoPlayCue, autoPlayChannel);
+            }
+        }
+
+        // Returns whether it actually started — false means the channel is busy with a
+        // mustFinish: true sound and this call was held off instead of cutting it off. Callers
+        // that need to retry (LoopingSoundEmitter) can poll on the return value.
+        public bool Play(SfxCue cue, AudioChannel channel = AudioChannel.General, bool mustFinish = true) =>
+            TryPlay(cue, channel, loop: false, mustFinish);
+
+        public bool PlayLoop(SfxCue cue, AudioChannel channel = AudioChannel.General, bool mustFinish = true) =>
+            TryPlay(cue, channel, loop: true, mustFinish);
+
+        public void Stop()
+        {
+            if (sources == null) return;
+            foreach (AudioSource source in sources) source.Stop();
+            System.Array.Clear(protectedChannel, 0, protectedChannel.Length);
+        }
+
+        private bool TryPlay(SfxCue cue, AudioChannel channel, bool loop, bool mustFinish)
+        {
+            int index = (int)channel;
+            AudioSource source = sources?[index];
+
+            if (cue == null || source == null)
+            {
+#if UNITY_EDITOR
+                if (debugLogging)
+                {
+                    string reason = source == null
+                        ? "no AudioSource yet (Start() hasn't run on this AudioEmitter — called too early, or the GameObject is inactive)"
+                        : "cue is null (SfxCue field not assigned in the config)";
+                    Debug.Log($"[{name}] AudioEmitter skipped: {reason}", this);
+                }
+#endif
+                return false;
             }
 
-            source = audioService.CreateAttachedSource(transform);
-        }
+            if (source.isPlaying && protectedChannel[index])
+            {
+#if UNITY_EDITOR
+                if (debugLogging)
+                    Debug.Log($"[{name}] AudioEmitter held off {cue.name} on {channel} — a mustFinish sound is still playing there", this);
+#endif
+                return false;
+            }
 
-        public void Play(SfxCue cue, Zone zone = null)
-        {
-            if (cue == null || source == null || !IsAudible(zone)) return;
-
-            ApplyCue(cue);
-            source.loop = false;
+            ApplyCue(source, cue);
+            source.loop = loop;
             source.Play();
+            protectedChannel[index] = mustFinish;
+
+#if UNITY_EDITOR
+            if (debugLogging)
+                Debug.Log($"[{name}] AudioEmitter played {cue.name} on {channel} → clip \"{(source.clip != null ? source.clip.name : "none — Clips[] is empty on this SfxCue")}\" | active listener: {DescribeActiveListener()}", this);
+#endif
+            return true;
         }
 
-        public void PlayLoop(SfxCue cue, Zone zone = null)
+#if UNITY_EDITOR
+        // Answers "where is this actually being heard from right now" — logs every enabled
+        // AudioListener in the scene (there should be exactly one; more is a Unity-level bug that
+        // logs its own warning, zero means this sound is genuinely inaudible).
+        private static string DescribeActiveListener()
         {
-            if (cue == null || source == null || !IsAudible(zone)) return;
+            AudioListener[] listeners = Object.FindObjectsByType<AudioListener>(FindObjectsSortMode.None);
+            var enabled = new System.Collections.Generic.List<string>();
+            foreach (AudioListener listener in listeners)
+                if (listener.enabled && listener.gameObject.activeInHierarchy)
+                    enabled.Add($"{listener.name} @ {listener.transform.position}");
 
-            ApplyCue(cue);
-            source.loop = true;
-            source.Play();
+            return enabled.Count == 0 ? "NONE (should be silent — if you can hear this, something else is off)" : string.Join(", ", enabled);
         }
+#endif
 
-        public void Stop() => source?.Stop();
-
-        // The player never hears this "in the room" — only through whichever camera is currently
-        // selected. Falls open (audible) if the camera system isn't wired up in this scene, same
-        // rationale as Zone.TrySpendResource's standalone-debug-path fallback.
-        private bool IsAudible(Zone zone)
-        {
-            if (cameraObservation == null) return true;
-            return zone != null ? cameraObservation.IsObserving(zone) : cameraObservation.IsObserving(transform.position);
-        }
-
-        private void ApplyCue(SfxCue cue)
+        private static void ApplyCue(AudioSource source, SfxCue cue)
         {
             source.clip = cue.GetClip();
             source.volume = cue.Volume;
