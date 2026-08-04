@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7490209863421764543}
   - component: {fileID: 7739269514645196063}
   - component: {fileID: 4781877642953373549}
+  - component: {fileID: 8393657783522571766}
   m_Layer: 6
   m_Name: Babooshka
   m_TagString: Untagged
@@ -132,6 +133,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b00a10145d811548817e5cd061d11cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoPlayCue: {fileID: 0}
+  autoPlayChannel: 0
+  autoPlayLoop: 1
+  debugLogging: 0
+--- !u!65 &8393657783522571766
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968838481705717037}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7, y: 1, z: 0.57}
+  m_Center: {x: 0, y: 0.48, z: 0}
 --- !u!1 &4454716868386074727
 GameObject:
   m_ObjectHideFlags: 0
