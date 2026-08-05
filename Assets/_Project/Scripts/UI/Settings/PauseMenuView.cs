@@ -38,7 +38,7 @@ namespace Game.UI.Settings
             gameObject.SetActive(true);
         }
 
-        private void ResumeGame()
+        public void ResumeGame()
         {
             _settingsPanelView.gameObject.SetActive(false);
             _pauseMenuButtonsView.gameObject.SetActive(true);

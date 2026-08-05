@@ -1,6 +1,7 @@
 using Game.AI.Employee;
 using Game.Bootstrap;
 using Game.House.Model;
+using Game.Input;
 using Game.Mission;
 using Game.UI.House;
 using Game.UI.Settings;
@@ -29,10 +30,12 @@ namespace Game.House.Presentation
         [SerializeField] private PauseMenuView pauseMenuView;
 
         private MissionManager missionManager;
+        private IInputService inputService;
 
         private void Start()
         {
             missionManager = LifetimeScope.Find<MissionScope>().Container.Resolve<MissionManager>();
+            inputService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IInputService>();
             missionManager.LevelEnded += OnLevelEnded;
             openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);
         }
@@ -41,6 +44,17 @@ namespace Game.House.Presentation
         {
             missionManager.LevelEnded -= OnLevelEnded;
             openPauseMenuButton.onClick.RemoveListener(pauseMenuView.ShowPauseMenu);
+        }
+
+        private void Update()
+        {
+            if (inputService.WasEscapePressedThisFrame)
+            {
+                if (pauseMenuView.gameObject.activeInHierarchy)
+                    pauseMenuView.ResumeGame();
+                else
+                    pauseMenuView.ShowPauseMenu();
+            }
         }
 
         private void OnLevelEnded(LevelEndResult result) =>
