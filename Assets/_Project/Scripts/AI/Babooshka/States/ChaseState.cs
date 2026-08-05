@@ -1,3 +1,4 @@
+using Game.AI;
 using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
@@ -45,6 +46,11 @@ namespace Game.AI.Babooshka
 
             if (blackboard.Target == null) return;
             agent.SetDestination(blackboard.Target.Position);
+
+            // No path to the target (e.g. cut off by a closed area) — drop the chase instead of
+            // standing there re-issuing the same failing destination every frame. Clearing Target
+            // is the existing "give up" signal BabooshkaController already transitions Chase→Search on.
+            if (agent.HasUnreachableDestination()) blackboard.Target = null;
         }
     }
 }

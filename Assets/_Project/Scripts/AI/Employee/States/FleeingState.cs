@@ -1,3 +1,4 @@
+using Game.AI;
 using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
@@ -27,6 +28,7 @@ namespace Game.AI.Employee
         {
             blackboard.FleeRequested = false;
             blackboard.IsFleeing = true;
+            blackboard.DestinationUnreachable = false;
             agent.speed = config.FleeSpeed;
             agent.isStopped = false;
             if (blackboard.BasePoint != null) agent.SetDestination(blackboard.BasePoint.position);
@@ -38,6 +40,9 @@ namespace Game.AI.Employee
         {
             soundEmitter?.Tick(EmployeeSoundType.Run, Time.deltaTime);
             soundEmitter?.Tick(EmployeeSoundType.Breathing, Time.deltaTime);
+
+            if (blackboard.BasePoint != null && !blackboard.DestinationUnreachable && agent.HasUnreachableDestination())
+                blackboard.DestinationUnreachable = true;
         }
 
         public override void OnExit()

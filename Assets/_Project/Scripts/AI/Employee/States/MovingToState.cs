@@ -1,3 +1,4 @@
+using Game.AI;
 using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
@@ -26,6 +27,7 @@ namespace Game.AI.Employee
         {
             agent.speed = config.MoveSpeed;
             agent.isStopped = false;
+            blackboard.DestinationUnreachable = false;
             agent.SetDestination(blackboard.Destination);
             soundEmitter?.ResetTimer(EmployeeSoundType.Walk);
             // Breathing is deliberately not reset here — like Babooshka's Laugh, it runs on its
@@ -37,6 +39,9 @@ namespace Game.AI.Employee
         {
             soundEmitter?.Tick(EmployeeSoundType.Walk, Time.deltaTime);
             soundEmitter?.Tick(EmployeeSoundType.Breathing, Time.deltaTime);
+
+            if (!blackboard.DestinationUnreachable && agent.HasUnreachableDestination())
+                blackboard.DestinationUnreachable = true;
         }
     }
 }

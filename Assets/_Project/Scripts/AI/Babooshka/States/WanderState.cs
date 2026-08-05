@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityHFSM;
+using Game.AI;
 using Game.Audio;
 using Game.House;
 
@@ -66,6 +67,16 @@ namespace Game.AI.Babooshka
             {
                 case Phase.Moving:
                     soundEmitter?.Tick(BabooshkaSoundType.Footstep, Time.deltaTime);
+
+                    // No path (or only a partial one) to the current destination — give up on it
+                    // immediately and pick a different one, instead of standing there forever
+                    // "arriving" at a point she can never actually reach.
+                    if (agent.HasUnreachableDestination())
+                    {
+                        PickNextDestination();
+                        return;
+                    }
+
                     if (agent.pathPending || agent.remainingDistance > ArrivalThreshold) return;
                     BeginStandingStill();
                     return;

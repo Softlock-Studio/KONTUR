@@ -1,3 +1,4 @@
+using Game.AI;
 using Game.Audio;
 using UnityEngine;
 using UnityEngine.AI;
@@ -26,6 +27,7 @@ namespace Game.AI.Employee
         {
             agent.speed = config.ReturnSpeed;
             agent.isStopped = false;
+            blackboard.DestinationUnreachable = false;
             if (blackboard.BasePoint != null) agent.SetDestination(blackboard.BasePoint.position);
             soundEmitter?.ResetTimer(EmployeeSoundType.Walk);
             // Breathing is deliberately not reset here — see MovingToState.OnEnter.
@@ -35,6 +37,9 @@ namespace Game.AI.Employee
         {
             soundEmitter?.Tick(EmployeeSoundType.Walk, Time.deltaTime);
             soundEmitter?.Tick(EmployeeSoundType.Breathing, Time.deltaTime);
+
+            if (blackboard.BasePoint != null && !blackboard.DestinationUnreachable && agent.HasUnreachableDestination())
+                blackboard.DestinationUnreachable = true;
         }
     }
 }

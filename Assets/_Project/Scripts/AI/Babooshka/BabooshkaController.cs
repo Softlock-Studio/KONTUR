@@ -63,9 +63,11 @@ namespace Game.AI.Babooshka
             var fightState = new FightState(agent, config, blackboard, () => infectionDirector?.GetInfectionLevel() ?? 0f,
                 animatorDriver, audioEmitter);
 
+            var searchState = new SearchState(agent, config, blackboard, soundEmitter);
+
             fsm.AddState("Wander", new WanderState(agent, config, patrolPoints, zoneDirectory, audioEmitter, animatorDriver, soundEmitter, blackboard));
             fsm.AddState("Chase", new ChaseState(agent, config, blackboard, soundEmitter));
-            fsm.AddState("Search", new SearchState(agent, config, blackboard, soundEmitter));
+            fsm.AddState("Search", searchState);
             fsm.AddState("Fight", fightState);
 
             fsm.SetStartState("Wander");
@@ -80,6 +82,7 @@ namespace Game.AI.Babooshka
             fsm.AddTransition("Chase", "Search", t => blackboard.Target == null);
 
             fsm.AddTransition("Search", "Chase", t => blackboard.Target != null);
+            fsm.AddTransition("Search", "Wander", t => searchState.DestinationUnreachable);
             fsm.AddTransition(new TransitionAfter("Search", "Wander", config.InvestigateTimeout));
 
             fsm.AddTransition("Fight", "Wander", t => fightState.IsResolved);

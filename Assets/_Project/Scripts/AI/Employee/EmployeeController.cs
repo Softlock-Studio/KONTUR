@@ -82,11 +82,18 @@ namespace Game.AI.Employee
 
             fsm.SetStartState("Idle");
 
+            // No path to the assigned destination — abandon whatever was pending (releases the
+            // Zone slot/session, same as any other cancellation) and fall back to Idle instead of
+            // waiting forever for an arrival that can never happen. Declared before the normal
+            // arrival transitions below so it takes priority when both would otherwise apply.
+            fsm.AddTransition("MovingTo", "Idle", t => blackboard.DestinationUnreachable,
+                afterTransition: t => CancelCurrentTask());
+
             fsm.AddTransition("MovingTo", "PerformingTask", t => HasArrived() && blackboard.PendingTask != null);
             fsm.AddTransition("MovingTo", "Idle", t => HasArrived() && blackboard.PendingTask == null,
                 afterTransition: t => blackboard.TargetZone = null);
-            fsm.AddTransition("ReturningToBase", "Idle", t => HasArrived());
-            fsm.AddTransition("Fleeing", "Idle", t => HasArrived());
+            fsm.AddTransition("ReturningToBase", "Idle", t => HasArrived() || blackboard.DestinationUnreachable);
+            fsm.AddTransition("Fleeing", "Idle", t => HasArrived() || blackboard.DestinationUnreachable);
 
             fsm.AddTransition("PerformingTask", "Idle",
                 t => blackboard.PendingTask != null && blackboard.PendingTask.IsComplete,
