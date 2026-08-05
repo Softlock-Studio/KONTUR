@@ -45,12 +45,40 @@ namespace Game.AI.Babooshka
                 closestSqrDistance = sqrDistance;
             }
 
+            visible = ApplyAggressionGate(visible);
+
             blackboard.Target = visible;
             if (visible != null)
             {
                 blackboard.LastKnownTargetPosition = visible.Position;
                 blackboard.LastSeenTime = Time.time;
             }
+        }
+
+        // Gates a raw sighting through config.AggressionChance01 — see the field's tooltip for the
+        // never/sometimes/always semantics and the "sticks until sight is lost" reasoning.
+        private Employee.IEmployee ApplyAggressionGate(Employee.IEmployee visible)
+        {
+            if (visible == null)
+            {
+                blackboard.IgnoredSightTarget = null;
+                return null;
+            }
+
+            if (visible == blackboard.Target) return visible;
+            if (visible == blackboard.IgnoredSightTarget) return null;
+
+            if (ShouldEngage(config.AggressionChance01)) return visible;
+
+            blackboard.IgnoredSightTarget = visible;
+            return null;
+        }
+
+        private static bool ShouldEngage(float chance01)
+        {
+            if (chance01 <= 0f) return false;
+            if (chance01 >= 1f) return true;
+            return Random.value < chance01;
         }
 
         private void OnDrawGizmos()
