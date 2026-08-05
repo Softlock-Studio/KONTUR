@@ -16,10 +16,12 @@ namespace Game.Mission
     public sealed class MissionScope : LifetimeScope
     {
         [SerializeField] private HouseConfig houseConfig;
+        [SerializeField] private ResourceConfig resourceConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(houseConfig);
+            builder.RegisterInstance(resourceConfig);
 
             builder.RegisterComponentInHierarchy<ZoneRegistry>();
             builder.RegisterComponentInHierarchy<EmployeeRegistry>();
@@ -51,6 +53,9 @@ namespace Game.Mission
             builder.RegisterComponentInHierarchy<EmployeeListView>().As<IEmployeeListView>();
 
             builder.RegisterEntryPoint<DisplayCanvasSubscriptionManager>(Lifetime.Scoped);
+
+            // Persists across missions, unlike everything registered in MissionScope.
+            builder.Register<ResourceInventory>(Lifetime.Singleton);
         }
     }
 }
