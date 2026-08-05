@@ -37,6 +37,12 @@ Namespace `Game.AI.Babooshka`, `Game.AI.Employee` · folder `Assets/_Project/Scr
   `patrolPoints`). After standing still in an apartment, rolls `WallLickChance` once; on
   success calls `IWanderZone.TriggerInfectionOutbreak()` on that zone (a no-op if an
   outbreak there is already active).
+- Aggression is configurable: `BabooshkaConfig.AggressionChance01` (0 = never engages, 1 =
+  always, same as before this field existed) gates whether a freshly-sighted employee
+  actually becomes `blackboard.Target` — see `SightSensor.ApplyAggressionGate`. The roll
+  happens once per new sighting and sticks (via `blackboard.IgnoredSightTarget`) for as
+  long as that employee stays continuously visible, so a "no" doesn't flicker into a "yes"
+  a few frames later; losing sight of everyone resets it for the next encounter.
 
 ## Employees
 Real FSM now, not stubs: `EmployeeController` (`MonoBehaviour`, requires
@@ -58,6 +64,26 @@ any-state **→ Fleeing → Idle** override driven by `EmployeeBlackboard.FleeRe
 - Task queue / multi-room scheduling (assigning across many zones automatically) is
   NOT built — assignment today is one-off, per-zone (`Zone.TryAssign`), driven by a
   human click in the debug controller.
+- Roster size is a pool, not dynamic spawning: `EmployeeRegistry.Awake()` finds every
+  `EmployeeController` placed in the scene, then immediately enables the first `count`
+  of them and disables the rest — `count` = last level's `SaveData.AliveEmployeeCount`
+  (0 if no save exists yet, i.e. this is the very first level) +
+  `HouseConfig.EmployeeReinforcements`, clamped to how many are actually placed. Which
+  specific placed instances stay active is arbitrary (they're interchangeable besides
+  `CallsignNumber`). This all happens in `Awake` — deliberately not deferred to a
+  VContainer `IStartable` — because `EmployeeListView` (a plain `MonoBehaviour`) reads
+  `Employees` in its own native Unity `Start()`, which runs *before* any VContainer
+  `IStartable.Start()` in the same frame (confirmed via
+  `PlayerLoopHelper`: `VContainerStartup` is inserted right after
+  `EarlyUpdate.ScriptRunDelayedStartupFrame`, where native `Start()` calls happen) — an
+  `IStartable`-based activator would sometimes lose that race and leave the Employee
+  List UI bound to an empty roster. Awake has no such race (Unity finishes every
+  object's Awake before calling Start on any of them), so `HouseConfig` is wired to
+  `EmployeeRegistry` via a plain `[SerializeField]` (same asset as `MissionScope`'s)
+  rather than DI-injected — resolving from `MissionScope`'s own container isn't safe
+  that early either, only `GameLifetimeScope`'s (already built since MainMenu) is. To
+  change the max roster for a level, place more/fewer `Employee.prefab` instances in
+  the scene by hand — see `Docs/agents/systems/save.md`.
 
 ## Cross-references
 - `Game.House.IInfectionDirector` and `Game.House.IZoneDirectory`/`IWanderZone` are

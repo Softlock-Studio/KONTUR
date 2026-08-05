@@ -6,8 +6,8 @@ means design-only, nothing under `Scripts/` yet.
 
 | System | Status | Code | GDD Extract |
 | ------ | ------ | ---- | ----------- |
-| Babooshka AI (Patrol/Chase/Search/Fight FSM, sight+hearing sensors) | Built | `Scripts/AI/Babooshka/` | [babooshka.md](gdd/babooshka.md) |
-| Employee AI (Idle/MovingTo/PerformingTask/ReturningToBase/Fleeing FSM) | Built | `Scripts/AI/Employee/` | [employees.md](gdd/employees.md) |
+| Babooshka AI (Patrol/Chase/Search/Fight FSM, sight+hearing sensors) | Built — configurable aggression (`BabooshkaConfig.AggressionChance01`: never/sometimes/always engages a sighted employee, gated in `SightSensor`) | `Scripts/AI/Babooshka/` | [babooshka.md](gdd/babooshka.md) |
+| Employee AI (Idle/MovingTo/PerformingTask/ReturningToBase/Fleeing FSM) | Built — roster size is a configurable pool of scene-placed employees (`EmployeeRegistry.Awake`: last level's survivors + `HouseConfig.EmployeeReinforcements`, capped by how many are placed), not dynamic spawning | `Scripts/AI/Employee/` | [employees.md](gdd/employees.md) |
 | Employee task queue / room assignment | Built — debug click UI (`EmployeeDebugController`) still exists alongside real Canvas UI (select from Employee List, click a zone on the minimap → context menu of valid actions); auto-scheduling across zones is not built | `Scripts/AI/Employee/EmployeeDebugController.cs`, `Scripts/AI/Employee/EmployeeRegistry.cs`, `Scripts/UI/House/`, `Scripts/House/ZoneTask.cs` | [employees.md](gdd/employees.md) |
 | House model + zone infection/light (0-100% per zone, house average) | Built | `Scripts/House/` (`HouseModel`, `Zone`, `ZoneRegistry`) | [infection.md](gdd/infection.md) |
 | Infection spread (darkness modifier; treatment activity) | Built (placeholder tuning, not GDD-sourced) | `Scripts/House/Zone.cs`, `ZoneConfig.cs`, `ReduceInfectionEffect.cs` | [infection.md](gdd/infection.md) |
@@ -29,7 +29,7 @@ means design-only, nothing under `Scripts/` yet.
 | Resident events (random events, help requests, emergencies) | Partially built — event *scaffolding* (spawn/expiry/resolve) is generic and live; specific resident-event content is not authored | `Scripts/House/ZoneEventType.cs`, `ResolveZoneEventEffect.cs` | [residents.md](gdd/residents.md) |
 | Defeat conditions (full team death; critical infection; infection corridor) | Built — full team death and infection maxed (100%) end the mission instantly (`MissionManager.IsDefeated`); infection outside `HouseConfig.InfectionFloor01`/`InfectionCeiling01` at night-end is also a defeat (`MissionManager.IsInfectionWithinCorridor`), checked as a snapshot when the timer runs out rather than counting mid-night breaches (deviates from the GDD's "floor breached twice" draft — floor/ceiling are static per-level values, no night-to-night escalation) | `Scripts/Mission/MissionManager.cs`, `Scripts/House/HouseConfig.cs` | [defeat.md](gdd/defeat.md) |
 | Object stabilization (camera-as-stabilizer rule) | Planned | — | [lore-stabilization.md](gdd/lore-stabilization.md) |
-| Save (single-slot autosave on level start: resource counts, alive employee count) | Built (partial) — write-only checkpoint; load/continue flow not wired up | `Scripts/Save/` | — |
+| Save (single-slot autosave on level start: resource counts, alive employee count) | Built — `TryLoad` now feeds `MainMenuUI`'s Continue button and `EmployeeRegistry`'s next-level roster size; no multi-slot/full continue-screen UI | `Scripts/Save/` | — |
 
 ## Test scenes
 - `Assets/_Project/Scenes/TestScenes/TestAI/` — Babooshka + Employee FSMs.

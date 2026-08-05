@@ -24,5 +24,13 @@ namespace Game.House
         [Range(0f, 1f)] public float InfectionFloor01 = 0.2f;
         [Tooltip("Верхняя граница допустимого заражения дома (0–1) на конец ночи. Если итоговое заражение выше этого значения — поражение (аналогично старому правилу «дошли до 100%», но проверяется только в конце дня, а не мгновенно).")]
         [Range(0f, 1f)] public float InfectionCeiling01 = 0.4f;
+
+        // Actual roster size is a pool of whatever's placed in the scene (EmployeeRosterActivator
+        // enables the first N, disables the rest) — this value plus last level's survivor count
+        // (0 if no save exists yet, i.e. this is the very first level) is clamped to how many are
+        // actually placed. See Docs/agents/systems/ai.md.
+        [Header("Employees")]
+        [Tooltip("Сколько новых сотрудников присылает компания к началу этого уровня — прибавляется к тем, кто выжил на предыдущем уровне (0, если сохранения ещё нет — это самый первый уровень). Итоговое количество активных сотрудников не может превышать число, вручную расставленное в сцене.")]
+        public int EmployeeReinforcements = 4;
     }
 }

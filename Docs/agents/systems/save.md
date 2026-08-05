@@ -22,8 +22,13 @@ groundwork for it.
   kept out of `MissionManager` — that class owns win/lose/timer, not persistence.
 
 ## Rules of thumb
-- Nothing calls `TryLoad` yet — it's a stub for the future load/continue flow. Don't wire
-  it into gameplay without a reason; adding a "continue" screen is a separate task.
+- `TryLoad` has two consumers now: `MainMenuUI` (Continue button + which level it loads)
+  and `AI.Employee.EmployeeRegistry.Awake()` (`AliveEmployeeCount` feeds next level's
+  starting roster size — see `Docs/agents/systems/ai.md`). The latter resolves
+  `ISaveService` via `LifetimeScope.Find<GameLifetimeScope>()` rather than constructor
+  injection, since it has to run in `Awake`, before `MissionScope`'s own container is
+  guaranteed built. It's still just a single-slot read; no multi-slot/continue-screen UI
+  beyond the Continue button exists.
 - If you need to save more state, extend `SaveData` and gather it in
   `LevelStartSaveTrigger.Start()` (or a new trigger, if the data doesn't belong there) —
   don't reach into `SaveService` from elsewhere in the codebase.
