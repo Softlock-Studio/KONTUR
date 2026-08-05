@@ -25,7 +25,7 @@ namespace Game.Bootstrap
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(_levelLoaderConfig);
-            builder.RegisterInstance(resourceConfig);
+            //builder.RegisterInstance(resourceConfig);
 			builder.RegisterInstance(audioConfig);
 
             // Game-wide bindings go here. Mission-specific systems (e.g. House) are
@@ -33,7 +33,7 @@ namespace Game.Bootstrap
             builder.RegisterEntryPoint<LocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
 
             // Persists across missions, unlike everything registered in MissionScope.
-            builder.Register<ResourceInventory>(Lifetime.Singleton);
+            //builder.Register<ResourceInventory>(Lifetime.Singleton);
 
             builder.Register<SaveService>(Lifetime.Singleton).As<ISaveService>();
 
