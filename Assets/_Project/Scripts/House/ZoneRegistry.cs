@@ -12,9 +12,14 @@ namespace Game.House
 
         public IReadOnlyList<Zone> Zones => zones;
 
+        // Scene-filtered: during a level transition the previous level is still loaded
+        // additively at this point (see SceneController.LevelLoad), so an unfiltered
+        // FindObjectsByType would also pick up the outgoing scene's zones.
         private void Awake()
         {
-            zones = FindObjectsByType<Zone>(FindObjectsSortMode.None);
+            zones = FindObjectsByType<Zone>(FindObjectsSortMode.None)
+                .Where(z => z.gameObject.scene == gameObject.scene)
+                .ToArray();
         }
 
         public float GetInfectionLevel()

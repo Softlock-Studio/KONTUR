@@ -34,7 +34,7 @@ namespace Game.House.Presentation
 
         private void Start()
         {
-            missionManager = LifetimeScope.Find<MissionScope>().Container.Resolve<MissionManager>();
+            missionManager = LifetimeScope.Find<MissionScope>(gameObject.scene).Container.Resolve<MissionManager>();
             inputService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IInputService>();
             missionManager.LevelEnded += OnLevelEnded;
             openPauseMenuButton.onClick.AddListener(pauseMenuView.ShowPauseMenu);

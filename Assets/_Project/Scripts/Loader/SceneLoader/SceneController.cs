@@ -34,6 +34,13 @@ namespace Loader.SceneController
         {
             if (IsValid(sceneType))
             {
+                // Load before unload, not the other way around: exactly one level scene is ever
+                // loaded in this architecture, and SceneManager.UnloadSceneAsync returns null
+                // (Unity refuses to unload the only loaded scene) if there's nothing else loaded
+                // yet — unloading first threw a NullReferenceException on the very first
+                // transition. The resulting brief overlap (both scenes loaded at once) is handled
+                // by making MissionScope lookups scene-aware instead — see LifetimeScope.Find
+                // call sites using the Scene overload.
                 await SceneLoad(sceneType);
 
                 if (_currentLevelScene != "")

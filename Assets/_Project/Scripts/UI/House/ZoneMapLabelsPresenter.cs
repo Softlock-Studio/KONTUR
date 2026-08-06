@@ -38,7 +38,7 @@ namespace Game.UI.House
             {
                 if (zonesById != null) return zonesById;
 
-                registry = LifetimeScope.Find<MissionScope>().Container.Resolve<ZoneRegistry>();
+                registry = LifetimeScope.Find<MissionScope>(gameObject.scene).Container.Resolve<ZoneRegistry>();
                 zonesById = new Dictionary<ZoneId, Zone>();
                 foreach (Zone zone in registry.Zones)
                     zonesById[ZoneId.From(zone)] = zone;

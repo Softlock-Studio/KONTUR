@@ -23,7 +23,7 @@ namespace Game.UI.Employees
         public event Action<IEmployee> SelectionChanged;
         private void Start()
         {
-            var scope = LifetimeScope.Find<MissionScope>();
+            var scope = LifetimeScope.Find<MissionScope>(gameObject.scene);
             EmployeeRegistry registry = scope.Container.Resolve<EmployeeRegistry>();
 
             BindSlots(registry.Employees);
