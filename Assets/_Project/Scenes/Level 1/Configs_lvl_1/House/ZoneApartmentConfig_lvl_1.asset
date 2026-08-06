@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10cea469bf5f6234594540468d30d666, type: 3}
   m_Name: ZoneApartmentConfig_lvl_1
   m_EditorClassIdentifier: 
-  BaseGrowthPerSecond: 0.4
-  DarknessGrowthPerSecond: 0.8
+  BaseGrowthPerSecond: 0.5
+  DarknessGrowthPerSecond: 0.9
   TreatmentDurationSeconds: 5
   TreatmentInfectionReduction: 40
   TreatmentIodineCost: 1
@@ -24,7 +24,7 @@ MonoBehaviour:
   - Type: 2
     Kind: 1
     CheckIntervalSeconds: 15
-    SpawnChance: 0.1
+    SpawnChance: 0.25
     MaxConcurrent: 0
     ExpirySeconds: 0
   - Type: 1
