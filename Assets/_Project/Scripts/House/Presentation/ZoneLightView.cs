@@ -46,10 +46,13 @@ namespace Game.House.Presentation
 
         private void Update()
         {
-            if(_cameraRoom.enabled)
-                SetActiveObject(true);
-            else
-                SetActiveObject(false);
+            if(_cameraRoom != null)
+            {
+                if (_cameraRoom.enabled)
+                    SetActiveObject(true);
+                else
+                    SetActiveObject(false);
+            }
         }
 
         private void SetActiveObject(bool isActive)
