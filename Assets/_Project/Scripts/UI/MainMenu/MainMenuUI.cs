@@ -58,14 +58,14 @@ namespace Game.UI.MainMenu
 
         private void StartNewGame()
         {
-            if (_saveService.TryLoad(out _))
-            {
-                OpenPopUp();
-            }
-            else
-            {
+            //if (_saveService.TryLoad(out _))
+            //{
+            //    OpenPopUp();
+            //}
+            //else
+            //{
                 LoadNewGame();
-            }
+            //}
         }
 
         private void LoadNewGame()
