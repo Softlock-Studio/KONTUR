@@ -39,9 +39,12 @@ namespace Game.House.Presentation
             _zone.LightChanged += OnLightChanged;
             _zone.InfectionChanged += OnInfectionChanged;
 
-            var em = _particle.emission;
-            em.rateOverTime = _minValue;
-            _particle.Play();
+            if(_particle != null)
+            {
+                var em = _particle.emission;
+                em.rateOverTime = _minValue;
+                _particle.Play();
+            }
         }
 
         private void Update()
