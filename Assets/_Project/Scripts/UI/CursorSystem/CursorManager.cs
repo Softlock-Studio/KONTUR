@@ -84,10 +84,19 @@ namespace Game.UI
         }
 
         // Lets cursorScale be tuned live in the Inspector (including in Play mode) without
-        // needing to trigger a state change to see the result.
+        // needing to trigger a state change to see the result. Deferred via delayCall: applying
+        // the RectTransform change synchronously inside OnValidate trips Unity's "SendMessage
+        // cannot be called during OnValidate" warning (sizeDelta's setter notifies listeners
+        // internally via SendMessage).
         private void OnValidate()
         {
-            if (Application.isPlaying && cursorRect != null) ChangeCursor(currentState);
+#if UNITY_EDITOR
+            if (!Application.isPlaying || cursorRect == null) return;
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this != null) ChangeCursor(currentState);
+            };
+#endif
         }
     }
 
