@@ -247,7 +247,7 @@ namespace Game.Audio
             for (int i = 0; i < sfxPool.Length; i++)
             {
                 int index = (sfxCursor + i) % sfxPool.Length;
-                if (!sfxPool[index].isPlaying)
+                if (sfxPool[index] != null && !sfxPool[index].isPlaying)
                 {
                     sfxCursor = (index + 1) % sfxPool.Length;
                     return sfxPool[index];

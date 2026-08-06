@@ -139,7 +139,7 @@ namespace Game.House
 
         private void TickEvents(float deltaTime)
         {
-            if (config.Events == null) return;
+            if (config == null || config.Events == null) return;
 
             foreach (ZoneEventDefinition definition in config.Events)
             {
