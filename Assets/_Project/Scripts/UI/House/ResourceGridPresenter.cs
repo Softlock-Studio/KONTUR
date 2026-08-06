@@ -25,9 +25,8 @@ namespace Game.UI.House
         // it), so resolving on first use side-steps the ordering entirely.
         private IObjectResolver Resolver => resolver ??= LifetimeScope.Find<MissionScope>().Container;
 
-        // Spawned items need [Inject] to reach their nested LocalizedTextTMP (see ResourceItemView),
-        // which only happens via IObjectResolver.Instantiate — plain UnityEngine.Object.Instantiate
-        // would silently leave that component unconstructed.
+        // IObjectResolver.Instantiate rather than plain UnityEngine.Object.Instantiate, in case
+        // ResourceItemView or a future nested component ever needs [Inject]/Auto Inject wiring.
         public void Render(IReadOnlyDictionary<ResourceType, int> counts)
         {
             foreach (var pair in counts)
