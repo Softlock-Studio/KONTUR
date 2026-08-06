@@ -32,14 +32,19 @@ namespace Game.AI.Employee
         // SerializeField above instead of injecting HouseConfig the normal way.
         private void Awake()
         {
-            EmployeeController[] placed = FindObjectsByType<EmployeeController>(FindObjectsSortMode.None);
+            // Scene-filtered: during a level transition the previous level is still loaded
+            // additively at this point (see SceneController.LevelLoad), so an unfiltered
+            // FindObjectsByType would also pick up the outgoing scene's employees.
+            var placed = new List<EmployeeController>();
+            foreach (EmployeeController candidate in FindObjectsByType<EmployeeController>(FindObjectsSortMode.None))
+                if (candidate.gameObject.scene == gameObject.scene) placed.Add(candidate);
 
             ISaveService saveService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ISaveService>();
             int previousAliveCount = saveService.TryLoad(out SaveData data) ? data.AliveEmployeeCount : 0;
-            int targetCount = Mathf.Clamp(previousAliveCount + houseConfig.EmployeeReinforcements, 0, placed.Length);
+            int targetCount = Mathf.Clamp(previousAliveCount + houseConfig.EmployeeReinforcements, 0, placed.Count);
 
             var active = new List<IEmployee>(targetCount);
-            for (int i = 0; i < placed.Length; i++)
+            for (int i = 0; i < placed.Count; i++)
             {
                 bool shouldBeActive = i < targetCount;
                 placed[i].gameObject.SetActive(shouldBeActive);

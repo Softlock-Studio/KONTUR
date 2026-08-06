@@ -28,6 +28,8 @@ public class ReportView : MonoBehaviour
     private SceneController _sceneController;
     private IAudioService _audioService;
 
+    private const LevelType _lastLevel = LevelType.Level3;
+
     /// <summary>
     /// 
     /// </summary>
@@ -46,7 +48,10 @@ public class ReportView : MonoBehaviour
         if (hasClearedLevel)
         {
             _buttonText.SetKey("Report.ContinueButton");
-            _button.onClick.AddListener(() => { _sceneController.LevelLoad(_sceneController.GetCurrentLevelType() + 1); });
+            if (_sceneController.GetCurrentLevelType() == _lastLevel)
+                _button.onClick.AddListener(() => { _sceneController.LevelLoad(LevelType.MainMenu); });
+            else
+                _button.onClick.AddListener(() => { _sceneController.LevelLoad(_sceneController.GetCurrentLevelType() + 1); });
         }
         else
         {

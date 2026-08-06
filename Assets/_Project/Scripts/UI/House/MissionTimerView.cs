@@ -28,7 +28,7 @@ namespace Game.UI.House
 
         private void Start()
         {
-            missionManager = LifetimeScope.Find<MissionScope>().Container.Resolve<MissionManager>();
+            missionManager = LifetimeScope.Find<MissionScope>(gameObject.scene).Container.Resolve<MissionManager>();
             RefreshNightLabel();
         }
 

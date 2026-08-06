@@ -23,7 +23,7 @@ namespace Game.UI.House
         // raced that and hit a NullReferenceException. The MissionScope container is guaranteed
         // to exist by the time anything calls in here (HousePresenter was itself resolved from
         // it), so resolving on first use side-steps the ordering entirely.
-        private IObjectResolver Resolver => resolver ??= LifetimeScope.Find<MissionScope>().Container;
+        private IObjectResolver Resolver => resolver ??= LifetimeScope.Find<MissionScope>(gameObject.scene).Container;
 
         // IObjectResolver.Instantiate rather than plain UnityEngine.Object.Instantiate, in case
         // ResourceItemView or a future nested component ever needs [Inject]/Auto Inject wiring.

@@ -34,10 +34,15 @@ namespace CameraSystem
             audioService ??= LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
 
         // Auto-populated so every GameCamera in the scene is found, instead of relying on a
-        // manually-maintained (and easy to leave incomplete) serialized list.
+        // manually-maintained (and easy to leave incomplete) serialized list. Scene-filtered:
+        // during a level transition the previous level is still loaded additively at this point
+        // (see SceneController.LevelLoad), so an unfiltered FindObjectsByType would also pick up
+        // the outgoing scene's cameras — which then get destroyed under us when it unloads.
         private void Awake()
         {
-            _camerasList = new List<GameCamera>(FindObjectsByType<GameCamera>(FindObjectsSortMode.None));
+            _camerasList = new List<GameCamera>();
+            foreach (GameCamera cam in FindObjectsByType<GameCamera>(FindObjectsSortMode.None))
+                if (cam.gameObject.scene == gameObject.scene) _camerasList.Add(cam);
         }
 
         public List<GameCamera> GetCameraList() => _camerasList;

@@ -7,10 +7,22 @@ backends. See `Docs/agents/systems/house.md`, `ai.md`, `audio.md` for those syst
 
 ## DI access pattern
 New HUD scripts do **not** use `[Inject]`/Auto Inject Game Objects — they use the `MainMenuUI`
-precedent instead: `LifetimeScope.Find<MissionScope>().Container.Resolve<T>()` (mission-scoped:
-`EmployeeRegistry`, `IHousePresenter`, `MissionManager`) or `LifetimeScope.Find<GameLifetimeScope>()`
-(game-wide: `IAudioService`). This sidesteps the "forgot to add to Auto Inject Game Objects"
-foot-gun that bit `AudioEmitter`/`BackgroundMusicTrigger` earlier — see `audio.md`.
+precedent instead: `LifetimeScope.Find<MissionScope>(gameObject.scene).Container.Resolve<T>()`
+(mission-scoped: `EmployeeRegistry`, `IHousePresenter`, `MissionManager`) or
+`LifetimeScope.Find<GameLifetimeScope>()` (game-wide: `IAudioService`). This sidesteps the "forgot
+to add to Auto Inject Game Objects" foot-gun that bit `AudioEmitter`/`BackgroundMusicTrigger`
+earlier — see `audio.md`.
+
+Always pass `gameObject.scene` to `Find<MissionScope>` (never the parameterless overload):
+`SceneController.LevelLoad` (`Scripts/Loader/SceneLoader/SceneController.cs`) loads the next level
+additively before unloading the previous one — Unity refuses to unload the only loaded scene, so
+load-then-unload is required — meaning two `MissionScope`s briefly coexist. The parameterless
+`Find<MissionScope>()` is `FindAnyObjectByType` under the hood and can silently grab the outgoing
+level's (soon destroyed) scope instead of the incoming one. `GameLifetimeScope` doesn't need this —
+it's a single persistent root, never duplicated. This bit `EmployeeListView`/`HouseCanvasView`/
+`MissionTimerView`/`ResourceGridPresenter`/`ZoneMapLabelsPresenter` in production (Missing
+ReferenceExceptions and stale employee/infection state right after a level transition) before all
+five were switched to the scene-aware overload.
 
 ## Employee list & task assignment
 - **`EmployeeRegistry`** (`Scripts/AI/Employee/`) — mirrors `ZoneRegistry`:
