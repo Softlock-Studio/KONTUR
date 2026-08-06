@@ -1,6 +1,8 @@
+using Game.Bootstrap;
 using TMPro;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace Game.Localization
 {
@@ -11,12 +13,6 @@ namespace Game.Localization
         private ILocalizationService localization;
         private TMP_Text label;
 
-        [Inject]
-        public void Construct(ILocalizationService localization)
-        {
-            this.localization = localization;
-        }
-
         private void Awake()
         {
             label = GetComponent<TMP_Text>();
@@ -25,15 +21,20 @@ namespace Game.Localization
                 Debug.LogError($"[{name}] LocalizedTextTMP requires a TextMeshProUGUI or TextMeshPro component.", this);
         }
 
+        // Resolved here rather than via [Inject]/Auto Inject Game Objects — GameLifetimeScope is
+        // now a persistent root scope spawned outside any scene (see VContainerSettings), so it
+        // can't hold Inspector references to scene-local objects like this one. Same pattern as
+        // MainMenuUI (see Docs/agents/systems/ui.md).
         private void Start()
         {
+            localization = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<ILocalizationService>();
             localization.LanguageChanged += Localize;
             Localize();
         }
 
         private void OnDestroy()
         {
-            localization.LanguageChanged -= Localize;
+            if (localization != null) localization.LanguageChanged -= Localize;
         }
 
         private void Localize()
@@ -42,9 +43,8 @@ namespace Game.Localization
         }
 
         // For dynamically-bound instances (e.g. one per ResourceType, spawned at runtime) where
-        // the key isn't known until bind time. Safe to call right after
-        // IObjectResolver.Instantiate — Awake/[Inject] run synchronously as part of instantiation,
-        // only Start (which subscribes to LanguageChanged) is deferred.
+        // the key isn't known until bind time. Guarded because Start (where localization/label
+        // get set) may not have run yet if this is called in the same frame as Instantiate.
         public void SetKey(string key)
         {
             localizationKey = key;
