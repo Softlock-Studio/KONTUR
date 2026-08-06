@@ -5,18 +5,33 @@ Report.Worker.MaxInfection,Maximum infection percent:,Максимальная �
 Report.Worker.DeadWorkers,Number of dead workers:,Убито работников:
 Report.Worker.Label,PROGRESS REPORT,РАБОЧИЙ ОТЧЕТ
 Report.Kontur.Label,K.O.N.T.U.R. RESPONSE,ОТВЕТ К.О.Н.Т.У.Р.
-Report.Worker.Extra.1,text1,текст1
-Report.Worker.Extra.2,text2,текст2
-Report.Worker.Extra.3,text3,текст3
-Report.Worker.Extra.4,text4,текст4
+Report.Worker.Extra.1,<b>FROM THE OBSERVATION POST</b><br>No changes recorded. Object stable.,"<b>С ПОСТА НАБЛЮДЕНИЯ</b>
+Изменений не зафиксировано. Объект стабилен."
+Report.Worker.Extra.2,<b>FROM THE OBSERVATION POST</b><br>No changes recorded. Object stable.,"<b>С ПОСТА НАБЛЮДЕНИЯ</b>
+Кв. 13: зафиксирована повышенная активность подопытной на протяжении смены.
+Отмечено увеличение скорости передвижения."
+Report.Worker.Extra.3,<b>FROM THE OBSERVATION POST</b><br>Apt. 13: elevated subject activity recorded throughout the shift. Increased movement speed noted.,"<b>С ПОСТА НАБЛЮДЕНИЯ</b>
+Подопытная стала ещё быстрее. Изменения явные и заметны буквально
+во всех комнатах, где установлены камеры. Рекомендую поднять уровень внимания."
+Report.Kontur.SuccessText.1,<b>FROM THE OBSERVATION POST</b><br>The subject has grown even faster. Changes are явные — visible in virtually every room under camera coverage. Recommend raising the alert level.,"<b>Отчёт принят без замечаний.</b>
+Расход ресурсов в пределах нормы. К следующей смене прибудет подкрепление."
+Report.Kontur.SuccessText.2,<b>Report accepted without remarks.</b><br>Resource consumption within normal range. Reinforcements will arrive for the next shift.,"<b>Смена завершена в допустимых параметрах.</b> 
+Заражение удержано в пределах нормы. Центр направляет дополнительный резерв личного состава и снабжения к следующей смене."
+Report.Kontur.SuccessText.3,<b>Shift completed within acceptable parameters.</b><br>Infection held within normal limits. Central Command is dispatching additional personnel and supplies for the next shift.,"<color=#2E7D32><b>Ночь засчитана.</b></color>
+Данные переданы в НИИ 112.
+
+<color=#7F8C8D>Спасибо за службу. То, что вы удерживали эти ночи, было лишь
+частью большей задачи — к ней ещё предстоит подготовиться. Благодарим
+за участие в эксперименте.</color>"
+Report.Kontur.FailText.1,<color=#2E7D32><b>Night logged.</b></color><br>Data forwarded to Research Institute 112.<br><color=#7F8C8D>Thank you for your service. Holding these nights was only part of a larger task — one still being prepared for. We appreciate your participation in the experiment.</color>,"<color=#C0392B><b>Смена не соответствует требованиям.</b></color>
+Ситуация на Объекте вышла из-под контроля. Ожидайте дальнейших указаний."
+Report.Kontur.FailText.2,<color=#C0392B><b>Shift does not meet requirements.</b></color><br>The situation at the Object has gone out of control. Await further instructions.,"<color=#C0392B><b>Смена провалена.</b></color>
+Дальнейшая эксплуатация Объекта в текущем режиме поставлена под вопрос."
+Report.Kontur.FailText.3,<color=#C0392B><b>Shift failed.</b></color><br>Continued operation of the Object under the current protocol is now in question.,"<color=#C0392B><b>Протокол нарушен.</b></color>
+Данный результат будет учтён при оценке эффективности координатора смены."
+Report.Worker.Extra.4,<color=#C0392B><b>Protocol violated.</b></color><br>This outcome will be factored into the coordinator's performance review.,текст4
 Report.Worker.Extra.5,text5,текст5
-Report.Kontur.SuccessText.1,text1,текст1
-Report.Kontur.SuccessText.2,text2,текст2
-Report.Kontur.SuccessText.3,text3,текст3
 Report.Kontur.SuccessText.4,text4,текст4
 Report.Kontur.SuccessText.5,text5,текст5
-Report.Kontur.FailText.1,text1,текст1
-Report.Kontur.FailText.2,text2,текст2
-Report.Kontur.FailText.3,text3,текст3
 Report.Kontur.FailText.4,text4,текст4
 Report.Kontur.FailText.5,text5,текст5
