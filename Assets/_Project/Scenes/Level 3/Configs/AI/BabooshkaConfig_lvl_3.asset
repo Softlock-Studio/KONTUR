@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe1ca4933d4ee94fabd1279bd54f368, type: 3}
   m_Name: BabooshkaConfig_lvl_3
   m_EditorClassIdentifier: 
-  PatrolSpeed: 2.5
+  PatrolSpeed: 2.3
   ChaseSpeed: 3
   WanderStandStillMinSeconds: 2
   WanderStandStillMaxSeconds: 5
@@ -48,20 +48,38 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
+      inSlope: 0.03081511
+      outSlope: 0.03081511
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
+      time: 0.49310005
+      value: 0.015194932
+      inSlope: 0.17586388
+      outSlope: 0.17586388
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.57763064
+    - serializedVersion: 3
+      time: 0.90809315
+      value: 0.32343322
+      inSlope: 2.1058936
+      outSlope: 2.1058936
       tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.99999595
+      value: 0.64224696
+      inSlope: 3.469032
+      outSlope: 3.469032
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

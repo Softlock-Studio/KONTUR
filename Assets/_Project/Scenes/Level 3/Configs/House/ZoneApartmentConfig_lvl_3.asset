@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ZoneApartmentConfig_lvl_3
   m_EditorClassIdentifier: 
   BaseGrowthPerSecond: 0.2
-  DarknessGrowthPerSecond: 0.6
+  DarknessGrowthPerSecond: 0.5
   TreatmentDurationSeconds: 5
   TreatmentInfectionReduction: 40
   TreatmentIodineCost: 1
@@ -30,7 +30,7 @@ MonoBehaviour:
   - Type: 1
     Kind: 1
     CheckIntervalSeconds: 20
-    SpawnChance: 0.2
+    SpawnChance: 0.3
     MaxConcurrent: 0
     ExpirySeconds: 0
   - Type: 0
