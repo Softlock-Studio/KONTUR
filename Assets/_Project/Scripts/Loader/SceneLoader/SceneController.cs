@@ -34,6 +34,19 @@ namespace Loader.SceneController
         {
             if (IsValid(sceneType))
             {
+                string previousScene = _currentLevelScene;
+
+                // Recorded before the new scene loads, not after: LevelStartSaveTrigger (an
+                // IStartable in the new level's MissionScope) reads GetCurrentLevelType() while
+                // it activates, which happens inside the awaited SceneLoad below — before this
+                // method would otherwise reach the post-await assignment. With the assignment
+                // down there, GetCurrentLevelType() during that Start() call still returned the
+                // *previous* level (LevelType.MainMenu, the field's default, on the very first
+                // transition) instead of the one being entered — so every autosave recorded the
+                // wrong level, and Continue re-loaded MainMenu on top of itself instead of Level1.
+                _currentLevelScene = _sceneDictionary[sceneType];
+                _currentLevelType = sceneType;
+
                 // Load before unload, not the other way around: exactly one level scene is ever
                 // loaded in this architecture, and SceneManager.UnloadSceneAsync returns null
                 // (Unity refuses to unload the only loaded scene) if there's nothing else loaded
@@ -43,16 +56,13 @@ namespace Loader.SceneController
                 // call sites using the Scene overload.
                 await SceneLoad(sceneType);
 
-                if (_currentLevelScene != "")
+                if (previousScene != "")
                 {
                     if (_isDebug)
-                        Debug.Log("Start Unload " + _currentLevelScene);
+                        Debug.Log("Start Unload " + previousScene);
 
-                    await _sceneLoader.Unload(_currentLevelScene);
+                    await _sceneLoader.Unload(previousScene);
                 }
-
-                _currentLevelScene = _sceneDictionary[sceneType];
-                _currentLevelType = sceneType;
             }
         }
 
