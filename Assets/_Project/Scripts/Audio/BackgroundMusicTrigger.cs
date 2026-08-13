@@ -1,5 +1,7 @@
+using Game.Bootstrap;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace Game.Audio
 {
@@ -10,23 +12,13 @@ namespace Game.Audio
         [SerializeField] private MusicCue musicCue;
         [SerializeField] private float fadeSeconds = -1f; // -1 = AudioConfig.DefaultMusicFadeSeconds
 
-        private IAudioService audioService;
-
-        [Inject]
-        public void Construct(IAudioService audioService)
-        {
-            this.audioService = audioService;
-        }
-
-        // Deferred to Start: see AudioEmitter for why [Inject] can't be relied on in Awake.
+        // Resolved directly instead of [Inject], so this never depends on the GameObject being
+        // added to the owning LifetimeScope's Auto Inject Game Objects list — same pattern as
+        // GameCamera/AudioEmitter. Also means it works in scenes with no MissionScope of their
+        // own (e.g. MainMenu), since IAudioService lives in the root GameLifetimeScope.
         private void Start()
         {
-            if (audioService == null)
-            {
-                Debug.LogWarning($"[{name}] BackgroundMusicTrigger has no IAudioService — add this GameObject to the owning LifetimeScope's Auto Inject Game Objects list.", this);
-                return;
-            }
-
+            IAudioService audioService = LifetimeScope.Find<GameLifetimeScope>().Container.Resolve<IAudioService>();
             audioService.PlayMusic(musicCue, fadeSeconds);
         }
     }

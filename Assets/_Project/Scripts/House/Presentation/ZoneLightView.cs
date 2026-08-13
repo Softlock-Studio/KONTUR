@@ -45,6 +45,8 @@ namespace Game.House.Presentation
                 em.rateOverTime = _minValue;
                 _particle.Play();
             }
+
+            OnLightChanged();
         }
 
         private void Update()

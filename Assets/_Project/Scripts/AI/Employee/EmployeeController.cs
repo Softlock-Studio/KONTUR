@@ -256,11 +256,11 @@ namespace Game.AI.Employee
             if (fsm == null) return;
             Handles.Label(transform.position + Vector3.up * 2.2f, CurrentStateName);
         }
+#endif
 
         public void SetSelectionVisuals(bool isSelected)
         {
             mapIcon.sprite = isSelected ? selectedSprite : defaultSprite;
         }
-#endif
     }
 }

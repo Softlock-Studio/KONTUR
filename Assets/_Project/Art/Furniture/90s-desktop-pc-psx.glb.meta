@@ -21,7 +21,7 @@ ScriptedImporter:
   _generateColliders: 0
   _addColliders: 0
   _swapUvs: 0
-  _generateLightmapUVs: 0
+  _generateLightmapUVs: 1
   _importBlendShapeNames: 1
   _blendShapeFrameWeight:
     _option: 0
@@ -52,9 +52,9 @@ ScriptedImporter:
 '
   optimizeGameObjects: 0
   materials:
-  - {instanceID: 0}
+  - {fileID: -876546973899608171, guid: a17f6eba8a8f4cd4ea5cbc39a1b21f1b, type: 3}
   textures:
-  - {instanceID: 0}
+  - {fileID: 6983701643236107813, guid: a17f6eba8a8f4cd4ea5cbc39a1b21f1b, type: 3}
   hasSceneData: 1
   hasAnimationData: 0
   hasMaterialData: 1
@@ -62,7 +62,7 @@ ScriptedImporter:
   animations: []
   _extensions: []
   _textures:
-  - texture: {instanceID: 0}
+  - texture: {fileID: 6983701643236107813, guid: a17f6eba8a8f4cd4ea5cbc39a1b21f1b, type: 3}
     shouldBeLinear: 0
     shouldBeNormalMap: 0
   _mainAssetIdentifier: scenes/Sketchfab_Scene
